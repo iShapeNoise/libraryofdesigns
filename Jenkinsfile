@@ -6,13 +6,12 @@ pipeline {
             steps {
                 sh 'echo Building..'
 	        script {
+		    sh 'cd'
                     if (!fileExists('.pylot')) {
                         echo 'Creating virtualenv...'
-			sh 'cd'
-                        sh 'virtualenv --no-site-packages .pylot'
+                        sh 'python3 -m venv .pylot'
 			sh 'source .pylot/bin/activate'
                     } else {
-			sh 'cd'
 			sh 'source .pylot/bin/activate'
                         echo 'Virtualenv already exists.'
                     }
