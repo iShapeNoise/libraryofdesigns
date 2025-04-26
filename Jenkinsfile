@@ -6,7 +6,7 @@ pipeline {
             steps {
                 sh 'echo Building..'
                 sh 'cp env.example .env'
-                sh 'pip3 install -r requirements.txt'
+                sh 'pip3 install --target ${env.WORKSPACE} -r requirements.txt'
             }
         }
         stage('Test') {
