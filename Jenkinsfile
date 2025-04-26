@@ -10,7 +10,7 @@ pipeline {
                     if (!fileExists('.pylot')) {
                         echo 'Creating virtualenv...'
                         sh 'python3 -m venv .pylot'
-			sh 'source .pylot/bin/activate'
+			sh '. .pylot/bin/activate'
                     } else {
 			sh 'source .pylot/bin/activate'
                         echo 'Virtualenv already exists.'
