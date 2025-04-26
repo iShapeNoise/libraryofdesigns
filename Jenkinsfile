@@ -7,6 +7,7 @@ pipeline {
                 sh 'echo Building..'
 	        script {
 		    sh 'cd'
+		    sh 'PATH=${PATH}:/usr/local/bin'
                     if (!fileExists('.pylot')) {
                         echo 'Creating virtualenv...'
                         sh 'python3 -m venv .pylot'
