@@ -5,9 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'echo Building...'
-		sh 'python3 -m pip install --user pipx'
-		sh 'pipx ensurepath'
-		sh 'pipx install -r requirements.txt'
+		sh 'pip3 install -r requirements.txt'
             }
         }
         stage('Test') {
