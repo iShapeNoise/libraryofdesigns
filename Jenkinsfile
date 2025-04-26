@@ -5,7 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'echo Building...'
-		sh 'sudo python3 -m pip install --user pipx'
+		sh 'python3 -m pip install --user pipx'
 		sh 'pipx ensurepath'
 		sh 'pipx install -r requirements.txt'
             }
