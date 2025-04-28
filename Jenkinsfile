@@ -5,6 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'echo Building...'
+		sh 'cp env.example .env'
 		sh 'pip3 install -r requirements.txt'
             }
         }

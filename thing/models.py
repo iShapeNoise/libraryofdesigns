@@ -19,8 +19,8 @@ class Thing(models.Model):
     name = models.CharField(max_length=255)
     # use blank=False if you want * the description
     description = models.TextField(blank=True, null=True)
-    price = models.FloatField()
-    image = models.ImageField(upload_to='item_images', blank=True, null=False)
+    costs = models.FloatField()
+    image = models.ImageField(upload_to='thing_images', blank=True, null=False)
     name = models.CharField(max_length=255)
     is_sold = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, related_name='things',
