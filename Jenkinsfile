@@ -6,7 +6,9 @@ pipeline {
             steps {
                 sh 'echo Building...'
 		sh 'cp env.example .env'
-		sh 'pip3 install -r requirements.txt'
+		sh 'python3 -m venv .pylot'
+		sh 'source .pylot/bin/activate
+		sh 'python3 -m pip install -r requirements.txt'
             }
         }
         stage('Test') {
