@@ -4,17 +4,17 @@ from django.shortcuts import render, redirect
 
 # from django.contrib.auth.forms import AuthenticationForm
 
-from thing.models import Category, Thing
+from design.models import Category, Design
 from django.contrib.auth import logout
 from .forms import SignupForm
 
 
 def index(request):
-    things = Thing.objects.filter(is_modified=False)[0:6]
+    designs = Design.objects.filter(is_modified=False)[0:6]
     categories = Category.objects.all()
     return render(request, 'core/index.html', {
         'categories': categories,
-        'things': things,
+        'designs': designs,
     })
 
 
@@ -23,12 +23,12 @@ def contact(request):
 
 
 def logout_user(request):
-    things = Thing.objects.filter(is_modified=False)[0:6]
+    designs = Design.objects.filter(is_modified=False)[0:6]
     categories = Category.objects.all()
     logout(request)
     return render(request, 'core/index.html', {
         'categories': categories,
-        'things': things,
+        'designs': designs,
     })
 
 

@@ -4,19 +4,19 @@
 
 {% block content %}
     <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
-        <h2 class="mb-12 text-2xl text-center">Newest things</h2>
+        <h2 class="mb-12 text-2xl text-center">Newest Designs</h2>
         
         <div class="grid grid-cols-3 gap-3">
-            {% for thing in things %}
+            {% for design in designs %}
                 <div>
-                    <a href="{% url 'thing:detail' thing.id %}">
+                    <a href="{% url 'design:detail' design.id %}">
                         <div>
-                            <img src="{{ thing.image.url }}" class="rounded-t-xl">
+                            <img src="{{ design.image.url }}" class="rounded-t-xl">
                         </div>
 
                         <div class="p-6 bg-white rounded-b-xl">
-                            <h2 class="text-2xl">{{ thing.name }}</h2>
-                            <p class="text-gray-500">Costs: {{ thing.costs}}</p>
+                            <h2 class="text-2xl">{{ design.name }}</h2>
+                            <p class="text-gray-500">Costs: {{ design.costs}}</p>
                         </div>
                     </a>
                 </div>
@@ -32,7 +32,7 @@
                     <a href="#">
                         <div class="p-6 bg-white rounded-b-xl">
                             <h2 class="text-2xl">{{ category.name }}</h2>
-                            <p class="text-gray-500">{{ category.things.count }} things</p>
+                            <p class="text-gray-500">{{ category.designs.count }} designs</p>
                         </div>
                     </a>
                 </div>

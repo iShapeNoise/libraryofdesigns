@@ -1,13 +1,13 @@
 from django import forms
 
-from .models import Thing
+from .models import Design
 
 INPUT_CLASSES = 'w-full py-4 px-6 rounded-xl border'
 
 
-class NewThingForm(forms.ModelForm):
+class NewDesignForm(forms.ModelForm):
     class Meta:
-        model = Thing
+        model = Design
         fields = ('category', 'name', 'description', 'costs', 'image',)
         widgets = {
             'category': forms.Select(attrs={
@@ -28,9 +28,9 @@ class NewThingForm(forms.ModelForm):
         }
 
 
-class EditThingForm(forms.ModelForm):
+class EditDesignForm(forms.ModelForm):
     class Meta:
-        model = Thing
+        model = Design
         fields = ('name', 'description', 'costs', 'image', 'is_modified')
         widgets = {
             'name': forms.TextInput(attrs={

@@ -1,20 +1,20 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 
-from thing.models import Thing
+from design.models import Design
 
 from .forms import ConversationMessageForm
 from .models import Conversation
 
 
 @login_required
-def new_conversation(request, thing_pk):
-    thing = get_object_or_404(Thing, pk=thing_pk)
+def new_conversation(request, design_pk):
+    design = get_object_or_404(Design, pk=design_pk)
 
-    if thing.created_by == request.user:
+    if design.created_by == request.user:
         return redirect('dashboard:index')
 
-    conversations = Conversation.objects.filter(thing=thing).filter(members__in=[request.user.id])
+    conversations = Conversation.objects.filter(design=design).filter(members__in=[request.user.id])
 
     if conversations:
         return redirect('conversation:detail', pk=conversations.first().id)
@@ -23,9 +23,9 @@ def new_conversation(request, thing_pk):
         form = ConversationMessageForm(request.POST)
 
         if form.is_valid():
-            conversation = Conversation.objects.create(thing=thing)
+            conversation = Conversation.objects.create(design=design)
             conversation.members.add(request.user)
-            conversation.members.add(thing.created_by)
+            conversation.members.add(design.created_by)
             conversation.save()
 
             conversation_message = form.save(commit=False)
@@ -33,7 +33,7 @@ def new_conversation(request, thing_pk):
             conversation_message.created_by = request.user
             conversation_message.save()
 
-            return redirect('thing:detail', pk=thing_pk)
+            return redirect('design:detail', pk=design_pk)
 
     else:
         form = ConversationMessageForm()

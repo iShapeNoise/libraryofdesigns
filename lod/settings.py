@@ -19,7 +19,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Backup folder for lot_db database backup
-PG_COPY_BACKUP_PATH = 'lot_db_backup'
+PG_COPY_BACKUP_PATH = 'lod_db_backup'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'conversation',
     'dashboard',
     'core',
-    'thing',
+    'design',
     'django_recaptcha',
     'pg_copy',
 ]
@@ -63,7 +63,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'lot.urls'
+ROOT_URLCONF = 'lod.urls'
 
 TEMPLATES = [
     {
@@ -80,7 +80,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'lot.wsgi.application'
+WSGI_APPLICATION = 'lod.wsgi.application'
 
 
 # Database
@@ -125,8 +125,8 @@ USE_I18N = True
 USE_TZ = True
 
 # ReCAPTCHA
-RECAPTCHA_PUBLIC_KEY = '6Ld7Xk4rAAAAACbJBp0MABWzgJnJSF-4DIYozbO1'
-RECAPTCHA_PRIVATE_KEY = '6Ld7Xk4rAAAAABPmjzGgbKKGU6hHqYWOn_QIstLF'
+RECAPTCHA_PUBLIC_KEY = '6LccJFIrAAAAAMLnj6heVaFWsQwU_xk2_OO7pxRn'
+RECAPTCHA_PRIVATE_KEY = '6LccJFIrAAAAAGC1gAF7zBstJ5zl1-san2hesWOX'
 SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
 
 # Static files (CSS, JavaScript, Images)
@@ -134,8 +134,8 @@ SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-MEDIA_URL = 'lot_files/'
-MEDIA_ROOT = BASE_DIR / 'lot_files'
+MEDIA_URL = 'lod_files/'
+MEDIA_ROOT = BASE_DIR / 'lod_files'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

@@ -7,19 +7,19 @@
 
         <script src="https://cdn.tailwindcss.com"></script>
 
-        <title>{% block title %}{% endblock  %} | LoT</title>
+        <title>{% block title %}{% endblock  %} | LoD</title>
     </head>
     
     <body>
         <nav class="py-6 px-6 flex justify-between items-center border-b border-gray-200">
-            <a href="/" class="text-xl font-semibold">Library of Things</a>
+            <a href="/" class="text-xl font-semibold">Library of Designs</a>
             
             <div class="space-x-6">
-                <a href="{% url 'thing:things' %}" class="text-lg font-semibold
+                <a href="{% url 'design:design' %}" class="text-lg font-semibold
                     hover:text-gray-500">Browse</a>
                 {% if request.user.is_authenticated %}
-                    <a href="{% url 'thing:new' %}" class="text-lg font-semibold
-                        hover:text-gray-500">New thing</a> 
+                    <a href="{% url 'design:new' %}" class="text-lg font-semibold
+                        hover:text-gray-500">New Design</a> 
                     <a href="{% url 'conversation:inbox' %}" class="px-6 py-3 text-lg font-semibold bg-teal-500
                         text-white rounded-xl hover:bg-teal-700">Inbox</a>
                     <a href="{% url 'dashboard:index' %}" class="px-6 py-3 text-lg font-semibold bg-teal-500
@@ -44,7 +44,7 @@
             <div class="w-2/3 pr-10">
                 <h3 class="mb-5 font-semibold text-gray-400">About</h3>
 
-                <p class="text-lg text-gray-500">LoT is a Library of Things</p>
+                <p class="text-lg text-gray-500">LoD is a Library of Designs</p>
             </div>
 
             <div class="w-1/3">
@@ -56,7 +56,7 @@
                     <li><a href="{% url 'core:contact' %}" class="text-lg text-teal-500
                                    hover:text-teal-700">Contact</a></li>
                     <li><a href="#" class="text-lg text-teal-500
-                                   hover:text-teal-700">Privacy policy</a></li>
+                                   hover:text-teal-700">License</a></li>
                     <li><a href="#" class="text-lg text-teal-500
                                    hover:text-teal-700">Term of use</a></li>
                 </ul>

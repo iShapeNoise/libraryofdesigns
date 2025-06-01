@@ -4,7 +4,7 @@
 source ~/pylot/bin/activate
 
 # cd into project folder
-cd ~/lot
+cd ~/lod
 
 # pull the latest code base
 git pull

@@ -1,12 +1,12 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from thing.models import Thing
+from design.models import Design
 
 
 class Conversation(models.Model):
-    thing = models.ForeignKey(Thing, related_name='conversations',
-                              on_delete=models.CASCADE)
+    design = models.ForeignKey(Design, related_name='conversations',
+                               on_delete=models.CASCADE)
     members = models.ManyToManyField(User, related_name='conversations')
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
