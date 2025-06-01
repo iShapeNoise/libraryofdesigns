@@ -7,15 +7,33 @@
 <div class="w-1/2 my-6 p-6 mx-auto bg-gray-100 rounded-xl">
     <h1 class="mb-6 text-3xl">Login</h1>
 
-    <form method="post">
+    <form method="post" action=".">
         {% csrf_token %}
 
-        {{ form.as_p }}
+        <div class="mb-3">
+            <label class="inline-block mb-2">Username</label><br>
+            {{ form.username }}
+        </div>
 
-        <button class="py-4 px8 text-lg bg-teal-500 hover:bg-teal-700
-                       rounded-xl text-white">Login</button>
+        <div class="mb-3">
+            <label class="inline-block mb-2">Password</label><br>
+            {{ form.password }}
+        </div>
+        <div class="mb-3 row row-gap-3">
+            <label class="inline-block mb-2">Are you a human?</label><br>
+            {{ form.captcha }}
+        </div>
+        {%if form.errors or form.non_field_errors %}
+            <div class="mb-3 p-6 bg-red-100 rounded-xl">
+                {% for field in form %}
+                    {{ field.errors }}
+                {% endfor %}
+                
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
 
-    </form>
-    <p> Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
+        <button class="py-4 px-8 text-lg bg-teal-500 hover:bg-teal-700
+                       rounded-xl text-white">Submit</button>
 </div>
 {% endblock %}

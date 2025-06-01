@@ -18,6 +18,8 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Backup folder for lot_db database backup
+PG_COPY_BACKUP_PATH = 'lot_db_backup'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -43,8 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'conversation',
+    'dashboard',
     'core',
     'thing',
+    'django_recaptcha',
+    'pg_copy',
 ]
 
 MIDDLEWARE = [
@@ -110,26 +116,26 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
+# ReCAPTCHA
+RECAPTCHA_PUBLIC_KEY = '6Ld7Xk4rAAAAACbJBp0MABWzgJnJSF-4DIYozbO1'
+RECAPTCHA_PRIVATE_KEY = '6Ld7Xk4rAAAAABPmjzGgbKKGU6hHqYWOn_QIstLF'
+SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = 'lot_files/'
+MEDIA_ROOT = BASE_DIR / 'lot_files'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

@@ -10,14 +10,41 @@
     <form method="post" action=".">
         {% csrf_token %}
 
-        {{ form.non_field_errors }}
-
         <div class="mb-3">
-            <label class="inline-block mb-2">Username</label>
+            <label class="inline-block mb-2">Username</label><br>
             {{ form.username }}
         </div>
 
-        <button class="py-4 px-8 text-lg bg-teal-500 hover:bg-teal-700
-                       rounded-xl text-white">Submit</button>
+        <div class="mb-3">
+            <label class="inline-block mb-2">Email</label><br>
+            {{ form.email }}
+        </div>
+
+        <div class="mb-3">
+            <label class="inline-block mb-2">Password</label><br>
+            {{ form.password1 }}
+        </div>
+        <div class="mb-3">
+            <label class="inline-block mb-2">Repeat password</label><br>
+            {{ form.password2 }}
+        </div>
+        <div class="mb-3 row row-gap-3">
+            <label class="inline-block mb-2">Are you a human?</label><br>
+            {{ form.captcha }}
+        </div>
+        {%if form.errors or form.non_field_errors %}
+            <div class="mb-3 ms-1 p-6 bg-red-100 rounded-xl">
+                {% for field in form %}
+                    {{ field.errors }}
+                {% endfor %}
+                
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        <div class="mb-3 row row-gap-3">
+            <button class="ms-1 py-4 px-8 text-lg bg-teal-500 hover:bg-teal-700 rounded-xl text-white">Submit</button>
+        </div>
+    </form>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </div>
 {% endblock %}
