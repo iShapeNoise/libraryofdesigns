@@ -15,7 +15,7 @@
             <a href="/" class="text-xl font-semibold">Library of Designs</a>
             
             <div class="space-x-6">
-                <a href="{% url 'design:design' %}" class="text-lg font-semibold
+                <a href="{% url 'design:designs' %}" class="text-lg font-semibold
                     hover:text-gray-500">Browse</a>
                 {% if request.user.is_authenticated %}
                     <a href="{% url 'design:new' %}" class="text-lg font-semibold
