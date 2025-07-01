@@ -1,11 +1,14 @@
 {% extends 'core/base.html' %}
+{% load thumbnail %}
 
 {% block title %}{{ design.name }}{% endblock %}
 
 {% block content %}
 <div class="grid grid-cols-5 gap-6">
     <div class="col-span-3">
-        <img src="{{ design.image.url }}" class="rounded-xl">
+        <a href="{{ design.image.url }}" target=_blank>
+            <img src="{% thumbnail design.image 'large_detail' %}" class="rounded-xl">
+        </a>
     </div>
     <div class="col-span-2 p-6 bg-gray-100 rounded-xl">
         <h1 class="mb-6 text-3xl">{{ design.name }}</h1>

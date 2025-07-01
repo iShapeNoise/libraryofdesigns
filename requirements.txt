@@ -10,3 +10,6 @@ python-decouple==3.8
 sqlparse==0.5.3
 django-recaptcha==4.1.0
 django-pg-copy==1.2.0
+django-object-actions==5.0.0
+easy_thumbnails==2.10
+django-bootstrap5==5.2.3
