@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'backup',
     'django_object_actions',
     'easy_thumbnails',
-    'django_bootstrap5',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -129,6 +130,9 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # ReCAPTCHA
 RECAPTCHA_PUBLIC_KEY = '6LccJFIrAAAAAMLnj6heVaFWsQwU_xk2_OO7pxRn'

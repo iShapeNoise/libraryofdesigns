@@ -9,7 +9,7 @@
     {% csrf_token %}
 
     <div class="space-y-4">
-        {{ form.as_p }}
+        {{ form|crispy }}
     </div>
 
     {% if form.errors or form.non_field_errors %}
