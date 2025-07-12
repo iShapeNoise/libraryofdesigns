@@ -14,3 +14,4 @@ django-object-actions==5.0.0
 easy_thumbnails==2.10
 django-crispy-forms==2.4
 crispy-bootstrap5
+markdown==3.8.2

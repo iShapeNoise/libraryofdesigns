@@ -3,5 +3,64 @@
 {% block title %}Contact{% endblock %}
 
 {% block content %}
-    <h1> Contact page </h1>
+
+    <div class="d-flex align-items-center justify-content-center mb-3 rounded">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-3 p-6 bg-green-100 rounded-xl"> 
+                    {{ message }}
+                </div>
+            {% endfor %} 
+        {% endif %}
+
+        <form method="post" action=".">
+            {% csrf_token %}
+
+            <fieldset>
+                <legend>Contact Form</legend>
+
+                <div class="mb-3">
+                    <label for="{{ form.name.id_for_label }}" class="form-label"> 
+                        {{ form.name.label }}
+                    </label>
+                    {{ form.name }}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.email.id_for_label }}"
+                        class="form-label">
+                        {{ form.email.label }}
+                    </label>
+                    {{ form.email }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.subject.id_for_label }}">  
+                    {{ form.subject.label }}
+                    </label><br>
+                    {{ form.subject }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.message.id_for_label }}">  
+                    {{ form.message.label }}
+                    </label><br>
+                    {{ form.message }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label mt-2">Are you a human?</label><br>
+                    {{ form.captcha }}
+                    {%if form.errors or form.non_field_errors %}
+                        <div class="mb-3 bg-red-100 rounded-xl">
+                            {% for field in form %}
+                                {{ field.errors }}
+                            {% endfor %}  
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <button class="btn btn-lg btn-primary">Send Message</button>
+            </fieldset>
+        </form>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    </div>
+
+
 {% endblock%}

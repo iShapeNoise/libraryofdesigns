@@ -1,8 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-
 from design.models import Design
-
 from .forms import ConversationMessageForm
 from .models import Conversation
 
@@ -75,3 +73,4 @@ def detail(request, pk):
         'conversation': conversation,
         'form': form
     })
+

@@ -16,16 +16,16 @@
         <nav class="navbar navbar-expand-lg border-b border-gray-200">
             <!-- here are the contents! your navbar didn't show you anything -->
             <!-- because you didn't feed any contents into your navbar -->
-            <div class="container-fluid flex items-center justify-between">
+            <div class="container-fluid d-flex items-start">
                 <a href="/" class="navbar-brand ms-auto">
-                    <img class="img-fluid ps-3" width="50%" src="/static/admin/img/lod_title.png">
+                    <img class="img-fluid w-60 ps-3" src="/static/admin/img/lod_title.png">
                 </a>
                 <button class="navbar-toggler" type="button"
                     data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-label="Toggle navigation" aria-haspopup="true" aria-expanded="false">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarMain">
-                    <ul class="nav nav-pills ms-auto">
+                <div class="collapse navbar-collapse justify-content-end" id="navbarMain">
+                    <ul class="nav nav-pills d-sm-flex">
                         <li class="nav-item dropdown">
                             <button class="nav-link dropdown-toggle" href="#"
                                 id="navbarDropdown" type="button"
@@ -39,7 +39,7 @@
                         </li>
                         <!-- Search bar with integrated icon -->
                         <div class="nav-item ms-auto mx-4">
-                            <form class="form-inline relative border-light" method="get" action="{% url 'design:designs' %}">
+                            <form class="form-inline d-flex border-light" method="get" action="{% url 'design:designs' %}">
                                 <input name="query" class="form-control
                                              ms-sm-2 me-sm-2" size="30" type="search" value="{{ query }}" placeholder="Find a design">
                             </form>
@@ -68,11 +68,11 @@
             {% endblock %}
         </div>
         <footer class="bg-primary">
-            <div class="container">
+            <div class="container p-4">
                 <div class="row">
-                    <div class="col mx-5 my-5 mt-lg-4">
+                    <div class="col-lg-6 col-sm-12 mb-3 text-start">
                         <h3 class="fw-bold text-white">LoD:</h3>
-                        <ul class="text-white fs-5">
+                        <ul class="text-white fs-6">
                             <li>is a library of designs</li>
                             <li>is a platform for sharing and discovering designs where users
                                 can upload, browse, and interact around design content</li>
@@ -83,13 +83,13 @@
                                 mind</li>
                         </ul>
                     </div>
-                    <div class="col mx-5 my-5 mt-lg-4 text-end">
+                    <div class="col-lg-6 col-sm-12 mb-3 text-end">
                         <h3 class="fw-bold text-white">More info</h3>
                         <ul class="list-unstyled text-decoration-none text-white">
-                            <li><a href="#" class="fs-5 text-decoration-none text-white">About</a></li>
-                            <li><a href="{% url 'core:contact' %}" class="fs-5 text-decoration-none text-white">Contact</a></li>
-                            <li><a href="#" class="fs-5 text-decoration-none text-white">License</a></li>
-                            <li><a href="#" class="fs-5 text-decoration-none text-white">Term of use</a></li>
+                            <li><a href="{% url 'core:about_lod' %}" class="fs-6 text-decoration-none text-white">About</a></li>
+                            <li><a href="{% url 'core:contact' %}" class="fs-6 text-decoration-none text-white">Contact</a></li>
+                            <li><a href="{% url 'core:license' %}" class="fs-6 text-decoration-none text-white">License</a></li>
+                            <li><a href="{% url 'core:terms_of_use' %}" class="fs-6 text-decoration-none text-white">Term of use</a></li>
                         </ul>
                     </div>
                 </div>

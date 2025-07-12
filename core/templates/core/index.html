@@ -3,8 +3,8 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
-        <h2 class="mb-12 text-2xl text-center">Newest Designs</h2>
+    <div class="rounded mt-4 m-6 border border-2 border-primary">
+        <h2 class="mb-12 fs-4 fw-bold text-center">Newest Designs</h2>
         
         <div class="grid grid-cols-3 gap-3">
             {% for design in designs %}
@@ -14,23 +14,23 @@
                             <img src="{{ design.image.url }}" class="rounded-t-xl">
                         </div>
 
-                        <div class="p-6 bg-white rounded-b-xl">
+                        <div class="p-6 bg-white rounded">
                             <h2 class="text-2xl">{{ design.name }}</h2>
-                            <p class="text-gray-500">Costs: {{ design.costs}}</p>
+                            <p class="">Production Costs: {{ design.costs}}</p>
                         </div>
                     </a>
                 </div>
             {% endfor %}
         </div>
     </div>
-    <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
-        <h2 class="mb-12 text-2xl text-center">Categories</h2>
+    <div class="rounded mt-4 m-6 border border-2 border-primary">
+        <h2 class="mb-12 fw-bold fs-4 text-center">Categories</h2>
         
         <div class="grid grid-cols-3 gap-3">
             {% for category in categories %}
                 <div>
                     <a href="#">
-                        <div class="p-6 bg-white rounded-b-xl">
+                        <div class="p-6 bg-white rounded">
                             <h2 class="text-2xl">{{ category.name }}</h2>
                             <p class="text-gray-500">{{ category.designs.count }} designs</p>
                         </div>
