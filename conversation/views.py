@@ -45,7 +45,7 @@ def new_conversation(request, design_pk):
 def inbox(request):
     conversations = Conversation.objects.filter(members__in=[request.user.id])
 
-    return render(request, 'conversation_inbox.html', {
+    return render(request, 'conversation/inbox.html', {
         'conversations': conversations
     })
 

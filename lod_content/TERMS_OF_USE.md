@@ -44,10 +44,3 @@ We may update these Terms. Continued use means you accept the changes.
 For questions, contact: **[contact](https://libraryofdesigns.cc/contact/)**
 
 ***
-
-### **Additional Notes:**
-
-* **CC BY-SA Summary**: Users must credit original creators and share modifications under the same license.
-* Consider linking to the **[full CC BY-SA license](https://creativecommons.org/licenses/by-sa/4.0/)** for clarity.
-* If GDPR compliance is needed, expand the Privacy Policy section.
-

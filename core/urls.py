@@ -13,6 +13,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(
         template_name='core/login.html',
         authentication_form=LoginForm), name='login'),
+    path('profile/', views.profile_settings, name='profile_settings'),
     path('license/', views.license, name='license'),
     path('terms_of_use/', views.terms_of_use, name='terms_of_use'),
     path('about_lod/', views.about_lod, name='about_lod'),

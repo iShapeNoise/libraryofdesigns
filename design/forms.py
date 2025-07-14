@@ -2,7 +2,7 @@ from django import forms
 
 from .models import Design
 
-INPUT_CLASSES = 'w-full py-4 px-6 rounded-xl border'
+INPUT_CLASSES = 'form-control border col-xs-4'
 
 
 class NewDesignForm(forms.ModelForm):
