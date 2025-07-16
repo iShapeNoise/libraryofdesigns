@@ -1,5 +1,6 @@
 <!doctype html>
 {% load static %}
+{% load thumbnail %}
 
 <html lang="en">
     <head> 
@@ -49,20 +50,16 @@
                             {% if request.user.is_authenticated %}
                             <!-- Avatar Dropdown -->
                             <div class="dropdown">  
-                                <button class="btn btn-link dropdown-toggle d-flex align-items-center" type="button"
-                                    id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn btn-link dropdown-toggle d-flex align-items-center"
+                                        type="button"
+                                        id="avatarDropdown"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
                                     {% if request.user.profile.avatar %}  
-                                        <img src="{{ request.user.profile.get_avatar_url }}"   
-                                            class="rounded-circle me-2"   
-                                            width="32"  
-                                            height="32"
-                                            alt="Avatar">  
+                                        <img src="{% thumbnail request.user.profile.avatar 'profile_avatar_small' %}" class="rounded-circle" width="32" height="32" alt="Avatar">  
                                     {% else %}
-                                        <img src="/static/admin/img/default_avatar.png"   
-                                            class="rounded-circle me-2"   
-                                            width="32"
-                                            height="32" 
-                                            alt="Default Avatar">  
+                                        <img src="/static/admin/img/default_avatar.png" Trägerclass="rounded-circle"
+                                                  width="32" height="32" alt="Default Avatar">
                                     {% endif %}
                                 </button>  
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">  
@@ -79,6 +76,11 @@
                                     <li>  
                                         <a class="dropdown-item" href="{% url 'dashboard:index' %}">  
                                             <i class="bi bi-speedometer2 me-2"></i>Dashboard  
+                                        </a>  
+                                    </li>  
+                                    <li>  
+                                        <a class="dropdown-item" href="{% url 'core:profile_settings' %}">  
+                                            <i class="bi bi-gear me-2"></i>Settings  
                                         </a>  
                                     </li>  
                                     <li><hr class="dropdown-divider"></li>  

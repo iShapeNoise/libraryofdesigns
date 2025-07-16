@@ -1,7 +1,9 @@
+import os
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from easy_thumbnails.fields import ThumbnailerImageField
 
 
 class ContactMessage(models.Model):
@@ -21,9 +23,25 @@ class ContactMessage(models.Model):
         return f"{self.name} - {self.subject}"
 
 
+def user_avatar_path(instance, filename):
+    """
+    Generate upload path for user avatars: user/{user_id}/avatar/{filename}
+    """
+    # Get file extension
+    ext = filename.split('.')[-1]
+    # Create filename with user ID
+    filename = f"avatar.{ext}"
+    # Return path: user/{user_id}/avatar/{filename}
+    return os.path.join('user', str(instance.user.id), 'avatar', filename)
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    avatar = models.ImageField('avatars/', blank=True, null=True)
+    avatar = ThumbnailerImageField(
+        upload_to=user_avatar_path,
+        blank=True,
+        null=True,
+        resize_source=dict(size=(128, 128), crop='smart', quality=95))
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
@@ -31,7 +49,7 @@ class UserProfile(models.Model):
     def get_avatar_url(self):
         if self.avatar:
             return self.avatar.url
-        return 'static/admin/img/default_avatar.png'
+        return '/static/admin/img/default_avatar.png'
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):

@@ -48,6 +48,7 @@ def new(request):
             design.created_by = request.user
             design.save()
             return redirect('design:detail', pk=design.id)
+        # If form is invalid, fall through to render the form with errors
     else:
         form = NewDesignForm()
 

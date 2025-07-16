@@ -50,11 +50,13 @@ INSTALLED_APPS = [
     'core',
     'design',
     'knowhow',
+    'editor',
     'django_recaptcha',
     'pg_copy',
     'backup',
     'django_object_actions',
     'easy_thumbnails',
+    'mptt',
 ]
 
 MIDDLEWARE = [
@@ -138,10 +140,15 @@ SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-MEDIA_URL = 'lod_content/'
-MEDIA_ROOT = BASE_DIR / 'lod_content'
+# User profile media
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+# Design content
+LOD_CONTENT_URL = 'lod_content/'
+LOD_CONTENT_ROOT = os.path.join(BASE_DIR, 'lod_content/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -154,5 +161,8 @@ THUMBNAIL_ALAISES = {
         'small_thumbnail': {'size': (200, 200), 'crop': 'smart'},
         'large_thumbnail': {'size': (256, 256), 'crop': 'smart'},
         'large_detail': {'size': (800, 600), 'quality': 90},
+        'profile_avatar': {'size': (128, 128), 'crop': 'smart', 'quality': 95},
+        'profile_avatar_mid': {'size': (64, 64), 'crop': 'smart', 'quality': 95},
+        'profile_avatar_small': {'size': (32, 32), 'crop': 'smart', 'quality': 95},
     },
 }

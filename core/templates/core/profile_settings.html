@@ -1,4 +1,5 @@
-{% extends 'core/base.html' %}  
+{% extends 'core/base.html' %} 
+{% load thumbnail %}
   
 {% block title %}Profile Settings{% endblock %}  
   
@@ -27,19 +28,16 @@
                           
                         <div class="text-center mb-4">  
                             {% if profile.avatar %}  
-                                <img src="{{ profile.avatar.url }}" class="rounded-circle mb-3" width="100" height="100"
-                                alt="Avatar">
+                                <img src="{% thumbnail profile.avatar 'profile_avatar' %}" class="rounded-circle mb-3" width="100" height="100" alt="Avatar">
                             {% else %}  
-                                <img src="/static/admin/img/default_avatar.png" class="rounded-circle mb-3" width="100"
-                                height="100" alt="Default Avatar">
+                                <img src="/static/admin/img/default_avatar.png" class="rounded-circle mb-3" width="100" height="100" alt="Default Avatar">
                             {% endif %}  
                         </div>  
                           
                         <div class="mb-3">  
                             <label for="{{ profile_form.avatar.id_for_label }}" class="form-label">Avatar Image</label>  
                             {{ profile_form.avatar }}  
-                        </div>  
-                          
+                        </div>
                         <div class="mb-3">  
                             <label for="{{ profile_form.first_name.id_for_label }}" class="form-label">First Name</label>  
                             {{ profile_form.first_name }}  
