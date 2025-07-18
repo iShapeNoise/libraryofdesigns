@@ -1,0 +1,182 @@
+- Complete Assemblies
+    - Household Equipment
+        - Cleaning
+            - Cleaning Tool
+            - Broom & Mop
+        - Ironing
+            - Ironing Board
+            - Clothes Hanger
+            - Clothes Line/Peg
+        - Cooking
+            - Kitchenware
+            - Tableware
+            - Plate & Bowl
+            - Cutlery
+            - Cookware Utensil
+            - Knive, Spatula
+        - Washing
+            - Towel Rack
+            - Sanitary Item
+            - Trash Bin
+        - Lighting
+            - Lamp
+            - Lighting Fixture
+        - Household Appliance
+            - Domestic Heating
+            - Home Appliance
+                - Washstand
+    - Furniture
+        - Seating
+            - Single Seat
+                - Chair
+                    - Office chair
+                    - Bar chair
+                    - Lift chair
+                    - Arm chair
+                    - Recliner
+                    - Rocking chair
+                    - Dining Chair
+                - Stool
+                    - Bar stool
+                    - Foot stool
+                - Deckchair
+            - Multiple Seat
+                - Sofa
+                    - Couch
+                    - Love Seat
+                    - Chesterfield
+                    - Divan
+                - Bench
+                - Lounger
+        - Lying
+            - Bed
+            - Daybed
+            - Futon
+            - Hammock
+            - Baby Crib
+        - Placing
+            - Table
+                - Dining Table
+                - Coffee Table
+                - Office Table
+                - Game Table
+                - Changing Table
+                - Side Table
+                - Dressing Table
+                - Drop-leaf Table
+                - Folding table
+                - Workbench
+            - Desk
+                - Computer Desk
+                - Writing Desk
+                - Drawing Desk
+            - Washstand
+        - Storing
+            - Closet
+            - Cabinet
+            - Cupboard
+            - Bookcase
+            - Wardrobe
+            - Pantry
+            - Shelve
+            - Sideboard
+            - Drawer & Chest
+            - Wardrobe/Arm
+            - Storage Box
+            - Home Bar
+            - Toiletries Storage
+            - Garderobe
+        - Rooms
+            - Living Room
+            - Bedroom
+            - Bathroom
+            - Kitchen
+            - Dining Room
+            - Home Office
+            - Laundry Room
+            - Guest Room
+            - Nursery
+            - Storage Room
+            - Balcony Room
+            - Workshop
+            - Entertainment Room
+            - Exercise Room
+    - Miscellaneous Assemblies
+        - Hygiene & Health
+            - Soap Dishe
+            - Women’s Sanitary Item
+        - Decorative Item
+            - Vase
+            - Fragrance Lamp
+            - Art Installation
+            - Panel
+            - Lighting Diffuser
+            - Pedestral
+            - Plant stand
+    - Outdoor & Garden
+        - Garden Furniture
+            - Garden Bench 
+            - Lounger
+        - Potted Plants
+        - Canopy
+        - Greenhouse
+        - Shed
+        - Fence
+- Parts & Components
+    - Structural Component
+        - Beam
+        - Joist
+        - Support
+        - Wall/Floor Section
+    - Hardware & Accessories
+        - Handle & Knob
+            - Door Handle
+            - Cabinet Knob
+        - Hook & Bracket
+            - Wall Hook
+            - Shelving Bracket
+        - Fastener
+            - Screw
+            - Nut & Bolt
+        - Lock & Latche
+    - Functional Part
+        - Kitchen Part
+        - Cookware Handle
+        - Utensil Holder
+    - Furniture Part
+        - Chair Leg
+        - Headboard
+        - Drawer
+    - House Part
+        - Window
+            - Window Trim
+            - Casement Window
+            - Skylight
+        - Door
+            - Door Frame
+            - Front Door
+            - Sliding Door
+            - Doorstep
+        - Roof
+            - Ceiling Fixture
+            - Prefabricated Roof
+            - Solar Panel Kit
+        - Walls & Partition
+            - Prefabricated Wall Panel
+            - Room Divider
+        - Floor
+            - Prefabricated Flooring System
+            - Custom Tile Pattern
+    - Universal Part
+        - Modular Wall Panel
+        - Interchangeable Handle
+    - Specialty Component
+        - Smart Home Component
+            - Smart Home Sensor
+            - Smart Lock
+    - Garden & Outdoor Part
+        - Planter Bracket
+        - Outdoor Lighting Fixture
+        - Mailbox
+
+
