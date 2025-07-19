@@ -1,8 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-
-from .forms import NewDesignForm, EditDesignForm
+from .forms import NewDesignForm, EditDesignForm, BOMFormSet
 from .models import Design, Category
 
 
@@ -42,18 +41,35 @@ def detail(request, pk):
 def new(request):
     if request.method == 'POST':
         form = NewDesignForm(request.POST, request.FILES)
+        bom_formset = BOMFormSet(request.POST)
 
-        if form.is_valid():
+        if form.is_valid() and bom_formset.is_valid():
             design = form.save(commit=False)
             design.created_by = request.user
+
+            # Handle utilities file addition
+            if form.cleaned_data.get('utilities_file'):
+                current_utilities = design.utilities or ''
+                new_file = form.cleaned_data['utilities_file']
+                if current_utilities:
+                    design.utilities = f"{current_utilities}\n{new_file}"
+                else:
+                    design.utilities = new_file
+
             design.save()
+
+            # Save BOM items
+            bom_formset.instance = design
+            bom_formset.save()
+
             return redirect('design:detail', pk=design.id)
-        # If form is invalid, fall through to render the form with errors
     else:
         form = NewDesignForm()
+        bom_formset = BOMFormSet()
 
     return render(request, 'design/form.html', {
         'form': form,
+        'bom_formset': bom_formset,
         'title': 'New Design',
     })
 

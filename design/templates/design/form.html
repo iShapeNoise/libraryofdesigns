@@ -25,23 +25,18 @@
                             </label>
                             {{ form.name }}
                         </div>
-                    </div>
-                    <!-- Right Column -->  
-                    <div class="col-lg-6 col-12"> 
                         <div class="mb-3">
                             <label for="{{ form.description.id_for_label }}" class="form-label">
                                 {{ form.description.label }}
                             </label>
                             {{ form.description }}
-                        </div>
-    
+                        </div> 
                         <div class="mb-3">
                             <label for="{{ form.costs.id_for_label }}" class="form-label">
                                 {{ form.costs.label }}
                             </label>
                             {{ form.costs }}
                         </div>
-
                         <div class="mb-3">
                             <label for="{{ form.image.id_for_label }}" class="form-label">
                                 {{ form.image.label }}
@@ -49,7 +44,68 @@
                             {{ form.image }}
                         </div>
                     </div>
-                </div>
+                    <!-- Right Column -->  
+                    <div class="col-lg-6 col-12">   
+                        <div>  
+                            {{ form.added_by }}  
+                        </div>  
+                        <div>  
+                            {{ form.created_by }}  
+                        </div>
+                        <div>
+                            <div class="mt-4">  
+                                {{ form.enable_modification }}  
+                            </div>  
+                            <div class="mt-2">  
+                                {{ form.modified_by }}  
+                            </div>
+                        </div>
+                        <legend class="text-lg font-semibold">Utilities</legend>  
+                        <div class="mb-3">  
+                            {{ form.utilities_file }}  
+                            <button type="button" onclick="addUtilityFile()" class="mt-2 px-4 py-2 bg-blue-500 text-white
+                                rounded hover:bg-blue-600">Add Selected File to Utilities</button>  
+                        </div>
+                        <div>  
+                            {{ form.utilities }}  
+                        </div>
+                        <legend class="text-lg font-semibold">Bills of Materials</legend>  
+                        {{ bom_formset.management_form }}    
+                        <div id="bom-forms" class="space-y-3">
+                            {% for form in bom_formset %}  
+                            <div class="bom-form border p-3 rounded bg-gray-50">  
+                                <div class="grid grid-cols-1 md:grid-cols-7 gap-2">  
+                                    <div>  
+                                        {{ form.position }}  
+                                    </div>  
+                                    <div>  
+                                        {{ form.count }}  
+                                    </div>  
+                                    <div>  
+                                        {{ form.name }}  
+                                    </div>  
+                                    <div>  
+                                        {{ form.norm_description }}  
+                                    </div>  
+                                    <div>  
+                                        {{ form.material }}  
+                                    </div>  
+                                    <div>  
+                                        {{ form.notes }}  
+                                    </div>  
+                                    <div>  
+                                        {{ form.link }}  
+                                    </div>  
+                                </div>  
+                                {% if form.DELETE %}  
+                                    <div class="mt-2">  
+                                        {{ form.DELETE }}  
+                                    </div>  
+                                {% endif %}
+                            </div>  
+                        {% endfor %}
+                        </div>
+                    </div>
                 <div class="row">
                     {% if form.errors or form.non_field_errors %}
                         <div class="mb-3 border border-warning">
@@ -59,11 +115,58 @@
                             {{ form.non_field_errors }}
                         </div>
                     {% endif %}
-
                     <button class="btn btn-lg btn-primary">Submit</button>
                 </div>
             </fieldset>
         </form>
     </div>
 </div>
+
+<script>  
+// Minimal JavaScript for conditional field and utility file addition  
+function toggleModifiedBy() {  
+    const checkbox = document.querySelector('input[name="enable_modification"]');  
+    const modifiedByField = document.getElementById('id_modified_by');  
+    if (modifiedByField) {  
+        modifiedByField.disabled = !checkbox.checked;  
+        modifiedByField.style.opacity = checkbox.checked ? '1' : '0.5';  
+    }  
+}  
+  
+function addUtilityFile() {  
+    const fileSelect = document.querySelector('select[name="utilities_file"]');  
+    const utilitiesField = document.getElementById('id_utilities');  
+      
+    if (fileSelect && fileSelect.value && utilitiesField) {  
+        const currentValue = utilitiesField.value;  
+        const newValue = currentValue ? `${currentValue}\n${fileSelect.value}` : fileSelect.value;  
+        utilitiesField.value = newValue;  
+        fileSelect.value = ''; // Reset selection  
+    }  
+}  
+  
+// Initialize on page load  
+document.addEventListener('DOMContentLoaded', function() {  
+    toggleModifiedBy();  
+      
+    // Add event listener for the checkbox  
+    const checkbox = document.querySelector('input[name="enable_modification"]');  
+    if (checkbox) {  
+        checkbox.addEventListener('change', toggleModifiedBy);  
+    }  
+      
+    // Initialize BOM formset functionality  
+    const addButton = document.getElementById('add-bom-form');  
+    if (addButton && typeof django !== 'undefined' && django.jQuery) {  
+        // Use Django's inline formset functionality if available  
+        django.jQuery('#bom-forms .bom-form').formset({  
+            prefix: 'bom_items',  
+            addText: 'Add BOM Item',  
+            deleteText: 'Remove',  
+            addButton: addButton  
+        });  
+    }  
+});  
+</script>  
+</script>
 {% endblock %}
