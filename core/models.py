@@ -4,6 +4,36 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from easy_thumbnails.fields import ThumbnailerImageField
+from django.conf import settings
+
+
+class BackupFile(models.Model):
+    filename = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    file_size = models.BigIntegerField(default=0)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Database Backup'
+        verbose_name_plural = 'Database Backups'
+
+    def __str__(self):
+        return self.filename
+
+    @property
+    def file_path(self):
+        backup_dir = getattr(settings, 'PG_COPY_BACKUP_PATH', 'lod_db_backup/')
+        if not os.path.isabs(backup_dir):
+            backup_dir = os.path.join(settings.BASE_DIR, backup_dir)
+        return os.path.join(backup_dir, self.filename)
+
+    @property
+    def exists(self):
+        return os.path.exists(self.file_path)
+
+    def delete_file(self):
+        if self.exists:
+            os.remove(self.file_path)
 
 
 class ContactMessage(models.Model):

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 # from django.contrib.auth import login, authenticate
 # from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
@@ -16,9 +16,30 @@ from .models import UserProfile
 
 def index(request):
     designs = Design.objects.filter(is_modified=False)[0:6]
-    categories = Category.objects.all()
+    # Only show root categories (no parent)  
+    categories = Category.objects.filter(parent__isnull=True)
     return render(request, 'core/index.html', {
         'categories': categories,
+        'designs': designs,
+    })
+
+
+def browse_categories(request, category_id=None):
+    if category_id:
+        current_category = get_object_or_404(Category, id=category_id)
+        categories = current_category.get_children()
+        breadcrumbs = current_category.get_ancestors(include_self=True)
+        # Get designs for this category if it's a leaf category or has designs
+        designs = Design.objects.filter(category=current_category)
+    else:
+        current_category = None
+        categories = Category.objects.filter(parent__isnull=True)
+        breadcrumbs = []
+        designs = Design.objects.none()  # No designs at root level 
+    return render(request, 'core/browse_categories.html', {
+        'categories': categories,
+        'current_category': current_category,
+        'breadcrumbs': breadcrumbs,
         'designs': designs,
     })
 
@@ -28,7 +49,7 @@ def contact(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request,'Your message has been sent sucessfully!')
+            messages.success(request, '<p class="success_login">You were successfully login</p>')
             return redirect('core:contact')
     else:
         form = ContactForm()
@@ -40,7 +61,7 @@ def contact(request):
 
 def logout_user(request):
     designs = Design.objects.filter(is_modified=False)[0:6]
-    categories = Category.objects.all()
+    categories = Category.objects.all().filter(parent__isnull=True)
     logout(request)
     return render(request, 'core/index.html', {
         'categories': categories,
@@ -54,7 +75,7 @@ def signup(request):
         if form.is_valid():
             # Validate the reCAPTCHA
             form.save()
-
+            messages.success(request, '<p class="success_signup">Account created successfully! Please log in.<(p>')
         return redirect('/login/')
     else:
         form = SignupForm()
@@ -65,7 +86,7 @@ def signup(request):
 
 
 def license(request):
-    path = os.path.join(str(settings.MEDIA_ROOT), 'LICENSE.md')
+    path = os.path.join(str(settings.LOD_CONTENT_ROOT), 'LICENSE.md')
     text = ''
     with open(path, 'r', encoding="utf-8") as f:
         text = f.read()
@@ -77,7 +98,7 @@ def license(request):
 
 
 def terms_of_use(request):
-    path = os.path.join(str(settings.MEDIA_ROOT), 'TERMS_OF_USE.md')
+    path = os.path.join(str(settings.LOD_CONTENT_ROOT), 'TERMS_OF_USE.md')
     text = ''
     with open(path, 'r', encoding="utf-8") as f:
         text = f.read()
@@ -89,7 +110,7 @@ def terms_of_use(request):
 
 
 def about_lod(request):
-    path = os.path.join(str(settings.MEDIA_ROOT), 'about', 'ABOUT.md')
+    path = os.path.join(str(settings.LOD_CONTENT_ROOT), 'about', 'ABOUT.md')
     text = ''
     with open(path, 'r', encoding="utf-8") as f:
         text = f.read()
@@ -115,6 +136,10 @@ def about_lod(request):
 def profile_settings(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
 
+    # Initialize both forms at the start  
+    profile_form = ProfileForm(instance=profile, user=request.user)
+    password_form = PasswordChangeForm()
+
     if request.method == 'POST':
         if 'update_profile' in request.POST:
             profile_form = ProfileForm(request.POST, request.FILES, instance=profile, user=request.user)
@@ -125,10 +150,11 @@ def profile_settings(request):
                 request.user.email = profile_form.cleaned_data['email']
                 request.user.save()
 
-                # Update profile
+                # Update profile  
                 profile_form.save()
                 messages.success(request, 'Profile updated successfully!')
                 return redirect('core:profile_settings')
+            # Keep password_form initialized for template rendering  
 
         elif 'change_password' in request.POST:
             password_form = PasswordChangeForm(request.POST)
@@ -147,9 +173,7 @@ def profile_settings(request):
                     update_session_auth_hash(request, request.user)
                     messages.success(request, 'Password changed successfully!')
                     return redirect('core:profile_settings')
-    else:
-        profile_form = ProfileForm(instance=profile, user=request.user)
-        password_form = PasswordChangeForm()
+            # Keep profile_form initialized for template rendering  
 
     return render(request, 'core/profile_settings.html', {
         'profile_form': profile_form,

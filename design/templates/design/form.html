@@ -12,6 +12,32 @@
                 <div class="row">
                     <!-- Left Column -->
                     <div class="col-lg-6 col-12">
+                        <div class="mb3">  
+                            <label for="{{ form.added_by.id_for_label }}" class="form-label">
+                                {{ form.added_by.label }}
+                            </label>
+                            {{ form.added_by }}  
+                        </div>  
+                        <div class="mb3">  
+                            <label for="{{ form.created_by.id_for_label }}" class="form-label">
+                                {{ form.created_by.label }}
+                            </label>
+                            {{ form.created_by }}  
+                        </div>
+                        <div class="mb3">
+                            <div>  
+                                <label for="{{ form.enable_modification.id_for_label }}" class="form-label">
+                                    {{ form.enable_modification.label }}
+                                </label>
+                                {{ form.enable_modification }}  
+                            </div>  
+                            <div>  
+                                <label for="{{ form.modified_by.id_for_label }}" class="form-label">
+                                    {{ form.modified_by.label }}
+                                </label>
+                                {{ form.modified_by }}  
+                            </div>
+                        </div>  
                         <div class="mb-3">
                             <label for="{{ form.category.id_for_label }}" class="form-label">
                                 {{ form.category.label }}
@@ -25,6 +51,9 @@
                             </label>
                             {{ form.name }}
                         </div>
+                    </div>
+                    <!-- Right Column -->  
+                    <div class="col-lg-6 col-12">   
                         <div class="mb-3">
                             <label for="{{ form.description.id_for_label }}" class="form-label">
                                 {{ form.description.label }}
@@ -32,80 +61,69 @@
                             {{ form.description }}
                         </div> 
                         <div class="mb-3">
-                            <label for="{{ form.costs.id_for_label }}" class="form-label">
-                                {{ form.costs.label }}
-                            </label>
-                            {{ form.costs }}
-                        </div>
-                        <div class="mb-3">
                             <label for="{{ form.image.id_for_label }}" class="form-label">
                                 {{ form.image.label }}
                             </label>
                             {{ form.image }}
                         </div>
+                        <div class="mb-3">
+                            <label for="{{ form.costs.id_for_label }}" class="form-label">
+                                {{ form.costs.label }}
+                            </label>
+                            {{ form.costs }}
+                        </div>
                     </div>
-                    <!-- Right Column -->  
-                    <div class="col-lg-6 col-12">   
-                        <div>  
-                            {{ form.added_by }}  
-                        </div>  
-                        <div>  
-                            {{ form.created_by }}  
-                        </div>
-                        <div>
-                            <div class="mt-4">  
-                                {{ form.enable_modification }}  
-                            </div>  
-                            <div class="mt-2">  
-                                {{ form.modified_by }}  
-                            </div>
-                        </div>
-                        <legend class="text-lg font-semibold">Utilities</legend>  
-                        <div class="mb-3">  
-                            {{ form.utilities_file }}  
-                            <button type="button" onclick="addUtilityFile()" class="mt-2 px-4 py-2 bg-blue-500 text-white
-                                rounded hover:bg-blue-600">Add Selected File to Utilities</button>  
-                        </div>
-                        <div>  
-                            {{ form.utilities }}  
-                        </div>
-                        <legend class="text-lg font-semibold">Bills of Materials</legend>  
+                <div class="row">
+                    <div class="mb-3">  
+                        <label for="{{ form.utilities.id_for_label }}" class="form-label">
+                            {{ form.utilities.label }}
+                        </label>
+                        {{ form.utilities_file }}  
+                        <button type="button" onclick="addUtilityFile()" class="mt-2 px-4 py-2 bg-blue-500 text-white
+                            rounded hover:bg-blue-600">Add Selected File to Utilities</button>  
+                    </div>
+                    <div>  
+                        {{ form.utilities }}  
+                    </div>
+                        <label for="{{ form.costs.id_for_label }}" class="form-label">
+                            {{ form.costs.label }}
+                        </label> 
                         {{ bom_formset.management_form }}    
-                        <div id="bom-forms" class="space-y-3">
-                            {% for form in bom_formset %}  
-                            <div class="bom-form border p-3 rounded bg-gray-50">  
-                                <div class="grid grid-cols-1 md:grid-cols-7 gap-2">  
-                                    <div>  
-                                        {{ form.position }}  
-                                    </div>  
-                                    <div>  
-                                        {{ form.count }}  
-                                    </div>  
-                                    <div>  
-                                        {{ form.name }}  
-                                    </div>  
-                                    <div>  
-                                        {{ form.norm_description }}  
-                                    </div>  
-                                    <div>  
-                                        {{ form.material }}  
-                                    </div>  
-                                    <div>  
-                                        {{ form.notes }}  
-                                    </div>  
-                                    <div>  
-                                        {{ form.link }}  
-                                    </div>  
+                    <div id="bom-forms" class="space-y-3">
+                        {% for form in bom_formset %}  
+                        <div class="bom-form border p-3 rounded bg-gray-50">  
+                            <div class="grid grid-cols-1 md:grid-cols-7 gap-2">  
+                                <div>  
+                                    {{ form.position }}  
                                 </div>  
-                                {% if form.DELETE %}  
-                                    <div class="mt-2">  
-                                        {{ form.DELETE }}  
-                                    </div>  
-                                {% endif %}
+                                <div>  
+                                    {{ form.count }}  
+                                </div>  
+                                <div>  
+                                    {{ form.name }}  
+                                </div>  
+                                <div>  
+                                    {{ form.norm_description }}  
+                                </div>  
+                                <div>  
+                                    {{ form.material }}  
+                                </div>  
+                                <div>  
+                                    {{ form.notes }}  
+                                </div>  
+                                <div>  
+                                    {{ form.link }}  
+                                </div>  
                             </div>  
+                            {% if form.DELETE %}  
+                                <div class="mt-2">  
+                                    {{ form.DELETE }}  
+                                </div>  
+                            {% endif %}
+                        </div>  
                         {% endfor %}
-                        </div>
                     </div>
+                </div>
                 <div class="row">
                     {% if form.errors or form.non_field_errors %}
                         <div class="mb-3 border border-warning">
@@ -115,7 +133,7 @@
                             {{ form.non_field_errors }}
                         </div>
                     {% endif %}
-                    <button class="btn btn-lg btn-primary">Submit</button>
+                    <button class="btn btn-lg btn-primary">Add Design To LoD</button>
                 </div>
             </fieldset>
         </form>

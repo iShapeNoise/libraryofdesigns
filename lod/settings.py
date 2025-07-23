@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'editor',
     'django_recaptcha',
     'pg_copy',
-    'backup',
     'django_object_actions',
     'easy_thumbnails',
     'mptt',
@@ -156,7 +155,7 @@ LOD_CONTENT_ROOT = os.path.join(BASE_DIR, 'lod_content/')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Easy Thumbnails
-THUMBNAIL_ALAISES = {
+THUMBNAIL_ALIASES = {
     '': {
         'small_thumbnail': {'size': (200, 200), 'crop': 'smart'},
         'large_thumbnail': {'size': (256, 256), 'crop': 'smart'},

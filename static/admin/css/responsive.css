@@ -391,6 +391,10 @@ input[type="submit"], button {
         padding: 15px;
     }
 
+    #content {  
+        font-size: 1.1rem;
+    }
+
     div.breadcrumbs {
         padding: 10px 15px;
     }
@@ -412,7 +416,7 @@ input[type="submit"], button {
 
     #content-related .module h2 {
         padding: 10px 15px;
-        font-size: 1rem;
+        font-size: 1.2rem;
     }
 
     /* Changelist */
@@ -540,7 +544,7 @@ input[type="submit"], button {
     }
 
     .aligned p.file-upload {
-        font-size: 0.8125rem;
+        font-size: 1rem;
     }
 
     span.clearable-file-input {
@@ -548,7 +552,7 @@ input[type="submit"], button {
     }
 
     span.clearable-file-input label {
-        font-size: 0.8125rem;
+        font-size: 1rem;
         padding-bottom: 0;
     }
 

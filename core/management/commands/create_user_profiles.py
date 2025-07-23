@@ -4,7 +4,7 @@ from core.models import UserProfile
 
 
 class Command(BaseCommand):
-    help = 'Create UserProfile objects for existing users'
+    help = 'Create UserProfile objects for existing users (profiles appear in Users admin section)'
 
     def handle(self, *args, **options):
         users_without_profiles = User.objects.filter(profile__isnull=True)

@@ -1,0 +1,87 @@
+{% extends 'core/base.html' %}  
+  
+{% block title %}Browse Categories{% endblock %}  
+  
+{% block content %}  
+<div class="container mt-4">  
+    <!-- Breadcrumbs for navigation -->  
+    {% if breadcrumbs %}  
+    <nav aria-label="breadcrumb">  
+        <ol class="breadcrumb">  
+            <li class="breadcrumb-item"><a href="{% url 'core:browse_categories' %}">All Categories</a></li>  
+            {% for crumb in breadcrumbs %}  
+                {% if forloop.last %}  
+                    <li class="breadcrumb-item active">{{ crumb.name }}</li>  
+                {% else %}  
+                    <li class="breadcrumb-item"><a href="{% url 'core:browse_category' crumb.id %}">{{ crumb.name }}</a></li>  
+                {% endif %}  
+            {% endfor %}  
+        </ol>  
+    </nav>  
+    {% endif %}  
+  
+    <!-- Current category title -->  
+    {% if current_category %}  
+        <h2 class="mb-4 text-center">{{ current_category.name }}</h2>  
+    {% else %}  
+        <h2 class="mb-4 text-center">All Categories</h2>  
+    {% endif %}  
+  
+    <!-- Subcategories as buttons (if any exist) -->  
+    {% if categories %}  
+    <div class="row mb-5">  
+        {% for category in categories %}  
+            <div class="col-md-4 mb-3">  
+                <a href="{% url 'core:browse_category' category.id %}"   
+                   class="btn btn-primary btn-lg w-100 p-3 text-start">  
+                    <div>  
+                        <h5 class="mb-1">{{ category.name }}</h5>  
+                        <small class="d-block">{{ category.get_children_count }} subcategories</small>  
+                        <small class="d-block">{{ category.designs.count }} designs</small>  
+                    </div>  
+                </a>  
+            </div>  
+        {% endfor %}  
+    </div>  
+    {% endif %}  
+  
+    <!-- Designs in this category (styled like "Newest Designs" from index.html) -->  
+    {% if designs %}  
+    <div class="rounded mt-4 m-6 border border-2 border-primary">  
+        <h2 class="mb-12 fs-4 fw-bold text-center">  
+            {% if current_category %}  
+                Designs in {{ current_category.name }}  
+            {% else %}  
+                All Designs  
+            {% endif %}  
+        </h2>  
+          
+        <div class="grid grid-cols-3 gap-3">  
+            {% for design in designs %}  
+                <div>  
+                    <a href="{% url 'design:detail' design.id %}">  
+                        <div>  
+                            <img src="{{ design.image.url }}" class="rounded-t-xl">  
+                        </div>  
+  
+                        <div class="p-6 bg-white rounded">  
+                            <h2 class="text-2xl">{{ design.name }}</h2>  
+                            <p class="">Production Costs: {{ design.costs }}</p>  
+                        </div>  
+                    </a>  
+                </div>  
+            {% endfor %}  
+        </div>  
+    </div>  
+    {% endif %}  
+  
+    <!-- Message when no subcategories or designs -->  
+    {% if not categories and not designs %}  
+    <div class="col-12">  
+        <div class="alert alert-info text-center">  
+            <i class="fas fa-info-circle"></i> No subcategories or designs found in this category.  
+        </div>  
+    </div>  
+    {% endif %}  
+</div>  
+{% endblock %}

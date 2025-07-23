@@ -14,92 +14,122 @@
     </head>
     
     <body>
-        <nav class="navbar navbar-expand-lg border-b border-gray-200">
-            <!-- here are the contents! your navbar didn't show you anything -->
-            <!-- because you didn't feed any contents into your navbar -->
-            <div class="container-fluid d-flex items-start">
-                <a href="/" class="navbar-brand ms-auto">
-                    <img class="img-fluid w-60 ps-3" src="/static/admin/img/lod_title.png">
-                </a>
-                <button class="navbar-toggler" type="button"
-                    data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-label="Toggle navigation" aria-haspopup="true" aria-expanded="false">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-end" id="navbarMain">
-                    <ul class="nav nav-pills d-sm-flex">
-                        <li class="nav-item dropdown">
-                            <button class="nav-link dropdown-toggle" href="#"
-                                id="navbarDropdown" type="button"
-                                data-bs-toggle="dropdown"
-                            aria-expanded="false">Know-How</button>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown" >
-                                <li><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>
-                                <li><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>
-                                <li><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>
-                            </ul>
-                        </li>
-                        <!-- Search bar with integrated icon -->
-                        <div class="nav-item ms-auto mx-4">
-                            <form class="form-inline d-flex border-light" method="get" action="{% url 'design:designs' %}">
-                                <input name="query" class="form-control
-                                             ms-sm-2 me-sm-2" size="30" type="search" value="{{ query }}" placeholder="Find a design">
-                            </form>
-                        </div>
-                    
-                        <div class="nav-item me-auto">
-                            {% if request.user.is_authenticated %}
-                            <!-- Avatar Dropdown -->
-                            <div class="dropdown">  
-                                <button class="btn btn-link dropdown-toggle d-flex align-items-center"
-                                        type="button"
-                                        id="avatarDropdown"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                    {% if request.user.profile.avatar %}  
-                                        <img src="{% thumbnail request.user.profile.avatar 'profile_avatar_small' %}" class="rounded-circle" width="32" height="32" alt="Avatar">  
-                                    {% else %}
-                                        <img src="/static/admin/img/default_avatar.png" Trägerclass="rounded-circle"
-                                                  width="32" height="32" alt="Default Avatar">
-                                    {% endif %}
-                                </button>  
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">  
-                                    <li>  
-                                        <a class="dropdown-item" href="{% url 'design:new' %}">  
-                                            <i class="bi bi-plus-circle me-2"></i>New Design  
-                                        </a>  
-                                    </li>  
-                                    <li>  
-                                        <a class="dropdown-item" href="{% url 'conversation:inbox' %}">  
-                                            <i class="bi bi-inbox me-2"></i>Inbox  
-                                        </a>  
-                                    </li>  
-                                    <li>  
-                                        <a class="dropdown-item" href="{% url 'dashboard:index' %}">  
-                                            <i class="bi bi-speedometer2 me-2"></i>Dashboard  
-                                        </a>  
-                                    </li>  
-                                    <li>  
-                                        <a class="dropdown-item" href="{% url 'core:profile_settings' %}">  
-                                            <i class="bi bi-gear me-2"></i>Settings  
-                                        </a>  
-                                    </li>  
-                                    <li><hr class="dropdown-divider"></li>  
-                                    <li>  
-                                        <a class="dropdown-item" href="{% url 'core:logout' %}">  
-                                            <i class="bi bi-box-arrow-right me-2"></i>Logout  
-                                        </a>  
-                                    </li>  
+        <nav class="navbar navbar-expand-lg border-b border-gray-200">  
+            <div class="container-fluid">  
+                <!-- Main navbar row -->  
+                <div class="d-flex justify-content-between align-items-center w-100">  
+                    <a href="/" class="navbar-brand">  
+                        <img class="img-responsive ps-3" height="42" src="/static/admin/img/lod_title.png">  
+                    </a>  
+                      
+                    <!-- Desktop navigation (hidden on mobile) -->  
+                    <div class="d-none d-lg-flex flex-grow-1 mx-4">  
+                        <div class="d-flex align-items-center w-100">  
+                            <div class="nav-item dropdown me-3">  
+                                <button class="btn btn-outline-secondary dropdown-toggle" href="#"  
+                                    id="navbarDropdown" type="button"  
+                                    data-bs-toggle="dropdown"  
+                                aria-expanded="false">Know-How</button>  
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">  
+                                    <li><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
+                                    <li><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
+                                    <li><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
                                 </ul>  
                             </div>  
-                            {% else %}
-                                <a href="{% url 'core:signup' %}" class="btn btn-secondary block px-4 py-2" type="button">Sign
-                                    Up</a>
-                                <a href="{% url 'core:login' %}" class="btn btn-secondary block px-4 py-2 text-lg">Login</a>
-                            {% endif %}
-                        </div>
-                    </ul>
-                </div>
-            </div>
+                            <!-- Expanded Search bar -->  
+                            <div class="flex-grow-1">  
+                                <form class="d-flex" method="get" action="{% url 'design:designs' %}">  
+                                    <input name="query" class="form-control" type="search" value="{{ query }}" placeholder="Find a design">  
+                                </form>  
+                            </div>  
+                        </div>  
+                    </div>  
+                      
+                    <!-- Avatar/Auth section (always visible) -->  
+                    <div class="nav-item">  
+                        {% if request.user.is_authenticated %}  
+                        <!-- Avatar Dropdown -->  
+                        <div class="dropdown">    
+                            <button class="btn btn-link dropdown-toggle d-flex align-items-center"  
+                                    type="button"  
+                                    id="avatarDropdown"  
+                                    data-bs-toggle="dropdown"  
+                                    aria-expanded="false">  
+                                {% if request.user.profile.avatar %}    
+                                    <img src="{% thumbnail request.user.profile.avatar 'profile_avatar_small' %}" class="rounded-circle" width="32" height="32" alt="Avatar">    
+                                {% else %}  
+                                    <img src="/static/admin/img/default_avatar.png" class="rounded-circle" width="32" height="32" alt="Default Avatar">  
+                                {% endif %}  
+                            </button>    
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">  
+                                <!-- Know-How for mobile (only visible on small screens) -->  
+                                <li class="d-lg-none">  
+                                    <h6 class="dropdown-header">Know-How</h6>  
+                                </li>  
+                                <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
+                                <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
+                                <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
+                                <li class="d-lg-none"><hr class="dropdown-divider"></li>  
+                                  
+                                <li>    
+                                    <a class="dropdown-item" href="{% url 'design:new' %}">    
+                                        <i class="bi bi-plus-circle me-2"></i>New Design    
+                                    </a>    
+                                </li>    
+                                <li>    
+                                    <a class="dropdown-item" href="{% url 'conversation:inbox' %}">    
+                                        <i class="bi bi-inbox me-2"></i>Inbox    
+                                    </a>    
+                                </li>    
+                                <li>    
+                                    <a class="dropdown-item" href="{% url 'dashboard:index' %}">    
+                                        <i class="bi bi-speedometer2 me-2"></i>Dashboard    
+                                    </a>    
+                                </li>    
+                                <li>    
+                                    <a class="dropdown-item" href="{% url 'core:profile_settings' %}">    
+                                        <i class="bi bi-gear me-2"></i>Settings    
+                                    </a>    
+                                </li>    
+                                <li><hr class="dropdown-divider"></li>    
+                                <li>    
+                                    <a class="dropdown-item" href="{% url 'core:logout' %}">    
+                                        <i class="bi bi-box-arrow-right me-2"></i>Logout    
+                                    </a>    
+                                </li>    
+                            </ul>    
+                        </div>    
+                        {% else %}  
+                        <!-- Guest user dropdown -->  
+                        <div class="dropdown">  
+                            <button class="btn btn-link dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">  
+                                <img src="/static/admin/img/default_avatar.png" class="rounded-circle" width="32" height="32" alt="Default Avatar">  
+                            </button>  
+                            <ul class="dropdown-menu dropdown-menu-end">  
+                                <!-- Know-How for mobile guests -->  
+                                <li class="d-lg-none">  
+                                    <h6 class="dropdown-header">Know-How</h6>  
+                                </li>  
+                                <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
+                                <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
+                                <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
+                                <li class="d-lg-none"><hr class="dropdown-divider"></li>  
+                                  
+                                <li><a class="dropdown-item" href="{% url 'core:login' %}">Login</a></li>  
+                                <li><a class="dropdown-item" href="{% url 'core:signup' %}">Sign Up</a></li>  
+                            </ul>  
+                        </div>  
+                        {% endif %}  
+                    </div>  
+                </div>  
+                  
+                <!-- Mobile search bar (second row, only visible on small screens) -->  
+                <div class="w-100 mt-2 d-lg-none">  
+                    <form class="d-flex" method="get" action="{% url 'design:designs' %}">  
+                        <input name="query" class="form-control" type="search" value="{{ query }}" placeholder="Find a design">  
+                    </form>  
+                </div>  
+            </div>  
         </nav>
         <div class="mx-4 my-4">
             {% block content %}

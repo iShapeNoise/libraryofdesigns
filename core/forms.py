@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django_recaptcha.fields import ReCaptchaField
 from django_recaptcha.widgets import ReCaptchaV2Checkbox
 from .models import ContactMessage, UserProfile
-
+from PIL import Image
+from django.core.exceptions import ValidationError
 
 class LoginForm(AuthenticationForm):
 
@@ -100,6 +101,24 @@ class ProfileForm(forms.ModelForm):
             self.fields['first_name'].initial = user.first_name
             self.fields['last_name'].initial = user.last_name
             self.fields['email'].initial = user.email
+
+    def clean_avatar(self):
+        avatar = self.cleaned_data.get('avatar')
+        if avatar:
+            # Check file size (limit to 2MB)
+            if avatar.size > 2 * 1024 * 1024:
+                raise ValidationError("Image file too large. Maximum size is 2MB.")
+
+            # Check image dimensions
+            try:
+                img = Image.open(avatar)
+                width, height = img.size
+                if width > 256 or height > 256:
+                    raise ValidationError("Image dimensions too large. Maximum size is 256x256 pixels.")
+            except Exception:
+                raise ValidationError("Invalid image file.")
+
+        return avatar
 
 
 class PasswordChangeForm(forms.Form):

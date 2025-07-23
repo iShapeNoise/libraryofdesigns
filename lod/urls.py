@@ -12,3 +12,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
   + static(settings.LOD_CONTENT_URL, document_root=settings.LOD_CONTENT_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
