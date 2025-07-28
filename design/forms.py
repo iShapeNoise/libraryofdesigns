@@ -10,23 +10,23 @@ INPUT_CLASSES = 'form-control border col-xs-4'
 BOMFormSet = inlineformset_factory(
     Design,
     BillOfMaterials,
-    fields=['position',
-            'count',
-            'name',
-            'norm_description',
-            'material',
-            'notes',
-            'link'],
+    fields=['bom_position',
+            'bom_count',
+            'bom_name',
+            'bom_norm_description',
+            'bom_material',
+            'bom_notes',
+            'bom_link'],
     extra=1,
     can_delete=True,
     widgets={
-        'position': forms.NumberInput(attrs={'class': INPUT_CLASSES}),
-        'count': forms.NumberInput(attrs={'class': INPUT_CLASSES}),
-        'name': forms.TextInput(attrs={'class': INPUT_CLASSES}),
-        'norm_description': forms.Textarea(attrs={'class': INPUT_CLASSES, 'rows': 2}),
-        'material': forms.TextInput(attrs={'class': INPUT_CLASSES}),
-        'notes': forms.Textarea(attrs={'class': INPUT_CLASSES, 'rows': 2}),
-        'link': forms.URLInput(attrs={'class': INPUT_CLASSES}),
+        'bom_position': forms.NumberInput(attrs={'class': INPUT_CLASSES}),
+        'bom_count': forms.NumberInput(attrs={'class': INPUT_CLASSES}),
+        'bom_name': forms.TextInput(attrs={'class': INPUT_CLASSES}),
+        'bom_norm_description': forms.Textarea(attrs={'class': INPUT_CLASSES}),
+        'bom_material': forms.TextInput(attrs={'class': INPUT_CLASSES}),
+        'bom_notes': forms.Textarea(attrs={'class': INPUT_CLASSES}),
+        'bom_link': forms.URLInput(attrs={'class': INPUT_CLASSES}),
     }
 )
 
@@ -37,7 +37,8 @@ class OpenSCADFileChoiceField(forms.ChoiceField):
         self.choices = self.get_openscad_files()
 
     def get_openscad_files(self):
-        openscad_path = os.path.join(settings.MEDIA_ROOT, 'openscad')
+        openscad_path = os.path.join(settings.LOD_CONTENT_ROOT,
+                                     'designs/utilities')
         choices = [('', '--- Select a file ---')]
 
         if os.path.exists(openscad_path):
@@ -85,7 +86,8 @@ class NewDesignForm(forms.ModelForm):
             'utilities': forms.Textarea(attrs={
                 'class': INPUT_CLASSES,
                 'id': 'id_utilities',
-                'readonly': True
+                'readonly': True,  # Keep readonly to prevent text editing
+                'style': 'user-select: text; cursor: pointer;',  # Allow text selection
             }),
             'module': forms.TextInput(attrs={'class': INPUT_CLASSES}),
             'custom_section': forms.Textarea(attrs={'class': INPUT_CLASSES}),
@@ -121,6 +123,3 @@ class EditDesignForm(forms.ModelForm):
                 'class': INPUT_CLASSES
             }),
         }
-
-
-

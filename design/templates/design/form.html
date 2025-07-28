@@ -9,22 +9,44 @@
             {% csrf_token %}
             <fieldset>
                 <legend>{{ title }}</legend>
-                <div class="row">
+                <hr class="border-bottom border-1 border-dark">
+                <div class="row mt-6 mb-3 border rounded">
+                    <label class="form-label">
+                        <h3>Header Content</h3>
+                    </label>
                     <!-- Left Column -->
                     <div class="col-lg-6 col-12">
-                        <div class="mb3">  
+                        <div class="mt-6 mb-3">
+                            <label for="{{ form.category.id_for_label }}" class="form-label">
+                                {{ form.category.label }}
+                            </label>
+                            {{ form.category }}
+                        </div> 
+                        <div class="mt-6 mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">
+                                {{ form.name.label }}
+                            </label>
+                            {{ form.name }}
+                        </div>
+                        <div class="mt-6 mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                {{ form.description.label }}
+                            </label>
+                            {{ form.description }}
+                        </div> 
+                        <div class="mt-6 mb-3">  
                             <label for="{{ form.added_by.id_for_label }}" class="form-label">
                                 {{ form.added_by.label }}
                             </label>
                             {{ form.added_by }}  
                         </div>  
-                        <div class="mb3">  
+                        <div class="mt-6 mb-3">  
                             <label for="{{ form.created_by.id_for_label }}" class="form-label">
                                 {{ form.created_by.label }}
                             </label>
                             {{ form.created_by }}  
                         </div>
-                        <div class="mb3">
+                        <div class="mt-6 mb-3">
                             <div>  
                                 <label for="{{ form.enable_modification.id_for_label }}" class="form-label">
                                     {{ form.enable_modification.label }}
@@ -38,95 +60,119 @@
                                 {{ form.modified_by }}  
                             </div>
                         </div>  
-                        <div class="mb-3">
-                            <label for="{{ form.category.id_for_label }}" class="form-label">
-                                {{ form.category.label }}
-                            </label>
-                            {{ form.category }}
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="{{ form.name.id_for_label }}" class="form-label">
-                                {{ form.name.label }}
-                            </label>
-                            {{ form.name }}
-                        </div>
                     </div>
                     <!-- Right Column -->  
                     <div class="col-lg-6 col-12">   
-                        <div class="mb-3">
-                            <label for="{{ form.description.id_for_label }}" class="form-label">
-                                {{ form.description.label }}
-                            </label>
-                            {{ form.description }}
-                        </div> 
-                        <div class="mb-3">
+
+                        <div class="mt-6 mb-3">
                             <label for="{{ form.image.id_for_label }}" class="form-label">
                                 {{ form.image.label }}
                             </label>
                             {{ form.image }}
                         </div>
-                        <div class="mb-3">
+                        <div class="mt-6 mb-3">
                             <label for="{{ form.costs.id_for_label }}" class="form-label">
                                 {{ form.costs.label }}
                             </label>
                             {{ form.costs }}
                         </div>
                     </div>
-                <div class="row">
-                    <div class="mb-3">  
-                        <label for="{{ form.utilities.id_for_label }}" class="form-label">
-                            {{ form.utilities.label }}
+                </div>
+                <hr class="border-bottom border-1 border-dark">
+                <div class="row border rounded">
+                    <label class="form-label mt-6">
+                        <h3>Body Content</h3>
+                    </label>
+                    <div class="mt-6 mb-3">
+                        <label for="{{ form.utilities_file.id_for_label }}" class="form-label">OpenSCAD Utilities for LoD Design
                         </label>
-                        {{ form.utilities_file }}  
-                        <button type="button" onclick="addUtilityFile()" class="mt-2 px-4 py-2 bg-blue-500 text-white
-                            rounded hover:bg-blue-600">Add Selected File to Utilities</button>  
+                        <br>
+                        {{ form.utilities_file }}    
+                        <button type="button" onclick="addUtilityFile()" class="btn btn-primary mt-2">Add Selected File to Utilities</button>  
+                        <button type="button" onclick="removeSelectedUtilityFile()" class="btn btn-danger mt-2 ms-2">Remove Selected File</button>    
                     </div>
-                    <div>  
-                        {{ form.utilities }}  
-                    </div>
-                        <label for="{{ form.costs.id_for_label }}" class="form-label">
-                            {{ form.costs.label }}
-                        </label> 
-                        {{ bom_formset.management_form }}    
-                    <div id="bom-forms" class="space-y-3">
-                        {% for form in bom_formset %}  
-                        <div class="bom-form border p-3 rounded bg-gray-50">  
-                            <div class="grid grid-cols-1 md:grid-cols-7 gap-2">  
-                                <div>  
-                                    {{ form.position }}  
-                                </div>  
-                                <div>  
-                                    {{ form.count }}  
-                                </div>  
-                                <div>  
-                                    {{ form.name }}  
-                                </div>  
-                                <div>  
-                                    {{ form.norm_description }}  
-                                </div>  
-                                <div>  
-                                    {{ form.material }}  
-                                </div>  
-                                <div>  
-                                    {{ form.notes }}  
-                                </div>  
-                                <div>  
-                                    {{ form.link }}  
-                                </div>  
+                    <div class="mt-6 mb-3">    
+                        <ul id="utilities-list" class="list-group" style="max-height: 200px; overflow-y: auto;"></ul>  
+                            {{ form.utilities }}
+                        <script>  
+                            // Hide the original textarea  
+                            document.getElementById('id_utilities').style.display = 'none';  
+                        </script>  
+                    </div> 
+
+                    <label for="{{ form.utilities_file.id_for_label }}" class="form-label">B.O.M. (Bills of Materials)
+                    </label>
+                    <br>
+                    <div class="mb-3">  
+                        <div class="g-2">  
+                            <div class="col-md-1">  
+                                <label class="form-label">Position</label>  
+                                <input type="number" id="bom_position" class="form-control" placeholder="Pos">  
                             </div>  
-                            {% if form.DELETE %}  
-                                <div class="mt-2">  
-                                    {{ form.DELETE }}  
-                                </div>  
-                            {% endif %}
+                            <div class="col-md-1">  
+                                <label class="form-label">Count</label>  
+                                <input type="number" id="bom_count" class="form-control" placeholder="Count" value="1">  
+                            </div>  
+                            <div class="col-md-2">  
+                                <label class="form-label">Name</label>  
+                                <input type="text" id="bom_name" class="form-control" placeholder="Component name">  
+                            </div>  
+                            <div class="col-md-2">  
+                                <label class="form-label">Norm Description</label>  
+                                <textarea id="bom_norm_description" class="form-control" rows="2" placeholder="Description"></textarea>  
+                            </div>  
+                            <div class="col-md-2">  
+                                <label class="form-label">Material</label>  
+                                <input type="text" id="bom_material" class="form-control" placeholder="Material">  
+                            </div>  
+                            <div class="col-md-2">  
+                                <label class="form-label">Notes</label>  
+                                <textarea id="bom_notes" class="form-control" rows="2" placeholder="Notes"></textarea>  
+                            </div>  
+                            <div class="col-md-2">  
+                                <label class="form-label">Link</label>  
+                                <input type="url" id="bom_link" class="form-control" placeholder="https://...">  
+                            </div>  
                         </div>  
-                        {% endfor %}
+                        <div class="mt-2">  
+                            <button type="button" onclick="addBOMItem()" class="btn btn-primary">Add BOM Item</button>  
+                            <button type="button" onclick="editBOMItem()" id="edit-bom-btn" class="btn btn-warning ms-2">Edit</button>  
+                            <button type="button" onclick="removeSelectedBOMItem()" class="btn btn-danger ms-2">Remove Selected Item</button>  
+                        </div>    
+                        <!-- BOM List -->  
+                        <div class="mt-6 mb-3">  
+                            <ul id="bom-list" class="list-group mt-3" style="max-height: 300px; overflow-y: auto;">  
+                            <!-- Dynamic BOM items will be added here -->  
+                            </ul>  
+                            <!-- Hidden formset for form submission -->  
+                            {{ bom_formset.management_form }} 
+                        </div>
+                        <div id="bom-formset-container" style="display: none;">  
+                            {% for form in bom_formset %}  
+                                <div class="bom-formset-item">  
+                                    {{ form.as_p }}  
+                                </div>  
+                            {% endfor %}  
+                        </div>  
+                    </div>
+                    <!-- Module Section -->   
+                    <div class="mb-3">  
+                        <label for="{{ form.module.id_for_label }}" class="form-label" placeholder="Enter design module">  
+                            {{ form.module.label }}  
+                        </label>  
+                        <textarea id="{{ form.module.id_for_label }}" name="{{ form.module.name }}" class="form-control" rows="4" placeholder="Enter module code">{{ form.module.value|default:'' }}</textarea>
+                    </div>
+                    <!-- Parameters Section -->  <label for="{{ form.image.id_for_label }}" class="form-label">  
+                    <div class="mb-3">  
+                        <label for="id_parameters" class="form-label">Parameters</label>  
+                        <input type="text" id="id_parameters" name="parameters" class="form-control" placeholder="Enter parameters">  
                     </div>
                 </div>
+                <hr class="border-bottom border-1 border-dark">
                 <div class="row">
                     {% if form.errors or form.non_field_errors %}
-                        <div class="mb-3 border border-warning">
+                        <div class="mt-6 mb-3 border border-warning">
                             {% for field in form %}
                                 {{ field.errors }}
                             {% endfor %}
@@ -139,52 +185,386 @@
         </form>
     </div>
 </div>
-
-<script>  
-// Minimal JavaScript for conditional field and utility file addition  
-function toggleModifiedBy() {  
-    const checkbox = document.querySelector('input[name="enable_modification"]');  
-    const modifiedByField = document.getElementById('id_modified_by');  
-    if (modifiedByField) {  
-        modifiedByField.disabled = !checkbox.checked;  
-        modifiedByField.style.opacity = checkbox.checked ? '1' : '0.5';  
-    }  
+<script type="text/javascript">    
+// Minimal JavaScript for conditional field and utility file addition    
+function toggleModifiedBy() {    
+    const checkbox = document.querySelector('input[name="is_modified"]');    
+    const modifiedByField = document.getElementById('id_modified_by');    
+    if (modifiedByField) {    
+        modifiedByField.disabled = !checkbox.checked;    
+        modifiedByField.style.opacity = checkbox.checked ? '1' : '0.5';    
+    }    
+}    
+  
+let selectedUtilityItem = null;  
+  
+function addUtilityFile() {    
+    const fileSelect = document.querySelector('select[name="utilities_file"]');    
+    const utilitiesList = document.getElementById('utilities-list');  
+    const utilitiesField = document.getElementById('id_utilities');  
+        
+    if (fileSelect && fileSelect.value && utilitiesList) {    
+        // Check if file already exists  
+        const existingItems = Array.from(utilitiesList.children);  
+        const fileExists = existingItems.some(item =>   
+            item.querySelector('.utility-filename').textContent === fileSelect.value  
+        );  
+          
+        if (fileExists) {  
+            alert('This file is already in the utilities list.');  
+            return;  
+        }  
+          
+        // Create new list item  
+        const listItem = document.createElement('li');  
+        listItem.className = 'list-group-item d-flex justify-content-between align-items-center utility-item';  
+        listItem.style.cursor = 'pointer';  
+          
+        listItem.innerHTML = `  
+            <span class="utility-filename">${fileSelect.value}</span>  
+            <span class="badge bg-secondary">SCAD</span>  
+        `;  
+          
+        // Add click handler for selection  
+        listItem.addEventListener('click', function() {  
+            // Clear previous selection  
+            document.querySelectorAll('.utility-item').forEach(item => {  
+                item.classList.remove('active', 'bg-primary', 'text-white');  
+            });  
+              
+            // Select this item  
+            this.classList.add('active', 'bg-primary', 'text-white');  
+            selectedUtilityItem = this;  
+        });  
+          
+        utilitiesList.appendChild(listItem);  
+          
+        // Update hidden textarea  
+        updateUtilitiesField();  
+          
+        fileSelect.value = ''; // Reset selection    
+    }    
 }  
   
-function addUtilityFile() {  
-    const fileSelect = document.querySelector('select[name="utilities_file"]');  
+function removeSelectedUtilityFile() {  
+    if (!selectedUtilityItem) {  
+        alert('Please select a utility file to remove.');  
+        return;  
+    }  
+      
+    selectedUtilityItem.remove();  
+    selectedUtilityItem = null;  
+      
+    // Update hidden textarea  
+    updateUtilitiesField();  
+}  
+  
+function updateUtilitiesField() {  
+    const utilitiesList = document.getElementById('utilities-list');  
     const utilitiesField = document.getElementById('id_utilities');  
       
-    if (fileSelect && fileSelect.value && utilitiesField) {  
-        const currentValue = utilitiesField.value;  
-        const newValue = currentValue ? `${currentValue}\n${fileSelect.value}` : fileSelect.value;  
-        utilitiesField.value = newValue;  
-        fileSelect.value = ''; // Reset selection  
-    }  
+    const filenames = Array.from(utilitiesList.children).map(item =>   
+        item.querySelector('.utility-filename').textContent  
+    );  
+      
+    utilitiesField.value = filenames.join('\n');  
 }  
   
-// Initialize on page load  
-document.addEventListener('DOMContentLoaded', function() {  
-    toggleModifiedBy();  
+// Initialize utilities list from existing data  
+function initializeUtilitiesList() {  
+    const utilitiesField = document.getElementById('id_utilities');  
+    const utilitiesList = document.getElementById('utilities-list');  
       
-    // Add event listener for the checkbox  
-    const checkbox = document.querySelector('input[name="enable_modification"]');  
-    if (checkbox) {  
-        checkbox.addEventListener('change', toggleModifiedBy);  
-    }  
-      
-    // Initialize BOM formset functionality  
-    const addButton = document.getElementById('add-bom-form');  
-    if (addButton && typeof django !== 'undefined' && django.jQuery) {  
-        // Use Django's inline formset functionality if available  
-        django.jQuery('#bom-forms .bom-form').formset({  
-            prefix: 'bom_items',  
-            addText: 'Add BOM Item',  
-            deleteText: 'Remove',  
-            addButton: addButton  
+    if (utilitiesField.value.trim()) {  
+        const filenames = utilitiesField.value.split('\n').filter(name => name.trim());  
+          
+        filenames.forEach(filename => {  
+            const listItem = document.createElement('li');  
+            listItem.className = 'list-group-item d-flex justify-content-between align-items-center utility-item';  
+            listItem.style.cursor = 'pointer';  
+              
+            listItem.innerHTML = `  
+                <span class="utility-filename">${filename.trim()}</span>  
+                <span class="badge bg-secondary">SCAD</span>  
+            `;  
+              
+            // Add click handler for selection  
+            listItem.addEventListener('click', function() {  
+                // Clear previous selection  
+                document.querySelectorAll('.utility-item').forEach(item => {  
+                    item.classList.remove('active', 'bg-primary', 'text-white');  
+                });  
+                  
+                // Select this item  
+                this.classList.add('active', 'bg-primary', 'text-white');  
+                selectedUtilityItem = this;  
+            });  
+              
+            utilitiesList.appendChild(listItem);  
         });  
     }  
-});  
-</script>  
+}  
+    
+// Initialize on page load    
+document.addEventListener('DOMContentLoaded', function() {    
+    toggleModifiedBy();  
+    initializeUtilitiesList(); // Initialize the utilities list  
+    initializeBOMList();
+
+    // Add event listener for the checkbox    
+    const checkbox = document.querySelector('input[name="is_modified"]');    
+    if (checkbox) {    
+        checkbox.addEventListener('change', toggleModifiedBy);    
+    }    
+        
+    // Initialize BOM formset functionality    
+    const addButton = document.getElementById('add-bom-form');    
+    if (addButton && typeof django !== 'undefined' && django.jQuery) {    
+        // Use Django's inline formset functionality if available    
+        django.jQuery('#bom-forms .bom-form').formset({    
+            prefix: 'bom_items',    
+            addText: 'Add BOM Item',    
+            deleteText: 'Remove',    
+            addButton: addButton    
+        });    
+    }    
+});
+
+let selectedBOMItem = null;  
+let editingBOMItem = null;  
+let bomItems = [];  
+ 
+function addBOMItem() {  
+    const bom_position = document.getElementById('bom_position').value;  
+    const bom_count = document.getElementById('bom_count').value || 1;  
+    const bom_name = document.getElementById('bom_name').value;  
+    const bom_norm_description = document.getElementById('bom_norm_description').value;  
+    const bom_material = document.getElementById('bom_material').value;  
+    const bom_notes = document.getElementById('bom_notes').value;  
+    const bom_link = document.getElementById('bom_link').value;  
+      
+    if (!bom_position || !bom_name) {  
+        alert('Position and Name are required fields.');  
+        return;  
+    }  
+      
+    const bomItem = {  
+        position: parseInt(bom_position.value),  
+        count: parseInt(bom_count.value),  
+        name: name.bom_value,  
+        norm_description: bom_norm_description.value,  
+        material: bom_material.value,  
+        notes: bom_notes.value,  
+        link: bom_link.value
+    };
+      
+    // Check if we're in editing mode  
+    if (editingBOMItem !== null) {  
+        // Replace existing item (this is the "Append" functionality)  
+        bomItems[editingBOMItem] = bomItem;
+        editingBOMItem = null;  
+        document.getElementById('edit-bom-btn').textContent = 'Edit';  
+        selectedBOMItem = null; // Clear selection after append  
+    } else {  
+        // Add new item  
+        bomItems.push(bomItem);  
+    }  
+      
+    clearBOMForm();  
+    renderBOMList();  
+    updateBOMFormset();  
+}
+
+function editBOMItem() {  
+    if (!selectedBOMItem) {  
+        alert('Please select a BOM item to edit.');  
+        return;  
+    }  
+      
+    const itemIndex = parseInt(selectedBOMItem.dataset.bomIndex);  
+    const item = bomItems[itemIndex];  
+      
+    if (!item) {  
+        console.error('BOM item not found at index:', itemIndex);  
+        return;  
+    }  
+      
+    console.log('Editing item:', item); // Debug log to see what data we have  
+      
+    // Populate form with selected item data using underscore naming  
+    const elements = {  
+        position: document.getElementById('bom_position'),  
+        count: document.getElementById('bom_count'),  
+        name: document.getElementById('bom_name'),  
+        normDescription: document.getElementById('bom_norm_description'),  
+        material: document.getElementById('bom_material'),  
+        notes: document.getElementById('bom_notes'),  
+        link: document.getElementById('bom_link')  
+    };  
+      
+    // Check which elements are found and populate them  
+    Object.keys(elements).forEach(key => {  
+        const element = elements[key];  
+        if (!element) {  
+            console.error(`Element not found: bom_${key}`);  
+            return;  
+        }  
+          
+        let value = '';  
+        switch(key) {  
+            case 'position':  
+                value = item.position || '';  
+                break;  
+            case 'count':  
+                value = item.count || 1;  
+                break;  
+            case 'name':  
+                value = item.name || '';  
+                break;  
+            case 'normDescription':  
+                value = item.norm_description || '';  
+                break;  
+            case 'material':  
+                value = item.material || '';  
+                break;  
+            case 'notes':  
+                value = item.notes || '';  
+                break;  
+            case 'link':  
+                value = item.link || '';  
+                break;  
+        }  
+          
+        element.value = value;  
+        console.log(`Set ${key} to:`, value); // Debug log  
+    });  
+      
+    editingBOMItem = itemIndex;  
+    const editBtn = document.getElementById('edit_bom_btn');  
+    if (editBtn) editBtn.textContent = 'Append';  
+}
+
+function removeSelectedBOMItem() {  
+    if (!selectedBOMItem) {  
+        alert('Please select a BOM item to remove.');  
+        return;  
+    }  
+      
+    const itemIndex = parseInt(selectedBOMItem.dataset.bomIndex);  
+    bomItems.splice(itemIndex, 1);  
+    selectedBOMItem = null;  
+      
+    renderBOMList();  
+    updateBOMFormset();
+}  
+  
+function clearBOMForm() {  
+    const fields = ['bom_position', 'bom_count', 'bom_name', 'bom_norm_description', 'bom_material', 'bom_notes', 'bom_link'];  
+    fields.forEach(fieldId => {  
+        const field = document.getElementById(fieldId);  
+        if (field) {  
+            field.value = fieldId === 'bom_count' ? '1' : '';  
+        }  
+    });  
+}  
+
+function renderBOMList() {  
+    const bomList = document.getElementById('bom-list');  
+    bomList.innerHTML = '';  
+      
+    bomItems.forEach((item, index) => {  
+        const listItem = document.createElement('li');  
+        listItem.className = 'list-group-item bom-item';  
+        listItem.style.cursor = 'pointer';  
+        listItem.dataset.bomIndex = index;  
+          
+        listItem.innerHTML = `  
+            <div class="row">  
+                <div class="col-1"><strong>Pos:</strong> ${item.bom_position}</div>  
+                <div class="col-1"><strong>Count:</strong> ${item.bom_count}</div>  
+                <div class="col-2"><strong>Name:</strong> ${item.bom_name}</div>  
+                <div class="col-2"><strong>Material:</strong> ${item.bom_material || 'N/A'}</div>  
+                <div class="col-3"><strong>Description:</strong> ${item.bom_norm_description || 'N/A'}</div>  
+                <div class="col-3"><strong>Notes:</strong> ${item.bom_notes || 'N/A'}</div>  
+            </div>  
+            ${item.bom_link ? `<div class="mt-1"><strong>Link:</strong> <a href="${item.bom_link}" target="_blank">${item.bom_link}</a></div>` : ''}  
+        `;  
+          
+        // Add click handler for selection  
+        listItem.addEventListener('click', function() {  
+            // Clear previous selection  
+            document.querySelectorAll('.bom-item').forEach(item => {  
+                item.classList.remove('active', 'bg-primary', 'text-white');  
+            });  
+              
+            // Select this item  
+            this.classList.add('active', 'bg-primary', 'text-white');  
+            selectedBOMItem = this;  
+        });  
+          
+        bomList.appendChild(listItem);  
+    });  
+}  
+  
+function updateBOMFormset() {  
+    // Update Django formset with current BOM items  
+    const totalForms = document.querySelector('input[name="bom_items-TOTAL_FORMS"]');  
+    if (totalForms) {  
+        totalForms.value = bomItems.length;  
+    }  
+      
+    // Clear existing formset items  
+    const container = document.getElementById('bom-formset-container');  
+    container.innerHTML = '';  
+      
+    // Add management form  
+    const managementForm = document.querySelector('input[name="bom_items-TOTAL_FORMS"]').parentNode;  
+    container.appendChild(managementForm.cloneNode(true));  
+      
+    // Create hidden form fields for each BOM item  
+    bomItems.forEach((item, index) => {  
+        const formDiv = document.createElement('div');  
+        formDiv.innerHTML = `  
+            <input type="hidden" name="bom_items-${index}-position" value="${item.bom_position}">  
+            <input type="hidden" name="bom_items-${index}-count" value="${item.bom_count}">  
+            <input type="hidden" name="bom_items-${index}-name" value="${item.bom_name}">  
+            <input type="hidden" name="bom_items-${index}-norm_description" value="${item.bom_norm_description}">  
+            <input type="hidden" name="bom_items-${index}-material" value="${item.bom_material}">  
+            <input type="hidden" name="bom_items-${index}-notes" value="${item.bom_notes}">  
+            <input type="hidden" name="bom_items-${index}-link" value="${item.bom_link}">  
+        `;  
+        container.appendChild(formDiv);  
+    });  
+}  
+  
+// Initialize BOM list from existing data  
+function initializeBOMList() {  
+    // Extract existing BOM data from formset  
+    const totalForms = document.querySelector('input[name="bom_items-TOTAL_FORMS"]');  
+    if (totalForms) {  
+        const formCount = parseInt(totalForms.value);  
+          
+        for (let i = 0; i < formCount; i++) {  
+            const position = document.querySelector(`input[name="bom_items-${i}-position"]`)?.value;  
+            const count = document.querySelector(`input[name="bom_items-${i}-count"]`)?.value;  
+            const name = document.querySelector(`input[name="bom_items-${i}-name"]`)?.value;  
+              
+            if (position && name) {  
+                bomItems.push({  
+                    position: parseInt(position),  
+                    count: parseInt(count) || 1,  
+                    name: name,  
+                    norm_description: document.querySelector(`input[name="bom_items-${i}-norm_description"]`)?.value || '',  
+                    material: document.querySelector(`input[name="bom_items-${i}-material"]`)?.value || '',  
+                    notes: document.querySelector(`input[name="bom_items-${i}-notes"]`)?.value || '',  
+                    link: document.querySelector(`input[name="bom_items-${i}-link"]`)?.value || ''  
+                });  
+            }  
+        }  
+          
+        renderBOMList();  
+    }  
+}
+
 </script>
 {% endblock %}

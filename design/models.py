@@ -72,7 +72,7 @@ class Design(models.Model):
                                    on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     utilities = models.TextField(blank=True, null=True)
-    module = models.CharField(max_length=255, blank=True, null=True)
+    module = models.TextField(blank=True, null=True)
     custom_section = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -86,19 +86,19 @@ class Design(models.Model):
 
 
 class BillOfMaterials(models.Model):
-    design = models.ForeignKey(Design,
-                               related_name='bom_items',
-                               on_delete=models.CASCADE)
-    position = models.IntegerField()
-    count = models.IntegerField(default=1)
-    name = models.CharField(max_length=255)
-    norm_description = models.TextField(blank=True, null=True)
-    material = models.CharField(max_length=255, blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
-    link = models.URLField(blank=True, null=True)
+    bom_design = models.ForeignKey(Design,
+                                   related_name='bom_items',
+                                   on_delete=models.CASCADE)
+    bom_position = models.IntegerField()
+    bom_count = models.IntegerField(default=1)
+    bom_name = models.CharField(max_length=255)
+    bom_norm_description = models.TextField(blank=True, null=True)
+    bom_material = models.CharField(max_length=255, blank=True, null=True)
+    bom_notes = models.TextField(blank=True, null=True)
+    bom_link = models.URLField(blank=True, null=True)
 
     class Meta:
-        ordering = ['position']
+        ordering = ['bom_position']
 
     def __str__(self):
         return f"{self.design.name} - {self.name}"
