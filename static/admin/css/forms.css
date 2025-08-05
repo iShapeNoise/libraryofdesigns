@@ -496,3 +496,12 @@ form .related-widget-wrapper ul {
 .clearable-file-input input {
     margin-top: 0;
 }
+
+.form-label .text-danger {
+    font-weight: bold;
+}
+
+.required label::after {
+    content: " *";
+    color: red;
+}

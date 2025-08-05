@@ -12,13 +12,17 @@ input[type="submit"], button {
         -webkit-text-size-adjust: 100%;
     }
 
+    body {
+        font-size: 1.2rem;
+    }
+
     td, th {
         padding: 10px;
-        font-size: 0.875rem;
+        font-size: 1rem;
     }
 
     .small {
-        font-size: 0.75rem;
+        font-size: 2rem;
     }
 
     /* Layout */
@@ -87,7 +91,7 @@ input[type="submit"], button {
     }
 
     td .changelink, td .addlink {
-        font-size: 0.8125rem;
+        font-size: 1rem;
     }
 
     /* Changelist */
@@ -147,7 +151,7 @@ input[type="submit"], button {
     #changelist .actions span.clear,
     #changelist .actions span.question,
     #changelist .actions span.action-counter {
-        font-size: 0.6875rem;
+        font-size: 0.8rem;
         margin: 0 10px 0 0;
     }
 
@@ -313,12 +317,12 @@ input[type="submit"], button {
     }
 
     .datetime span {
-        font-size: 0.8125rem;
+        font-size: 1rem;
     }
 
     .datetime .timezonewarning {
         display: block;
-        font-size: 0.6875rem;
+        font-size: 0.8rem;
         color: var(--body-quiet-color);
     }
 
@@ -391,8 +395,12 @@ input[type="submit"], button {
         padding: 15px;
     }
 
+    #body {
+        font-size: 1.3rem;
+    }
+
     #content {  
-        font-size: 1.1rem;
+        font-size: 1.3rem;
     }
 
     div.breadcrumbs {
@@ -416,7 +424,7 @@ input[type="submit"], button {
 
     #content-related .module h2 {
         padding: 10px 15px;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
     }
 
     /* Changelist */
@@ -815,7 +823,7 @@ input[type="submit"], button {
     .errornote {
         margin: 0 0 20px;
         padding: 8px 12px;
-        font-size: 0.8125rem;
+        font-size: 1rem;
     }
 
     /* Calendar and clock */
@@ -862,8 +870,8 @@ input[type="submit"], button {
 
     .calendar-shortcuts {
         padding: 10px 0;
-        font-size: 0.75rem;
-        line-height: 0.75rem;
+        font-size: 1rem;
+        line-height: 1rem;
     }
 
     .calendar-shortcuts a {
@@ -895,7 +903,7 @@ input[type="submit"], button {
     /* History */
 
     table#change-history tbody th, table#change-history tbody td {
-        font-size: 0.8125rem;
+        font-size: 1.2rem;
         word-break: break-word;
     }
 
@@ -906,7 +914,7 @@ input[type="submit"], button {
     /* Docs */
 
     table.model tbody th, table.model tbody td {
-        font-size: 0.8125rem;
+        font-size: 1.2rem;
         word-break: break-word;
     }
 }

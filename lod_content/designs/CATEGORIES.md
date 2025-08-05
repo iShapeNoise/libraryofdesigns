@@ -40,14 +40,14 @@
           - Bar stool
           - Foot stool
           - Deckchair
-        - Multiple Seat
-          - Sofa
-            - Couch
-            - Love Seat
-            - Chesterfield
-            - Divan
-          - Bench
-            - Lounger
+      - Multiple Seat
+        - Sofa
+          - Couch
+          - Love Seat
+          - Chesterfield
+          - Divan
+        - Bench
+          - Lounger
     - Lying
       - Bed
         - Daybed
@@ -70,7 +70,10 @@
         - Computer Desk
         - Writing Desk
         - Drawing Desk
-      - Washstand
+      - Stand
+        - Washstand
+        - TV Stand
+        - Exhibition Stand
     - Storing
       - Closet
       - Cabinet
@@ -81,26 +84,10 @@
       - Shelve
       - Sideboard
       - Drawer & Chest
-      - Wardrobe/Arm
       - Storage Box
       - Home Bar
       - Toiletries Storage
       - Garderobe
-  - Rooms
-    - Living Room
-    - Bedroom
-    - Bathroom
-    - Kitchen
-    - Dining Room
-    - Home Office
-    - Laundry Room
-    - Guest Room
-    - Nursery
-    - Storage Room
-    - Balcony Room
-    - Workshop
-    - Entertainment Room
-    - Exercise Room
   - Miscellaneous Assemblies
     - Hygiene & Health
       - Soap Dishe

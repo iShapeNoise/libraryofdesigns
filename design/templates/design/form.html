@@ -10,7 +10,7 @@
             <fieldset>
                 <legend>{{ title }}</legend>
                 <hr class="border-bottom border-1 border-dark">
-                <div class="row mt-6 mb-3 border rounded">
+                <div class="row mt-3 mb-3 border rounded">
                     <label class="form-label">
                         <h3>Header Content</h3>
                     </label>
@@ -18,73 +18,94 @@
                     <div class="col-lg-6 col-12">
                         <div class="mt-6 mb-3">
                             <label for="{{ form.category.id_for_label }}" class="form-label">
-                                {{ form.category.label }}
+                                {{ form.category.label }} <span class="text-danger">*</span>
                             </label>
                             {{ form.category }}
-                        </div> 
+                        </div>
                         <div class="mt-6 mb-3">
                             <label for="{{ form.name.id_for_label }}" class="form-label">
-                                {{ form.name.label }}
+                                {{ form.name.label }} <span class="text-danger">*</span>
                             </label>
                             {{ form.name }}
                         </div>
                         <div class="mt-6 mb-3">
                             <label for="{{ form.description.id_for_label }}" class="form-label">
-                                {{ form.description.label }}
+                                {{ form.description.label }} <span class="text-danger">*</span>
                             </label>
                             {{ form.description }}
-                        </div> 
-                        <div class="mt-6 mb-3">  
-                            <label for="{{ form.added_by.id_for_label }}" class="form-label">
-                                {{ form.added_by.label }}
-                            </label>
-                            {{ form.added_by }}  
-                        </div>  
-                        <div class="mt-6 mb-3">  
-                            <label for="{{ form.created_by.id_for_label }}" class="form-label">
-                                {{ form.created_by.label }}
-                            </label>
-                            {{ form.created_by }}  
                         </div>
-                        <div class="mt-6 mb-3">
-                            <div>  
-                                <label for="{{ form.enable_modification.id_for_label }}" class="form-label">
-                                    {{ form.enable_modification.label }}
-                                </label>
-                                {{ form.enable_modification }}  
+                        <div class="mt-3 mb-3">  
+                            <label for="{{ form.image.id_for_label }}" class="form-label">  
+                                {{ form.image.label }} <span class="text-danger">*</span>
+                            </label>  
+                            <div class="d-flex">  
+                                {{ form.image }}  
+                                <button type="button" onclick="addImageToList()" class="btn btn-primary ms-2">Add</button>  
+                                <button type="button" onclick="resetImageList()" class="btn btn-warning ms-2">Reset</button>
                             </div>  
-                            <div>  
-                                <label for="{{ form.modified_by.id_for_label }}" class="form-label">
-                                    {{ form.modified_by.label }}
-                                </label>
-                                {{ form.modified_by }}  
-                            </div>
                         </div>  
-
+                        <div class="mt-3 mb-3">
+                            {{ form.image_list }}  
+                            <small class="form-text text-muted">Images will be listed as comma-separated names</small>  
+                        </div>
+                        <div class="mt-3 mb-3">  
+                            <label for="{{ form.techdraw.id_for_label }}" class="form-label">  
+                                Technical Drawings  
+                            </label>  
+                            <div class="d-flex">  
+                                {{ form.techdraw }}  
+                                <button type="button" onclick="addTechdrawToList()" class="btn btn-primary ms-2">Add</button>  
+                                <button type="button" onclick="resetTechdrawList()" class="btn btn-warning ms-2">Reset</button>
+                            </div>  
+                        </div>  
+                        <div class="mt-3 mb-3">
+                            {{ form.techdraw_list }}  
+                            <small class="form-text text-muted">Technical Drawings will be listed as comma-separated names</small>  
+                        </div>
                     </div>
                     <!-- Right Column -->  
-                    <div class="col-lg-6 col-12">   
-
-                        <div class="mt-6 mb-3">
-                            <label for="{{ form.image.id_for_label }}" class="form-label">
-                                {{ form.image.label }}
-                            </label>
-                            {{ form.image }}
+                    <div class="col-lg-6 col-12"> 
+                        <div class="mt-3 mb-3">    
+                            <label for="{{ form.created_by.id_for_label }}" class="form-label">  
+                                {{ form.created_by.label }} <span class="text-danger">*</span>
+                            </label>  
+                            {{ form.created_by }}  
+                            {{ form.custom_creator_name }}  
+                        </div>  
+                        <div class="mt-3 mb-3">
+                            <div>  
+                                {{ form.is_modified }}  
+                                <label for="{{ form.is_modified.id_for_label }}" class="form-label">
+                                    This design has been modified
+                                </label>
+                            </div>  
+                            <div>  
+                                <label for="{{ form.modified_from.id_for_label }}" class="form-label">
+                                    {{ form.modified_from.label }}
+                                </label>
+                                {{ form.modified_from }}  
+                            </div>
                         </div>
-                        <div class="mt-6 mb-3">
+                        <div class="mt-3 mb-3">
                             <label for="{{ form.costs.id_for_label }}" class="form-label">
-                                {{ form.costs.label }}
+                                Production costs
                             </label>
                             {{ form.costs }}
+                        </div>
+                        <div class="mt-3 mb-3">
+                            <label for="{{ form.production_notes.id_for_label }}" class="form-label">
+                                {{ form.production_notes.label }}
+                            </label>
+                                {{ form.production_notes }}
                         </div>
                     </div>
                 </div>
                 <hr class="border-bottom border-1 border-dark">
-                <div class="row border rounded">
+                <div class="row mt-6 border rounded">
                     <label class="form-label mt-6">
                         <h3>Body Content</h3>
                     </label>
-                    <div class="mt-6 mb-3">
+                    <div class="mt-3 mb-3">
                         <label for="{{ form.utilities_file.id_for_label }}" class="form-label">OpenSCAD Utilities for LoD Design
                         </label>
                         <br>
@@ -92,56 +113,58 @@
                         <button type="button" onclick="addUtilityFile()" class="btn btn-primary mt-2">Add Selected File to Utilities</button>  
                         <button type="button" onclick="removeSelectedUtilityFile()" class="btn btn-danger mt-2 ms-2">Remove Selected File</button>    
                     </div>
-                    <div class="mt-6 mb-3">    
+                    <div class="mt-3 mb-3">    
                         <ul id="utilities-list" class="list-group" style="max-height: 200px; overflow-y: auto;"></ul>  
                             {{ form.utilities }}
-                        <script>  
+                        <script> 
                             // Hide the original textarea  
                             document.getElementById('id_utilities').style.display = 'none';  
                         </script>  
-                    </div> 
-
+                    </div>
                     <label for="{{ form.utilities_file.id_for_label }}" class="form-label">B.O.M. (Bills of Materials)
                     </label>
                     <br>
-                    <div class="mb-3">  
-                        <div class="g-2">  
-                            <div class="col-md-1">  
-                                <label class="form-label">Position</label>  
-                                <input type="number" id="bom_position" class="form-control" placeholder="Pos">  
-                            </div>  
-                            <div class="col-md-1">  
-                                <label class="form-label">Count</label>  
-                                <input type="number" id="bom_count" class="form-control" placeholder="Count" value="1">  
-                            </div>  
-                            <div class="col-md-2">  
-                                <label class="form-label">Name</label>  
-                                <input type="text" id="bom_name" class="form-control" placeholder="Component name">  
-                            </div>  
-                            <div class="col-md-2">  
-                                <label class="form-label">Norm Description</label>  
-                                <textarea id="bom_norm_description" class="form-control" rows="2" placeholder="Description"></textarea>  
-                            </div>  
-                            <div class="col-md-2">  
-                                <label class="form-label">Material</label>  
-                                <input type="text" id="bom_material" class="form-control" placeholder="Material">  
-                            </div>  
-                            <div class="col-md-2">  
-                                <label class="form-label">Notes</label>  
-                                <textarea id="bom_notes" class="form-control" rows="2" placeholder="Notes"></textarea>  
-                            </div>  
-                            <div class="col-md-2">  
-                                <label class="form-label">Link</label>  
-                                <input type="url" id="bom_link" class="form-control" placeholder="https://...">  
-                            </div>  
-                        </div>  
+                    <div class="mb-3">
+                        <div class="row g-2">    
+                            <!-- First row: Position, Count, Name, Norm Description, Material -->  
+                            <div class="col-12 col-md-1">    
+                                <label class="form-label">Position</label>    
+                                <input type="number" id="bom_position" class="form-control" placeholder="Pos">    
+                            </div>    
+                            <div class="col-12 col-md-1">    
+                                <label class="form-label">Count</label>    
+                                <input type="number" id="bom_count" class="form-control" placeholder="Count" value="1">    
+                            </div>    
+                            <div class="col-12 col-md-2">    
+                                <label class="form-label">Name</label>    
+                                <input type="text" id="bom_name" class="form-control" placeholder="Component name">    
+                            </div>    
+                            <div class="col-12 col-md-4">    
+                                <label class="form-label">Standardization Notes</label>    
+                                <input id="bom_standard" class="form-control" placeholder="Add Standarization Norm e.g. ISO">    
+                            </div>    
+                            <div class="col-12 col-md-4">    
+                                <label class="form-label">Material</label>    
+                                <input type="text" id="bom_material" class="form-control" placeholder="Material">    
+                            </div>    
+                              
+                            <!-- Second row: Notes and Link side-by-side -->  
+                            <div class="col-12 col-md-6">    
+                                <label class="form-label">Notes</label>    
+                                <textarea id="bom_notes" class="form-control" rows="1" placeholder="Notes"></textarea>    
+                            </div>    
+                            <div class="col-12 col-md-6">    
+                                <label class="form-label">LoD Link</label>    
+                                <input type="url" id="bom_link" class="form-control" placeholder="https://...">    
+                            </div>    
+                        </div>
                         <div class="mt-2">  
                             <button type="button" onclick="addBOMItem()" class="btn btn-primary">Add BOM Item</button>  
                             <button type="button" onclick="editBOMItem()" id="edit-bom-btn" class="btn btn-warning ms-2">Edit</button>  
                             <button type="button" onclick="removeSelectedBOMItem()" class="btn btn-danger ms-2">Remove Selected Item</button>  
                         </div>    
                         <!-- BOM List -->  
-                        <div class="mt-6 mb-3">  
+                        <div class="mt-3 mb-3">  
                             <ul id="bom-list" class="list-group mt-3" style="max-height: 300px; overflow-y: auto;">  
                             <!-- Dynamic BOM items will be added here -->  
                             </ul>  
@@ -159,20 +182,24 @@
                     <!-- Module Section -->   
                     <div class="mb-3">  
                         <label for="{{ form.module.id_for_label }}" class="form-label" placeholder="Enter design module">  
-                            {{ form.module.label }}  
+                            {{ form.module.label }} <span class="text-danger">*</span>
                         </label>  
-                        <textarea id="{{ form.module.id_for_label }}" name="{{ form.module.name }}" class="form-control" rows="4" placeholder="Enter module code">{{ form.module.value|default:'' }}</textarea>
+                        <textarea id="{{ form.module.id_for_label }}" name="{{ form.module.name }}" class="form-control"
+                            rows="20" placeholder="Enter module code">{{ form.module.value|default:'' }}</textarea>
                     </div>
                     <!-- Parameters Section -->  <label for="{{ form.image.id_for_label }}" class="form-label">  
                     <div class="mb-3">  
-                        <label for="id_parameters" class="form-label">Parameters</label>  
-                        <input type="text" id="id_parameters" name="parameters" class="form-control" placeholder="Enter parameters">  
+                        <label for="{{ form.example.id_for_label }}" class="form-label">
+                            Assembled Example <span class="text-danger">*</span></label>  
+                        <textarea id={{ form.example.value|default:'' }} name="example" class="form-control" rows="7"
+                            placeholder="Enter module example with assembly parameters, including transformations (translate(), rotate(),...)">{{ form.parameters.value|default:'' }}
+                        </textarea>
                     </div>
                 </div>
                 <hr class="border-bottom border-1 border-dark">
                 <div class="row">
                     {% if form.errors or form.non_field_errors %}
-                        <div class="mt-6 mb-3 border border-warning">
+                        <div class="mt-3 mb-3 border border-warning">
                             {% for field in form %}
                                 {{ field.errors }}
                             {% endfor %}
@@ -186,15 +213,94 @@
     </div>
 </div>
 <script type="text/javascript">    
+
+// Optional: Auto-format lists on blur  
+document.addEventListener('DOMContentLoaded', function() {  
+    const imageList = document.getElementById('id_image_list');  
+    const techdrawList = document.getElementById('id_techdraw_list');  
+      
+    [imageList, techdrawList].forEach(field => {  
+        if (field) {  
+            field.addEventListener('blur', function() {  
+                // Simple cleanup: remove empty lines  
+                this.value = this.value.split('\n').filter(line => line.trim()).join('\n');  
+            });  
+        }  
+    });  
+});
+
+function addImageToList() {
+    const imageInput = document.getElementById('id_image');
+    const imageListField = document.getElementById('id_image_list');
+
+    if (imageInput.files.length > 0) {
+        const fileName = imageInput.files[0].name;
+        const currentList = imageListField.value.trim();
+
+        if (currentList) {
+            imageListField.value = currentList + ', ' + fileName;
+        } else {
+            imageListField.value = fileName;
+        }
+        imageInput.value = '';
+    } else {
+        alert('Please select an image first.');
+    }
+}
+
+function addTechdrawToList() {  
+    const techdrawInput = document.getElementById('id_techdraw');  
+    const techdrawListField = document.getElementById('id_techdraw_list');  
+      
+    if (techdrawInput.files.length > 0) {  
+        const fileName = techdrawInput.files[0].name;  
+        const currentList = techdrawListField.value.trim();  
+          
+        if (currentList) {  
+            techdrawListField.value = currentList + ', ' + fileName;  
+        } else {  
+            techdrawListField.value = fileName;  
+        }  
+          
+        // Clear the file input  
+        techdrawInput.value = '';  
+    } else {  
+        alert('Please select a techdraw first.');  
+    }  
+}
+
+function resetImageList() {
+    const imageListField = document.getElementById('id_image_list');
+    if (imageListField) {
+        imageListField.value = '';
+    }
+}
+
+function resetTechdrawList() {
+    const techdrawListField = document.getElementById('id_techdraw_list');
+    if (techdrawListField) {
+        techdrawListField.value = '';
+    }
+}
+
+function toggleModifiedFrom() {  
+    const checkbox = document.querySelector('input[name="is_modified"]');  
+    const modifiedFromField = document.getElementById('id_modified_from');  
+    if (modifiedFromField) {  
+        modifiedFromField.disabled = !checkbox.checked;  
+        modifiedFromField.style.opacity = checkbox.checked ? '1' : '0.5';  
+    }  
+}
+
 // Minimal JavaScript for conditional field and utility file addition    
 function toggleModifiedBy() {    
     const checkbox = document.querySelector('input[name="is_modified"]');    
-    const modifiedByField = document.getElementById('id_modified_by');    
+    const modifiedByField = document.getElementById('id_modified_from');    
     if (modifiedByField) {    
         modifiedByField.disabled = !checkbox.checked;    
         modifiedByField.style.opacity = checkbox.checked ? '1' : '0.5';    
     }    
-}    
+}  
   
 let selectedUtilityItem = null;  
   
@@ -335,13 +441,13 @@ let editingBOMItem = null;
 let bomItems = [];  
  
 function addBOMItem() {  
-    const bom_position = document.getElementById('bom_position').value;  
-    const bom_count = document.getElementById('bom_count').value || 1;  
-    const bom_name = document.getElementById('bom_name').value;  
-    const bom_norm_description = document.getElementById('bom_norm_description').value;  
-    const bom_material = document.getElementById('bom_material').value;  
-    const bom_notes = document.getElementById('bom_notes').value;  
-    const bom_link = document.getElementById('bom_link').value;  
+    const bom_position = document.getElementById('bom_position').value;
+    const bom_count = document.getElementById('bom_count').value || 1;
+    const bom_name = document.getElementById('bom_name').value;
+    const bom_standard = document.getElementById('bom_standard').value;
+    const bom_material = document.getElementById('bom_material').value;
+    const bom_notes = document.getElementById('bom_notes').value;
+    const bom_link = document.getElementById('bom_link').value;
       
     if (!bom_position || !bom_name) {  
         alert('Position and Name are required fields.');  
@@ -349,13 +455,13 @@ function addBOMItem() {
     }  
       
     const bomItem = {  
-        position: parseInt(bom_position.value),  
-        count: parseInt(bom_count.value),  
-        name: name.bom_value,  
-        norm_description: bom_norm_description.value,  
-        material: bom_material.value,  
-        notes: bom_notes.value,  
-        link: bom_link.value
+        bom_position: parseInt(bom_position),  
+        bom_count: parseInt(bom_count),  
+        bom_name: bom_name,  
+        bom_standard: bom_standard,  
+        bom_material: bom_material,  
+        bom_notes: bom_notes,  
+        bom_link: bom_link
     };
       
     // Check if we're in editing mode  
@@ -396,7 +502,7 @@ function editBOMItem() {
         position: document.getElementById('bom_position'),  
         count: document.getElementById('bom_count'),  
         name: document.getElementById('bom_name'),  
-        normDescription: document.getElementById('bom_norm_description'),  
+        standard: document.getElementById('bom_standard'),  
         material: document.getElementById('bom_material'),  
         notes: document.getElementById('bom_notes'),  
         link: document.getElementById('bom_link')  
@@ -413,25 +519,25 @@ function editBOMItem() {
         let value = '';  
         switch(key) {  
             case 'position':  
-                value = item.position || '';  
+                value = item.bom_position || '';  
                 break;  
             case 'count':  
-                value = item.count || 1;  
+                value = item.bom_count || 1;  
                 break;  
             case 'name':  
-                value = item.name || '';  
+                value = item.bom_name || '';  
                 break;  
-            case 'normDescription':  
-                value = item.norm_description || '';  
+            case 'standard':  
+                value = item.bom_standard || '';  
                 break;  
             case 'material':  
-                value = item.material || '';  
+                value = item.bom_material || '';  
                 break;  
             case 'notes':  
-                value = item.notes || '';  
+                value = item.bom_notes || '';  
                 break;  
             case 'link':  
-                value = item.link || '';  
+                value = item.bom_link || '';  
                 break;  
         }  
           
@@ -459,7 +565,7 @@ function removeSelectedBOMItem() {
 }  
   
 function clearBOMForm() {  
-    const fields = ['bom_position', 'bom_count', 'bom_name', 'bom_norm_description', 'bom_material', 'bom_notes', 'bom_link'];  
+    const fields = ['bom_position', 'bom_count', 'bom_name', 'bom_standard', 'bom_material', 'bom_notes', 'bom_link'];  
     fields.forEach(fieldId => {  
         const field = document.getElementById(fieldId);  
         if (field) {  
@@ -483,11 +589,11 @@ function renderBOMList() {
                 <div class="col-1"><strong>Pos:</strong> ${item.bom_position}</div>  
                 <div class="col-1"><strong>Count:</strong> ${item.bom_count}</div>  
                 <div class="col-2"><strong>Name:</strong> ${item.bom_name}</div>  
-                <div class="col-2"><strong>Material:</strong> ${item.bom_material || 'N/A'}</div>  
-                <div class="col-3"><strong>Description:</strong> ${item.bom_norm_description || 'N/A'}</div>  
-                <div class="col-3"><strong>Notes:</strong> ${item.bom_notes || 'N/A'}</div>  
+                <div class="col-1"><strong>Material:</strong> ${item.bom_material || 'N/A'}</div>  
+                <div class="col-3"><strong>Standardization Notes:</strong> ${item.bom_standard || 'N/A'}</div>  
+                <div class="col-4"><strong>Notes:</strong> ${item.bom_notes || 'N/A'}</div>
             </div>  
-            ${item.bom_link ? `<div class="mt-1"><strong>Link:</strong> <a href="${item.bom_link}" target="_blank">${item.bom_link}</a></div>` : ''}  
+            ${item.bom_link ? `<div class="mt-1"><strong>LoD Link:</strong> <a href="${item.bom_link}" target="_blank">${item.bom_link}</a></div>` : ''}  
         `;  
           
         // Add click handler for selection  
@@ -528,7 +634,7 @@ function updateBOMFormset() {
             <input type="hidden" name="bom_items-${index}-position" value="${item.bom_position}">  
             <input type="hidden" name="bom_items-${index}-count" value="${item.bom_count}">  
             <input type="hidden" name="bom_items-${index}-name" value="${item.bom_name}">  
-            <input type="hidden" name="bom_items-${index}-norm_description" value="${item.bom_norm_description}">  
+            <input type="hidden" name="bom_items-${index}-standard" value="${item.bom_standard}">  
             <input type="hidden" name="bom_items-${index}-material" value="${item.bom_material}">  
             <input type="hidden" name="bom_items-${index}-notes" value="${item.bom_notes}">  
             <input type="hidden" name="bom_items-${index}-link" value="${item.bom_link}">  
@@ -554,7 +660,7 @@ function initializeBOMList() {
                     position: parseInt(position),  
                     count: parseInt(count) || 1,  
                     name: name,  
-                    norm_description: document.querySelector(`input[name="bom_items-${i}-norm_description"]`)?.value || '',  
+                    standard: document.querySelector(`input[name="bom_items-${i}-standard"]`)?.value || '',  
                     material: document.querySelector(`input[name="bom_items-${i}-material"]`)?.value || '',  
                     notes: document.querySelector(`input[name="bom_items-${i}-notes"]`)?.value || '',  
                     link: document.querySelector(`input[name="bom_items-${i}-link"]`)?.value || ''  
@@ -566,5 +672,28 @@ function initializeBOMList() {
     }  
 }
 
+function toggleCreatorField() {  
+    const createdBySelect = document.getElementById('id_created_by');  
+    const customCreatorField = document.getElementById('id_custom_creator_name');  
+      
+    if (createdBySelect && customCreatorField) {  
+        if (createdBySelect.value === 'add_creator') {  
+            customCreatorField.style.display = 'block';  
+            customCreatorField.required = true;  
+            createdBySelect.style.display = 'none';  
+        } else {  
+            customCreatorField.style.display = 'none';  
+            customCreatorField.required = false;  
+            customCreatorField.value = '';  
+        }  
+    }  
+}  
+ 
+document.addEventListener('DOMContentLoaded', function() {  
+    const createdBySelect = document.getElementById('id_created_by');  
+    if (createdBySelect) {  
+        createdBySelect.addEventListener('change', toggleCreatorField);  
+    }    
+});
 </script>
 {% endblock %}

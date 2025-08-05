@@ -13,7 +13,7 @@ BOMFormSet = inlineformset_factory(
     fields=['bom_position',
             'bom_count',
             'bom_name',
-            'bom_norm_description',
+            'bom_standard',
             'bom_material',
             'bom_notes',
             'bom_link'],
@@ -23,7 +23,7 @@ BOMFormSet = inlineformset_factory(
         'bom_position': forms.NumberInput(attrs={'class': INPUT_CLASSES}),
         'bom_count': forms.NumberInput(attrs={'class': INPUT_CLASSES}),
         'bom_name': forms.TextInput(attrs={'class': INPUT_CLASSES}),
-        'bom_norm_description': forms.Textarea(attrs={'class': INPUT_CLASSES}),
+        'bom_standard': forms.TextInput(attrs={'class': INPUT_CLASSES}),
         'bom_material': forms.TextInput(attrs={'class': INPUT_CLASSES}),
         'bom_notes': forms.Textarea(attrs={'class': INPUT_CLASSES}),
         'bom_link': forms.URLInput(attrs={'class': INPUT_CLASSES}),
@@ -64,24 +64,42 @@ class NewDesignForm(forms.ModelForm):
 
     class Meta:
         model = Design
-        fields = ('category', 'name', 'description', 'added_by', 'created_by',
-                  'is_modified', 'modified_by', 'utilities', 'module',
-                  'custom_section', 'costs', 'image')
+        fields = ('category', 'name', 'description', 'created_by', 'custom_creator_name',
+                  'is_modified', 'modified_from', 'utilities', 'module',
+                  'example', 'costs', 'image', 'image_list', 'techdraw',
+                  'techdraw_list', 'production_notes')
 
         widgets = {
-            'category': forms.Select(attrs={'class': INPUT_CLASSES}),
-            'name': forms.TextInput(attrs={'class': INPUT_CLASSES}),
-            'description': forms.Textarea(attrs={'class': INPUT_CLASSES}),
-            'added_by': forms.Select(attrs={'class': INPUT_CLASSES}),
-            'created_by': forms.Select(attrs={'class': INPUT_CLASSES}),
+            'category': forms.Select(attrs={
+                'class': INPUT_CLASSES,
+                'required': True
+            }),
+            'name': forms.TextInput(attrs={
+                'class': INPUT_CLASSES,
+                'required': True
+            }),
+            'description': forms.Textarea(attrs={
+                'class': INPUT_CLASSES,
+                'required': True
+            }),
+            'created_by': forms.Select(attrs={
+                'class': INPUT_CLASSES,
+                'required': True
+            }),
+            'custom_creator_name': forms.TextInput(attrs={
+                'class': INPUT_CLASSES,
+                'placeholder': 'Enter creator name',
+                'id': 'id_custom_creator_name',
+                'style': 'display: none;'  # Initially hidden
+            }),
             'is_modified': forms.CheckboxInput(attrs={
                 'class': 'form-check-input',
                 'onchange': 'toggleModifiedBy()'
             }),
-            'modified_by': forms.Select(attrs={
+            'modified_from': forms.URLInput(attrs={
                 'class': INPUT_CLASSES,
-                'disabled': True,
-                'id': 'id_modified_by'
+                'placeholder': 'Please paste url of LoD Design to determine predecessor',
+                'id': 'id_modified_from'
             }),
             'utilities': forms.Textarea(attrs={
                 'class': INPUT_CLASSES,
@@ -89,10 +107,34 @@ class NewDesignForm(forms.ModelForm):
                 'readonly': True,  # Keep readonly to prevent text editing
                 'style': 'user-select: text; cursor: pointer;',  # Allow text selection
             }),
-            'module': forms.TextInput(attrs={'class': INPUT_CLASSES}),
-            'custom_section': forms.Textarea(attrs={'class': INPUT_CLASSES}),
+            'module': forms.Textarea(attrs={
+                'class': INPUT_CLASSES,
+                'required': True
+            }),
+            'example': forms.Textarea(attrs={
+                'class': INPUT_CLASSES,
+                'required': True
+            }),
             'costs': forms.TextInput(attrs={'class': INPUT_CLASSES}),
-            'image': forms.FileInput(attrs={'class': INPUT_CLASSES}),
+            'production_notes': forms.Textarea(attrs={'class': INPUT_CLASSES}),
+            'image': forms.FileInput(attrs={
+                'class': INPUT_CLASSES,
+                'accept': 'images/*'
+            }),
+            'image_list': forms.TextInput(attrs={
+                'class': INPUT_CLASSES,
+                'placeholder': 'image1.jpg, image2.png, image3.gif',
+                'readonly': True
+            }),
+            'techdraw': forms.FileInput(attrs={
+                'class': INPUT_CLASSES,
+                'accept': 'techdraws/*'
+            }),
+            'techdraw_list': forms.TextInput(attrs={
+                'class': INPUT_CLASSES,
+                'placeholder': 'drawing1.jpg, drawing2.png, drawing3.gif',
+                'readonly': True
+            }),
         }
 
     def __init__(self, *args, **kwargs):
@@ -100,15 +142,20 @@ class NewDesignForm(forms.ModelForm):
         # Populate user choices for added_by, created_by, modified_by
         from django.contrib.auth.models import User
         user_choices = [(user.id, user.username) for user in User.objects.all()]
-        self.fields['added_by'].choices = [('', '--- Select User ---')] + user_choices
-        self.fields['created_by'].choices = [('', '--- Select User ---')] + user_choices
-        self.fields['modified_by'].choices = [('', '--- Select User ---')] + user_choices
+        self.fields['created_by'].choices = [('', '--- Select User ---')] + user_choices + [('add_creator', 'Add creator')]
 
 
 class EditDesignForm(forms.ModelForm):
     class Meta:
         model = Design
-        fields = ('name', 'description', 'costs', 'image', 'is_modified')
+        fields = ('name',
+                  'description',
+                  'costs',
+                  'image',
+                  'is_modified',
+                  'techdraw',
+                  'module',
+                  'example')
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': INPUT_CLASSES
@@ -120,6 +167,15 @@ class EditDesignForm(forms.ModelForm):
                 'class': INPUT_CLASSES
             }),
             'image': forms.FileInput(attrs={
+                'class': INPUT_CLASSES
+            }),
+            'techdraw': forms.FileInput(attrs={
+                'class': INPUT_CLASSES
+            }),
+            'module': forms.TextInput(attrs={
+                'class': INPUT_CLASSES
+            }),
+            'example': forms.TextInput(attrs={
                 'class': INPUT_CLASSES
             }),
         }

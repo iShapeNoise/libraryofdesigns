@@ -1,0 +1,64 @@
+@media (max-width: 767px) {  
+    /* Override Bootstrap's font sizes for mobile */  
+    body {  
+        font-size: 1.2rem !important;  
+    }  
+              
+    /* Navigation and dropdown items */  
+    .navbar-nav .nav-link,  
+    .dropdown-item {  
+        font-size: 1.1rem !important;  
+    }  
+      
+    /* Mobile logo scaling */  
+    .navbar-brand img {  
+        height: 28px !important; /* Reduce from 42px to 28px on mobile */  
+        max-width: 100%;  
+    }  
+      
+    /* Ensure navbar doesn't get too tall on mobile */  
+    .navbar {  
+        min-height: auto;  
+        padding-top: 0.25rem;  
+        padding-bottom: 0.25rem;  
+    }  
+      
+    /* Adjust navbar brand padding for mobile */  
+    .navbar-brand {  
+        padding-left: 0.5rem !important; /* Reduce from ps-3 */  
+    }  
+      
+    /* Ensure avatar dropdown stays visible */  
+    .dropdown-toggle {  
+        padding: 0.25rem !important;  
+    }
+
+    /* Form controls */  
+    .form-control,  
+    .form-select,  
+    .btn {  
+        font-size: 1.1rem !important;  
+    }  
+      
+    /* Card content */  
+    .card-title {  
+        font-size: 1.2rem !important;  
+    }  
+      
+    .card-text {  
+        font-size: 1rem !important;  
+    }  
+      
+    /* General text elements */  
+    p, span, div {  
+        font-size: 1rem !important;  
+    }  
+      
+    /* Headers */  
+    h1 { font-size: 2rem !important; }  
+    h2 { font-size: 1.75rem !important; }  
+    h3 { font-size: 1.5rem !important; }  
+    h4 { font-size: 1.25rem !important; }  
+    h5 { font-size: 1.1rem !important; }  
+    h6 { font-size: 1rem !important; }  
+}  

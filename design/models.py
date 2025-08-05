@@ -43,37 +43,46 @@ def design_image_path(instance, filename):
     return os.path.join('images', filename)
 
 
+def design_techdraw_path(instance, filename):
+    """
+    Generate upload path for design images in LOD content directory
+    """
+    return os.path.join('techdraws', filename)
+
+
 class Design(models.Model):
     id = models.BigAutoField(primary_key=True)
     category = models.ForeignKey(Category, related_name='designs',
                                  on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     # use blank=False if you want * the description
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(default='No description provided')
     costs = models.FloatField()
+    production_notes = models.TextField(blank=True, null=True)
     path_to_save = unique_file_path()
-    # image = ThumbnailerImageField(upload_to=path_to_save+'/images/',
-    #                              blank=False,
-    #                              null=True)
-    image = models.ImageField(upload_to=design_image_path,
-                              blank=False,
-                              null=True)
+    image = models.ImageField(upload_to=design_image_path, default='No image provided')
+    image_list = models.TextField(blank=True, null=True)
+    techdraw = models.ImageField(upload_to=design_techdraw_path,
+                                 blank=False,
+                                 null=True)
+    techdraw_list = models.TextField(blank=True, null=True)
     name = models.CharField(max_length=255)
     added_by = models.ForeignKey(User, related_name='added_designs',
                                  on_delete=models.CASCADE,
                                  null=True,
                                  blank=True)
     is_modified = models.BooleanField(default=False)
-    modified_by = models.ForeignKey(User, related_name='modified_designs',
-                                    on_delete=models.CASCADE,
-                                    null=True,
-                                    blank=True)
-    created_by = models.ForeignKey(User, related_name='designs',
-                                   on_delete=models.CASCADE)
+    modified_from = models.URLField(null=True,
+                                    blank=True,
+                                    help_text="URL of LoD Design to determine predecessor")
+    created_by = models.ForeignKey(User, related_name='created_designs',
+                                   on_delete=models.CASCADE,
+                                   help_text="Add name of creator/modifier of new design")
+    custom_creator_name = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     utilities = models.TextField(blank=True, null=True)
-    module = models.TextField(blank=True, null=True)
-    custom_section = models.TextField(blank=True, null=True)
+    module = models.TextField(default='No module provided')
+    example = models.TextField(default='No example provided')
 
     def __str__(self):
         return self.name
@@ -92,7 +101,7 @@ class BillOfMaterials(models.Model):
     bom_position = models.IntegerField()
     bom_count = models.IntegerField(default=1)
     bom_name = models.CharField(max_length=255)
-    bom_norm_description = models.TextField(blank=True, null=True)
+    bom_standard = models.CharField(max_length=255, blank=True, null=True)
     bom_material = models.CharField(max_length=255, blank=True, null=True)
     bom_notes = models.TextField(blank=True, null=True)
     bom_link = models.URLField(blank=True, null=True)
