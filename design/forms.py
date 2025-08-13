@@ -1,9 +1,12 @@
 import os
+from PIL import Image
 from django.conf import settings
 from django import forms
 from mptt.forms import TreeNodeChoiceField
 from django.forms import inlineformset_factory
+from django.core.exceptions import ValidationError
 from .models import Design, Category, BillOfMaterials
+from multiupload.fields import MultiFileField
 
 INPUT_CLASSES = 'form-control border col-xs-4'
 
@@ -20,13 +23,36 @@ BOMFormSet = inlineformset_factory(
     extra=1,
     can_delete=True,
     widgets={
-        'bom_position': forms.NumberInput(attrs={'class': INPUT_CLASSES}),
-        'bom_count': forms.NumberInput(attrs={'class': INPUT_CLASSES}),
-        'bom_name': forms.TextInput(attrs={'class': INPUT_CLASSES}),
-        'bom_standard': forms.TextInput(attrs={'class': INPUT_CLASSES}),
-        'bom_material': forms.TextInput(attrs={'class': INPUT_CLASSES}),
-        'bom_notes': forms.Textarea(attrs={'class': INPUT_CLASSES}),
-        'bom_link': forms.URLInput(attrs={'class': INPUT_CLASSES}),
+        'bom_position': forms.NumberInput(attrs={
+            'class': INPUT_CLASSES,
+            'placeholder': 'Position number'
+        }),
+        'bom_count': forms.NumberInput(attrs={
+            'class': INPUT_CLASSES,
+            'placeholder': 'Quantity',
+            'value': '1'
+        }),
+        'bom_name': forms.TextInput(attrs={
+            'class': INPUT_CLASSES,
+            'placeholder': 'Component name'
+        }),
+        'bom_standard': forms.TextInput(attrs={
+            'class': INPUT_CLASSES,
+            'placeholder': 'ISO, DIN, ANSI standards'
+        }),
+        'bom_material': forms.TextInput(attrs={
+            'class': INPUT_CLASSES,
+            'placeholder': 'Material specification'
+        }),
+        'bom_notes': forms.Textarea(attrs={
+            'class': INPUT_CLASSES,
+            'placeholder': 'Additional notes and specifications',
+            'rows': 2
+        }),
+        'bom_link': forms.URLInput(attrs={
+            'class': INPUT_CLASSES,
+            'placeholder': 'https://example.com/design-link'
+        }),
     }
 )
 
@@ -62,12 +88,28 @@ class NewDesignForm(forms.ModelForm):
     utilities_file = OpenSCADFileChoiceField(required=False,
                                              label="Select Utility File")
 
+    # Multiple file upload fields
+    images = MultiFileField(
+        min_num=0,
+        max_num=10,
+        max_file_size=1024*1024*2,  # 2MB per file
+        required=False,
+        help_text="Upload up to 10 images (max 2MB each)"
+    )
+
+    techdraws = MultiFileField(
+        min_num=0,
+        max_num=5,
+        max_file_size=1024*1024*2,  # 2MB per file
+        required=False,
+        help_text="Upload up to 5 technical drawings (images or PDFs, max 2MB each)"
+    )
+
     class Meta:
         model = Design
         fields = ('category', 'name', 'description', 'created_by', 'custom_creator_name',
                   'is_modified', 'modified_from', 'utilities', 'module',
-                  'example', 'costs', 'image', 'image_list', 'techdraw',
-                  'techdraw_list', 'production_notes')
+                  'example', 'costs', 'production_notes')
 
         widgets = {
             'category': forms.Select(attrs={
@@ -76,11 +118,13 @@ class NewDesignForm(forms.ModelForm):
             }),
             'name': forms.TextInput(attrs={
                 'class': INPUT_CLASSES,
-                'required': True
+                'required': True,
+                'placeholder': 'Enter unique design name'
             }),
             'description': forms.Textarea(attrs={
                 'class': INPUT_CLASSES,
-                'required': True
+                'required': True,
+                'placeholder': 'Please enter design description'
             }),
             'created_by': forms.Select(attrs={
                 'class': INPUT_CLASSES,
@@ -98,84 +142,175 @@ class NewDesignForm(forms.ModelForm):
             }),
             'modified_from': forms.URLInput(attrs={
                 'class': INPUT_CLASSES,
-                'placeholder': 'Please paste url of LoD Design to determine predecessor',
+                'placeholder': 'https://libraryofdesigns.cc/original-design-url',
                 'id': 'id_modified_from'
             }),
             'utilities': forms.Textarea(attrs={
                 'class': INPUT_CLASSES,
                 'id': 'id_utilities',
-                'readonly': True,  # Keep readonly to prevent text editing
+                'readonly': True,
+                'placeholder': 'Selected utility files will appear here',
                 'style': 'user-select: text; cursor: pointer;',  # Allow text selection
             }),
             'module': forms.Textarea(attrs={
                 'class': INPUT_CLASSES,
-                'required': True
+                'required': True,
+                'placeholder': 'module design_name(parameters) {\n    // Your OpenSCAD code here\n}',
+                'rows': 20
             }),
             'example': forms.Textarea(attrs={
                 'class': INPUT_CLASSES,
-                'required': True
+                'required': True,
+                'placeholder': ' // Add transformations translate([x,y,z]) rotate([x,y,z]) above module example/s for assembly\ndesign_name(param1=value1, param2=value2);',
+                'rows': 7
             }),
-            'costs': forms.TextInput(attrs={'class': INPUT_CLASSES}),
-            'production_notes': forms.Textarea(attrs={'class': INPUT_CLASSES}),
-            'image': forms.FileInput(attrs={
+            'costs': forms.TextInput(attrs={
                 'class': INPUT_CLASSES,
-                'accept': 'images/*'
+                'placeholder': '25.50 (enter amount without currency symbol)'
             }),
-            'image_list': forms.TextInput(attrs={
+            'production_notes': forms.Textarea(attrs={
                 'class': INPUT_CLASSES,
-                'placeholder': 'image1.jpg, image2.png, image3.gif',
-                'readonly': True
-            }),
-            'techdraw': forms.FileInput(attrs={
-                'class': INPUT_CLASSES,
-                'accept': 'techdraws/*'
-            }),
-            'techdraw_list': forms.TextInput(attrs={
-                'class': INPUT_CLASSES,
-                'placeholder': 'drawing1.jpg, drawing2.png, drawing3.gif',
-                'readonly': True
-            }),
+                'placeholder': 'Manufacturing instructions, material requirements, assembly notes',
+                'rows': 3
+            })
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # Clear the default value for new forms  
+        if not self.instance.pk:  # Only for new designs  
+            self.fields['description'].initial = ''
+
         # Populate user choices for added_by, created_by, modified_by
         from django.contrib.auth.models import User
         user_choices = [(user.id, user.username) for user in User.objects.all()]
         self.fields['created_by'].choices = [('', '--- Select User ---')] + user_choices + [('add_creator', 'Add creator')]
 
+    def clean_name(self):  # ADD THIS METHOD
+        name = self.cleaned_data.get('name')
+        if name:
+            existing_design = Design.objects.filter(name__iexact=name).first()
+            if existing_design:
+                raise forms.ValidationError(
+                    f"A design with the name '{name}' already exists. "
+                    f"Please choose a different name to avoid conflicts."
+                )
+        return name
+
 
 class EditDesignForm(forms.ModelForm):
+    # Add the utilities file selection field  
+    utilities_file = OpenSCADFileChoiceField(required=False,
+                                             label="Select Utility File")
+
+    # Add multiupload fields for editing  
+    images = MultiFileField(
+        min_num=0,
+        max_num=10,
+        max_file_size=1024*1024*2,  # 2MB per file
+        required=False,
+        help_text="Upload additional images (max 2MB each)"
+    )
+
+    techdraws = MultiFileField(
+        min_num=0,
+        max_num=5,
+        max_file_size=1024*1024*2,  # 2MB per file
+        required=False,
+        help_text="Upload additional technical drawings (max 2MB each)"
+    )
+
+    # Add image management fields  
+    delete_all_images = forms.BooleanField(
+        required=False,
+        label="Delete all existing images",
+        help_text="Check this box to remove all current images"
+    )
+
+    delete_all_techdraws = forms.BooleanField(
+        required=False,
+        label="Delete all existing techdraws",
+        help_text="Check this box to remove all current techdraws"
+    )
+
     class Meta:
         model = Design
-        fields = ('name',
-                  'description',
-                  'costs',
-                  'image',
-                  'is_modified',
-                  'techdraw',
-                  'module',
-                  'example')
+        fields = ('category', 'name', 'description', 'created_by',
+                  'custom_creator_name', 'is_modified', 'modified_from',
+                  'utilities', 'module', 'example', 'costs',
+                  'production_notes')
+
         widgets = {
+            'category': forms.Select(attrs={
+                'class': INPUT_CLASSES,
+                'required': True
+            }),
+            'created_by': forms.Select(attrs={
+                'class': INPUT_CLASSES,
+                'required': True
+            }),
+            'custom_creator_name': forms.TextInput(attrs={
+                'class': INPUT_CLASSES,
+                'placeholder': 'Enter creator name',
+                'style': 'display: none;'
+            }),
+            'is_modified': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+                'onchange': 'toggleModifiedBy()'
+            }),
+            'modified_from': forms.URLInput(attrs={
+                'class': INPUT_CLASSES,
+                'placeholder': 'Please paste url of LoD Design to determine predecessor'
+            }),
+            'utilities': forms.Textarea(attrs={
+                'class': INPUT_CLASSES,
+                'readonly': True,
+                'style': 'user-select: text; cursor: pointer;'
+            }),
             'name': forms.TextInput(attrs={
-                'class': INPUT_CLASSES
+                'class': INPUT_CLASSES,
+                'placeholder': 'Enter design name'
             }),
             'description': forms.Textarea(attrs={
-                'class': INPUT_CLASSES
+                'class': INPUT_CLASSES,
+                'placeholder': 'Please enter design description here'
             }),
             'costs': forms.TextInput(attrs={
-                'class': INPUT_CLASSES
+                'class': INPUT_CLASSES,
+                'placeholder': 'Enter production costs (e.g., 25.50)'
             }),
-            'image': forms.FileInput(attrs={
-                'class': INPUT_CLASSES
+            'module': forms.Textarea(attrs={
+                'class': INPUT_CLASSES,
+                'placeholder': 'Enter OpenSCAD module code here',
+                'rows': 20
             }),
-            'techdraw': forms.FileInput(attrs={
-                'class': INPUT_CLASSES
+            'example': forms.Textarea(attrs={
+                'class': INPUT_CLASSES,
+                'placeholder': 'Enter module example with assembly parameters',
+                'rows': 7
             }),
-            'module': forms.TextInput(attrs={
-                'class': INPUT_CLASSES
-            }),
-            'example': forms.TextInput(attrs={
-                'class': INPUT_CLASSES
+            'production_notes': forms.Textarea(attrs={
+                'class': INPUT_CLASSES,
+                'placeholder': 'Enter information about production and use of machines',
+                'rows': 7
             }),
         }
+
+    def __init__(self, *args, **kwargs):  # ADD THIS METHOD HERE  
+        super().__init__(*args, **kwargs)
+        # Populate user choices for created_by  
+        from django.contrib.auth.models import User
+        user_choices = [(user.id, user.username) for user in User.objects.all()]
+        self.fields['created_by'].choices = [('', '--- Select User ---')] + user_choices + [('add_creator', 'Add creator')]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        delete_all_images = cleaned_data.get('delete_all_images')
+        new_images = self.files.getlist('images')
+
+        # Check if user is deleting all images without adding new ones
+        if delete_all_images and not new_images:
+            raise forms.ValidationError("Add at least one design image!")
+
+        return cleaned_data

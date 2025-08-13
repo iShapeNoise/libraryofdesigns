@@ -1,21 +1,24 @@
 {% extends 'core/base.html' %}
+{% load thumbnail %}
 
 {% block title %}Home{% endblock %}
 
 {% block content %}
     <div class="rounded mt-4 m-6 border border-2 border-primary">
-        <h2 class="mb-12 fs-4 fw-bold text-center">Newest Designs</h2>        
-        <div class="grid grid-cols-3 gap-3">
+        <h2 class="mb-4 fw-bold fs-4 text-center">Newest Designs</h2>        
+        <div class="row justify-content-center">
             {% for design in designs %}
-                <div>
-                    <a href="{% url 'design:detail' design.id %}">
-                        <div>
-                            <img src="{{ design.image.url }}" class="rounded-t-xl">
-                        </div>
-
-                        <div class="p-6 bg-white rounded">
-                            <h2 class="text-2xl">{{ design.name }}</h2>
-                            <p class="">Production Costs: {{ design.costs}}</p>
+                <div class="col-md-4 col-lg-3 mb-3">
+                    <a href="{% url 'design:detail' design.id %}" class="btn btn-outline-secondary btn-lg w-100 p-3 h-100
+                        bg-white">
+                        <div class="text-center">
+                            {% if design.first_image.url %}
+                                <img src="{{ design.first_image.url }}" class="rounded-t-xl">
+                            {% else %}  
+                                <div class="bg-gray-200 rounded-t-xl h-48 flex items-center justify-center">  
+                                    <span class="text-gray-500">No Image</span>  
+                                </div>
+                            {% endif %}
                         </div>
                     </a>
                 </div>

@@ -27,9 +27,6 @@ PG_COPY_BACKUP_PATH = 'lod_db_backup/'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
-
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 LOGIN_URL = '/login/'
@@ -56,6 +53,7 @@ INSTALLED_APPS = [
     'django_object_actions',
     'easy_thumbnails',
     'mptt',
+    'multiupload',
 ]
 
 MIDDLEWARE = [
@@ -149,6 +147,98 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 LOD_CONTENT_URL = 'lod_content/'
 LOD_CONTENT_ROOT = os.path.join(BASE_DIR, 'lod_content/')
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.expanduser('~/django_debug.log'),
+            'formatter': 'verbose',
+            'mode': 'a',  # Append mode  
+            'delay': False,  # Don't delay file opening  
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'root': {
+        'handlers': ['file', 'console'],
+        'level': 'DEBUG',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'core': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'design': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'print_capture': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
+
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = config('DEBUG', default=False, cast=bool)
+
+if DEBUG:  # Only load and run in debug mode
+    import sys
+    import logging
+
+    sys.stdout = sys.__stdout__  # Reset stdout first
+    sys.stderr = sys.__stderr__  # Reset stderr first
+
+    # Custom handler to capture print statements with immediate flushing
+    class PrintCapture:
+        def __init__(self, logger):
+            self.logger = logger
+            self.original_stdout = sys.stdout
+
+        def write(self, message):
+            if message.strip():  # Only log non-empty messages
+                self.logger.info(f"PRINT: {message.strip()}")
+                # Force immediate flush to ensure real-time logging
+                for handler in self.logger.handlers:
+                    handler.flush()
+            self.original_stdout.write(message)
+
+        def flush(self):
+            self.original_stdout.flush()
+            # Also flush all logger handlers
+            for handler in logging.getLogger().handlers:
+                handler.flush()
+
+    # Set up print capture logger and redirect stdout
+    print_logger = logging.getLogger('print_capture')
+    sys.stdout = PrintCapture(print_logger)
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -157,9 +247,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Easy Thumbnails
 THUMBNAIL_ALIASES = {
     '': {
-        'small_thumbnail': {'size': (200, 200), 'crop': 'smart'},
-        'large_thumbnail': {'size': (256, 256), 'crop': 'smart'},
-        'large_detail': {'size': (800, 600), 'quality': 90},
+        'small_thumbnail': {'size': (128, 128), 'crop': 'smart'},
+        'big_thumbnail': {'size': (256, 256), 'crop': 'smart'},
+        'large_thumbnail': {'size': (512, 512), 'crop': 'smart'},
+        'large_detail': {'size': (1024, 1024), 'quality': 90},
         'profile_avatar': {'size': (128, 128), 'crop': 'smart', 'quality': 95},
         'profile_avatar_mid': {'size': (64, 64), 'crop': 'smart', 'quality': 95},
         'profile_avatar_small': {'size': (32, 32), 'crop': 'smart', 'quality': 95},

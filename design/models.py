@@ -2,6 +2,7 @@ import os
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
 import uuid
 # from easy_thumbnails.fields import ThumbnailerImageField
 from mptt.models import MPTTModel, TreeForeignKey
@@ -36,6 +37,20 @@ class Category(MPTTModel):
         return ' > '.join([ancestor.name for ancestor in self.get_ancestors(include_self=True)])
 
 
+# Create custom storage for LOD content  
+lod_storage = FileSystemStorage(
+    location=os.path.join(settings.LOD_CONTENT_ROOT, 'tmp'),
+    base_url='/lod_content/tmp/'
+)
+
+# Ensure tmp directories exist - ADD THIS SECTION HERE
+tmp_images_dir = os.path.join(settings.LOD_CONTENT_ROOT, 'tmp', 'images')
+tmp_techdraws_dir = os.path.join(settings.LOD_CONTENT_ROOT, 'tmp', 'techdraws')
+
+os.makedirs(tmp_images_dir, exist_ok=True)
+os.makedirs(tmp_techdraws_dir, exist_ok=True)
+
+
 def design_image_path(instance, filename):
     """
     Generate upload path for design images in LOD content directory
@@ -50,21 +65,31 @@ def design_techdraw_path(instance, filename):
     return os.path.join('techdraws', filename)
 
 
+lod_storage = FileSystemStorage(
+    location=os.path.join(settings.LOD_CONTENT_ROOT, 'tmp'),
+    base_url='/lod_content/tmp/'
+)
+
+
 class Design(models.Model):
     id = models.BigAutoField(primary_key=True)
     category = models.ForeignKey(Category, related_name='designs',
                                  on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     # use blank=False if you want * the description
-    description = models.TextField(default='No description provided')
+    description = models.TextField()
     costs = models.FloatField()
     production_notes = models.TextField(blank=True, null=True)
     path_to_save = unique_file_path()
-    image = models.ImageField(upload_to=design_image_path, default='No image provided')
+    image = models.ImageField(
+        upload_to=design_image_path,
+        storage=lod_storage)
     image_list = models.TextField(blank=True, null=True)
-    techdraw = models.ImageField(upload_to=design_techdraw_path,
-                                 blank=False,
-                                 null=True)
+    techdraw = models.FileField(
+        upload_to=design_techdraw_path,
+        storage=lod_storage,
+        blank=True,
+        null=True)
     techdraw_list = models.TextField(blank=True, null=True)
     name = models.CharField(max_length=255)
     added_by = models.ForeignKey(User, related_name='added_designs',
@@ -81,8 +106,8 @@ class Design(models.Model):
     custom_creator_name = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     utilities = models.TextField(blank=True, null=True)
-    module = models.TextField(default='No module provided')
-    example = models.TextField(default='No example provided')
+    module = models.TextField()
+    example = models.TextField()
 
     def __str__(self):
         return self.name

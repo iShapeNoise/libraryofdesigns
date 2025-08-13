@@ -12,15 +12,52 @@ from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from .models import UserProfile
+# for debugging
+import logging
+logger = logging.getLogger(__name__)
+
+
+def get_design_images(design):
+    """Get list of images from the design's organized directory structure"""
+    import os
+    from django.conf import settings
+
+    try:
+        category_path = design.category.get_full_path().replace(' > ', '/').replace(' ', '_')
+        design_name_fs = design.name.replace(' ', '_')
+        images_dir = os.path.join(settings.LOD_CONTENT_URL, 'designs', category_path, design_name_fs, 'images')
+        image_files = []
+
+        if os.path.exists(images_dir):
+            for filename in os.listdir(images_dir):
+                if filename.endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+                    image_url = os.path.join(images_dir, filename)
+                    image_files.append({
+                        'filename': filename,
+                        'url': image_url
+                    })
+        logger.debug(f"Looking for images in: {images_dir}")
+        logger.debug(f"Looking for image url: {image_url}")
+
+        return image_files
+
+    except Exception as e:
+        print(f"Error in get_design_images: {e}")
+        return []
 
 
 def index(request):
     designs = Design.objects.filter(is_modified=False)[0:6]
-    # Only show root categories (no parent)  
     categories = Category.objects.filter(parent__isnull=True)
+
+    # Add first image to each design object directly
+    for design in designs:
+        design_images = get_design_images(design)
+        design.first_image = design_images[0] if design_images else None
+
     return render(request, 'core/index.html', {
         'categories': categories,
-        'designs': designs,
+        'designs': designs,  # Keep the original variable name  
     })
 
 

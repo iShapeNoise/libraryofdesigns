@@ -3,59 +3,275 @@
 
 {% block title %}{{ design.name }}{% endblock %}
 
-{% block content %}
-<div class="grid grid-cols-5 gap-6">
-    <div class="col-span-3">
-        <a href="{{ design.image.url }}" target=_blank>
-            <img src="{% thumbnail design.image 'large_detail' %}" class="rounded-xl">
-        </a>
+{% block content %}  
+<div class="container-fluid border border-2 border-dark rounded p-3"> 
+    <div class="row">
+        <div class="col-12 mb-4">
+            <h2 class="display-5 text-center">{{ design.name }}</h2>
+            <hr class="border-dark border-2 my-4">
+        </div>
     </div>
-    <div class="col-span-2 p-6 bg-gray-100 rounded-xl">
-        <h1 class="mb-6 text-3xl">{{ design.name }}</h1>
-        <p class="text-gray-500"><strong>Costs: </strong>{{ design.costs }}</p>
-        <p class="text-gray-500"><strong>Creator: </strong>{{ design.created_by }}</p>
-
-        {% if design.description %}
-            <p class="text-gray-700">
-                <strong class="text-gray-500">Description:</strong></br>
-                {{ design.description }}
-            </p>
-        {% endif %}
-
-        {% if request.user == design.created_by %}
-            <div class="mt-6 p-6 bg-white rounded-xl">
-                <p>This design is your upload!</p>  
-
-                <a href="{% url 'design:edit' design.id %}" class="inline-block
-                    mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl">Edit</a>
-                <a href="{% url 'design:delete' design.id %}" class="inline-block
-                    mt-6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl">Delete</a>
-        {% else %}
-            <a href="{% url 'conversation:new' design.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold
-                bg-teal-500 text-white rounded-xl hover:bg-teal-700">Contact creator</a>
-        {% endif %}
-    </div>
+    <div class="row">  
+        <!-- Left Column - Image Gallery -->  
+        <div class="col-lg-6 col-12 mb-4">  
+            <div> 
+                <!-- Images Carousel -->  
+                <div id="imagesCarousel" class="carousel slide" style="max-width: 400px;">  
+                    {% if design_images %}  
+                        <!-- Carousel indicators -->  
+                        <div class="carousel-indicators">  
+                            {% for image in design_images %}  
+                                <button type="button" data-bs-target="#imagesCarousel"   
+                                        data-bs-slide-to="{{ forloop.counter0 }}"   
+                                        {% if forloop.first %}class="active" aria-current="true"{% endif %}  
+                                        aria-label="Image {{ forloop.counter }}"></button>  
+                            {% endfor %}  
+                        </div>  
+                          
+                        <!-- Carousel inner -->  
+                        <div class="carousel-inner">  
+                            {% for image in design_images %}  
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">  
+                                    <div class="d-flex justify-content-center align-items-center" style="height: 400px; width: 400px;">  
+                                        <img src="{{ image.url }}" class="rounded"   
+                                             alt="{{ image.filename }}"   
+                                             style="max-height: 400px; max-width: 400px; object-fit: cover; cursor: pointer;"  
+                                             data-bs-toggle="modal" data-bs-target="#imageModal{{ forloop.counter }}"  
+                                             onclick="event.stopPropagation();">  
+                                    </div>  
+                                </div>  
+                                  
+                                <!-- Modal for full-size image -->  
+                                <div class="modal fade" id="imageModal{{ forloop.counter }}" tabindex="-1">  
+                                    <div class="modal-dialog modal-lg">  
+                                        <div class="modal-content">  
+                                            <div class="modal-header">  
+                                                <h5 class="modal-title">{{ image.filename }}</h5>  
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>  
+                                            </div>  
+                                            <div class="modal-body text-center">  
+                                                <img src="{{ image.url }}" class="img-fluid" alt="{{ image.filename }}">  
+                                            </div>  
+                                        </div>  
+                                    </div>  
+                                </div>  
+                            {% endfor %}  
+                        </div>  
+                          
+                        <!-- Carousel controls -->  
+                        <button class="carousel-control-prev" type="button" data-bs-target="#imagesCarousel" data-bs-slide="prev">  
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>  
+                            <span class="visually-hidden">Previous</span>  
+                        </button>  
+                        <button class="carousel-control-next" type="button" data-bs-target="#imagesCarousel" data-bs-slide="next">  
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>  
+                            <span class="visually-hidden">Next</span>  
+                        </button> 
+                    {% endif %}  
+                </div>  
+                  
+                <!-- Techdraws Carousel -->  
+                <div id="techdrawsCarousel" class="carousel slide" style="max-width: 400px; display: none;">  
+                    {% if design_techdraws %}  
+                        <!-- Carousel indicators -->  
+                        <div class="carousel-indicators">  
+                            {% for techdraw in design_techdraws %}  
+                                <button type="button" data-bs-target="#techdrawsCarousel"   
+                                        data-bs-slide-to="{{ forloop.counter0 }}"   
+                                        {% if forloop.first %}class="active" aria-current="true"{% endif %}  
+                                        aria-label="Techdraw {{ forloop.counter }}"></button>  
+                            {% endfor %}  
+                        </div>  
+                          
+                        <!-- Carousel inner -->  
+                        <div class="carousel-inner">  
+                            {% for techdraw in design_techdraws %}  
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">  
+                                    <div class="d-flex justify-content-center align-items-center" style="height: 400px; width: 400px;">  
+                                        <img src="{{ techdraw.url }}" class="rounded"   
+                                             alt="{{ techdraw.filename }}"   
+                                             style="max-height: 400px; max-width: 400px; object-fit: cover; cursor: pointer;"  
+                                             data-bs-toggle="modal" data-bs-target="#techdrawModal{{ forloop.counter }}"  
+                                             onclick="event.stopPropagation();">  
+                                    </div>  
+                                </div>  
+                                  
+                                <!-- Modal for full-size techdraw -->  
+                                <div class="modal fade" id="techdrawModal{{ forloop.counter }}" tabindex="-1">  
+                                    <div class="modal-dialog modal-lg">  
+                                        <div class="modal-content">  
+                                            <div class="modal-header">  
+                                                <h5 class="modal-title">{{ techdraw.filename }}</h5>  
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>  
+                                            </div>  
+                                            <div class="modal-body text-center">  
+                                                <img src="{{ techdraw.url }}" class="img-fluid" alt="{{ techdraw.filename }}">  
+                                            </div>  
+                                        </div>  
+                                    </div>  
+                                </div>  
+                            {% endfor %}  
+                        </div>  
+                          
+                        <!-- Carousel controls -->  
+                        <button class="carousel-control-prev" type="button" data-bs-target="#techdrawsCarousel" data-bs-slide="prev">  
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>  
+                            <span class="visually-hidden">Previous</span>  
+                        </button>  
+                        <button class="carousel-control-next" type="button" data-bs-target="#techdrawsCarousel" data-bs-slide="next">  
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>  
+                            <span class="visually-hidden">Next</span>  
+                        </button>  
+                    {% endif %}  
+                </div>  
+                  
+                <!-- Toggle Buttons - Moved below the gallery -->  
+                <div class="mt-3 d-flex justify-content-start">
+                    <div class="btn-group" role="group" aria-label="Gallery type selection">
+                        <input type="radio" class="btn-check" name="galleryType" id="imagesRadio"
+                               autocomplete="off" checked="" onchange="showImages()">
+                        <label class="btn btn-outline-primary" for="imagesRadio"
+                               style="width: 60px; height: 60px;">
+                            <i class="bi bi-image"></i><br>
+                            <small>{{ design_images|length }}</small>
+                        </label>
+                        <input type="radio" class="btn-check" name="galleryType" id="techdrawsRadio"
+                               autocomplete="off" onchange="showTechdraws()"
+                               {% if design_techdraws|length == 0 %}disabled{% endif %}>
+                        <label class="btn btn-outline-warning" for="techdrawsRadio"
+                               style="width: 60px; height: 60px;">
+                            <i class="bi bi-file-earmark-text"></i><br>
+                            <small>{{ design_techdraws|length|default:0 }}</small>
+                        </label>
+                    </div>
+                </div>
+            </div>  
+        </div>  
+        <!-- Right Column - Design Information -->  
+        <div class="col-lg-6 col-12">  
+            <div class="p-4 bg-light rounded">  
+                  
+                <div class="mb-3">  
+                    <strong class="text-muted">Production Costs:</strong>  
+                </div>  
+                  
+                <div class="mb-3">  
+                    <strong class="text-muted">Creator:</strong>  
+                    <span>{{ design.created_by }}</span>  
+                </div>  
+                  
+                <div class="mb-3">  
+                    <strong class="text-muted">Category:</strong>  
+                    <span>{{ design.category.get_full_path }}</span>  
+                </div>  
+                  
+                <div class="mb-3">  
+                    <strong class="text-muted">Added By:</strong>  
+                    <span>{{ design.added_by }}</span>  
+                </div>  
+                  
+                <div class="mb-3">  
+                    <strong class="text-muted">Created At:</strong>  
+                    <span>{{ design.created_at|date:"Y-m-d H:i:s" }}</span>  
+                </div>  
+                  
+                {% if design.is_modified %}  
+                    <div class="mb-3">  
+                        <strong class="text-muted">Modified Design:</strong>  
+                        <span class="badge bg-warning">Yes</span>  
+                    </div>  
+                    {% if design.modified_from %}  
+                        <div class="mb-3">  
+                            <strong class="text-muted">Modified From:</strong>  
+                            <a href="{{ design.modified_from }}" target="_blank" class="text-decoration-none">{{ design.modified_from }}</a>  
+                        </div>  
+                    {% endif %}  
+                {% endif %}  
+                  
+                {% if design.custom_creator_name %}  
+                    <div class="mb-3">  
+                        <strong class="text-muted">Custom Creator:</strong>  
+                        <span>{{ design.custom_creator_name }}</span>  
+                    </div>  
+                {% endif %}  
+                  
+                {% if design.description %}  
+                    <div class="mb-4">  
+                        <strong class="text-muted">Description:</strong>  
+                        <p class="mt-2">{{ design.description }}</p>  
+                    </div>  
+                {% endif %}  
+                  
+                {% if design.production_notes %}  
+                    <div class="mb-4">  
+                        <strong class="text-muted">Production Notes:</strong>  
+                        <p class="mt-2">{{ design.production_notes }}</p>  
+                    </div>  
+                {% endif %}        
+                <!-- Action Buttons -->  
+                <div class="mt-4">  
+                    {% if request.user == design.created_by %}  
+                        <div class="alert alert-info">  
+                            <p class="mb-3">This design is your upload!</p>  
+                            <a href="{% url 'design:edit' design.id %}" class="btn btn-primary me-2">  
+                                <i class="bi bi-pencil me-1"></i>Edit Design  
+                            </a>  
+                            <a href="{% url 'design:delete' design.id %}" class="btn btn-danger">  
+                                <i class="bi bi-trash me-1"></i>Delete Design  
+                            </a>  
+                        </div>  
+                    {% else %}  
+                        <a href="{% url 'conversation:new' design.id %}" class="btn btn-success btn-lg">  
+                            <i class="bi bi-chat-dots me-2"></i>Contact Creator  
+                        </a>  
+                    {% endif %}  
+                </div>  
+            </div>  
+        </div>
+    </div>  
+</div>  
+  
+<!-- Related Designs Section (Full Width) -->  
+<div class="mt-4 p-4 bg-light rounded">  
+    <h2 class="mb-4 text-center">Related Designs</h2>  
+      
+    <div class="row">  
+        {% for related_design in related_designs %} 
+            <div class="col-md-2 col-sm-3 col-4 mb-3">
+                <div class="border rounded p-2 bg-white">
+                    <a href="{% url 'design:detail' related_design.id %}" class="text-decoration-none">
+                        {% if related_design.image %}
+                            <img src="{{ related_design.image.url }}"
+                                 class="img-fluid rounded"
+                                 style="height: 150px; width: 100%; object-fit: cover;"
+                                 alt="{{ related_design.name }}">
+                        {% else %}
+                            <div class="bg-secondary d-flex align-items-center justify-content-center rounded"
+                                 style="height: 150px;">
+                                <i class="bi bi-image text-white" style="font-size: 2rem;"></i>
+                            </div>
+                        {% endif %}
+                        <div class="mt-2 p-2 border-top">
+                            <small class="text-dark fw-bold d-block text-truncate">{{ related_design.name }}</small>
+                        </div>
+                    </a>  
+                </div>  
+            </div>  
+        {% endfor %}  
+    </div>  
 </div>
 
-<div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
-    <h2 class="mb-12 text-2xl text-center">Related Designs</h2>
-    
-    <div class="grid grid-cols-3 gap-3">
-        {% for design in related_designs %}
-            <div>
-                <a href="{% url 'design:detail' design.id %}">
-                    <div>
-                        <img src="{{ design.image.url }}" class="rounded-t-xl">
-                    </div>
-                    <div class="p-6 bg-white rounded-b-xl">
-                        <h2 class="text-2xl">{{ design.name }}</h2>
-                        <p class="text-gray-500">Costs: {{ design.costs}}</p>
-                    </div>
-                </a>
-            </div>
-        {% endfor %}
-    </div>
-</div>
-
+<script>  
+function showImages() {  
+    document.getElementById('imagesCarousel').style.display = 'block';  
+    document.getElementById('techdrawsCarousel').style.display = 'none';  
+}  
+  
+function showTechdraws() {  
+    if (!document.getElementById('techdrawsRadio').disabled) {  
+        document.getElementById('imagesCarousel').style.display = 'none';  
+        document.getElementById('techdrawsCarousel').style.display = 'block';  
+    }  
+}  
+</script>
 {% endblock %}
-
