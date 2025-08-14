@@ -3,24 +3,27 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-    <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
-        <h2 class="mb-12 text-2xl text-center">My Designs</h2>
-        
-        <div class="grid grid-cols-3 gap-3">
+    <div class="container-fluid mt-4 px-4 py-4 bg-light rounded">
+        <h2 class="mb-4 text-center">My Designs</h2>
+        <div class="row g-3">
             {% for design in designs %}
-                <div>
-                    <a href="{% url 'design:detail' design.id %}">
-                        <div>
-                            <img src="{{ design.image.url }}" class="rounded-t-xl">
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                    <a href="{% url 'design:detail' design.id %}" class="text-decoration-none">
+                        <div class="card h-100">
+                            {% if design.image and design.image.name != 'No image provided' %}
+                                <img src="{{ design.image.url }}" class="card-img-top rounded-top" style="height: 150px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center rounded-top" style="height: 150px;">
+                                    <span class="text-muted">No Image</span>
+                                </div>
+                            {% endif %}
+                            <div class="card-body p-2">
+                                <h6 class="card-title mb-1 text-truncate">{{ design.name }}</h6>
+                            </div>
                         </div>
-
-                        <div class="p-6 bg-white rounded-b-xl">
-                            <h2 class="text-2xl">{{ design.name }}</h2>
-                            <p class="text-gray-500">Costs: {{ design.costs}}</p>
-                        </div>
-                    </a>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
+                    </a>  
+                </div>  
+            {% endfor %}  
+        </div>  
+    </div>  
 {% endblock %}

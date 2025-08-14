@@ -240,11 +240,8 @@
             <div class="col-md-2 col-sm-3 col-4 mb-3">
                 <div class="border rounded p-2 bg-white">
                     <a href="{% url 'design:detail' related_design.id %}" class="text-decoration-none">
-                        {% if related_design.image %}
-                            <img src="{{ related_design.image.url }}"
-                                 class="img-fluid rounded"
-                                 style="height: 150px; width: 100%; object-fit: cover;"
-                                 alt="{{ related_design.name }}">
+                        {% if design.first_image.url %}
+                            <img src="{{ design.first_image.url }}" class="rounded" style="width: 256px; height: 256px; object-fit: cover;">
                         {% else %}
                             <div class="bg-secondary d-flex align-items-center justify-content-center rounded"
                                  style="height: 150px;">

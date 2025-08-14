@@ -36,6 +36,17 @@ class Category(MPTTModel):
         """
         return ' > '.join([ancestor.name for ancestor in self.get_ancestors(include_self=True)])
 
+    def get_total_design_count(self):
+        """
+        Return total count of designs in this category and all its descendants
+        """
+        # Get all descendant categories including self
+        descendant_categories = self.get_descendants(include_self=True)
+
+        # Count designs in all these categories
+        from .models import Design
+        return Design.objects.filter(category__in=descendant_categories).count()
+
 
 # Create custom storage for LOD content  
 lod_storage = FileSystemStorage(

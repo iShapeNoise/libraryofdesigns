@@ -1,0 +1,179 @@
+{% extends 'core/base.html' %}
+{% load thumbnail %}
+
+{% block title %}LoD Editor{% endblock %}
+
+{% block content %}
+    <div class="container-fluid h-100">  
+        <div class="row h-100">  
+            <!-- Text Editor Panel -->  
+            <div class="col-md-6 d-flex flex-column">  
+                <div class="toolbar bg-light p-2 border-bottom">  
+                    <button id="saveBtn" class="btn btn-primary btn-sm">Save</button>  
+                    <button id="renderBtn" class="btn btn-success btn-sm">Render</button>  
+                    <button id="exportBtn" class="btn btn-secondary btn-sm">Export STL</button>  
+                </div>  
+                <div class="flex-grow-1">  
+                    <textarea id="codeEditor">{{ openscad_code }}</textarea>  
+                </div>  
+            </div>  
+              
+            <!-- Preview and Console Panel -->  
+            <div class="col-md-6 d-flex flex-column">  
+                <!-- 3D Preview -->  
+                <div class="preview-panel flex-grow-1 border">  
+                    <div id="renderDiv" style="width: 100%; height: 60%;"></div>  
+                      
+                    <!-- Viewer Controls (adapted from BlocksCAD) -->  
+                    <div id="viewerButtons" class="p-2">  
+                        <div class="btn-group">  
+                            <button id="axesButton" type="button" class="btn btn-outline-secondary btn-sm">  
+                                <svg viewBox="0 0 26 26" width="16" height="16">  
+                                    <path style="stroke:#777;stroke-width:1.6;fill:none" d="m9 0.5v15h15"/>  
+                                    <path style="stroke:#777;stroke-width:1.6;fill:none" d="m9 15-9 9"/>  
+                                </svg>  
+                            </button>  
+                        </div>  
+                          
+                        <div class="btn-group">  
+                            <button id="zInButton" type="button" class="btn btn-outline-secondary btn-sm">+</button>  
+                            <button id="zOutButton" type="button" class="btn btn-outline-secondary btn-sm">-</button>  
+                            <button id="zResetButton" type="button" class="btn btn-outline-secondary btn-sm">Reset</button>  
+                        </div>  
+                          
+                        <select id="viewMenu" class="form-select form-select-sm" style="width: auto;">  
+                            <option value="diagonal">Diagonal</option>  
+                            <option value="front">Front</option>  
+                            <option value="top">Top</option>  
+                            <option value="right">Right</option>  
+                            <option value="left">Left</option>  
+                            <option value="back">Back</option>  
+                            <option value="bottom">Bottom</option>  
+                        </select>  
+                    </div>  
+                </div>  
+                  
+                <!-- Console Panel -->  
+                <div class="console-panel bg-dark text-light p-3" style="height: 40%; overflow-y: auto;">  
+                    <h6>Console Output</h6>  
+                    <div id="consoleOutput">  
+                        <div class="text-muted">Ready...</div>  
+                    </div>  
+                </div>  
+            </div>  
+        </div>  
+    </div>  
+  
+    <!-- Parameter Panel (Modal) -->  
+    <div class="modal fade" id="parameterModal" tabindex="-1">  
+        <div class="modal-dialog">  
+            <div class="modal-content">  
+                <div class="modal-header">  
+                    <h5 class="modal-title">Parameters</h5>  
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>  
+                </div>  
+                <div class="modal-body">  
+                    <div id="parameterControls">  
+                        <!-- Dynamic parameter controls will be generated here -->  
+                    </div>  
+                </div>  
+            </div>  
+        </div>  
+    </div>  
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>  
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>  
+      
+    <!-- BlocksCAD 3D Engine Integration -->  
+    <script src="{% static 'cad_editor/js/lightgl.js' %}"></script>  
+    <script src="{% static 'cad_editor/js/csg.js' %}"></script>  
+    <script src="{% static 'cad_editor/js/viewer.js' %}"></script>  
+      
+    <script>  
+        // Initialize CodeMirror editor  
+        const editor = CodeMirror.fromTextArea(document.getElementById('codeEditor'), {  
+            mode: 'text/x-csrc',  
+            theme: 'monokai',  
+            lineNumbers: true,  
+            autoCloseBrackets: true,  
+            matchBrackets: true  
+        });  
+  
+        // Initialize 3D viewer (adapted from BlocksCAD)  
+        let processor = null;  
+          
+        function initViewer() {  
+            const renderDiv = document.getElementById('renderDiv');  
+            processor = new Blockscad.Processor(renderDiv);  
+        }  
+  
+        // Save project  
+        document.getElementById('saveBtn').addEventListener('click', function() {  
+            const code = editor.getValue();  
+            fetch('/save_project/', {  
+                method: 'POST',  
+                headers: {  
+                    'Content-Type': 'application/json',  
+                },  
+                body: JSON.stringify({  
+                    project_id: {{ project.id|default:'null' }},  
+                    code: code,  
+                    name: 'My Project'  
+                })  
+            })  
+            .then(response => response.json())  
+            .then(data => {  
+                if (data.success) {  
+                    addConsoleMessage('Project saved successfully', 'success');  
+                } else {  
+                    addConsoleMessage('Error saving project', 'error');  
+                }  
+            });  
+        });  
+  
+        // Render project  
+        document.getElementById('renderBtn').addEventListener('click', function() {  
+            const code = editor.getValue();  
+            addConsoleMessage('Rendering...', 'info');  
+              
+            fetch('/render_project/', {  
+                method: 'POST',  
+                headers: {  
+                    'Content-Type': 'application/json',  
+                },  
+                body: JSON.stringify({  
+                    project_id: {{ project.id|default:'null' }},  
+                    code: code  
+                })  
+            })  
+            .then(response => response.json())  
+            .then(data => {  
+                if (data.success) {  
+                    addConsoleMessage('Render completed successfully', 'success');  
+                    // Update 3D viewer with result  
+                    if (processor && data.result) {  
+                        processor.setBlockscad(data.result);  
+                    }  
+                } else {  
+                    addConsoleMessage('Render error: ' + data.error, 'error');  
+                }  
+            });  
+        });  
+  
+        // Console functions  
+        function addConsoleMessage(message, type = 'info') {  
+            const console = document.getElementById('consoleOutput');  
+            const div = document.createElement('div');  
+            div.className = `text-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'}`;  
+            div.textContent = new Date().toLocaleTimeString() + ': ' + message;  
+            console.appendChild(div);  
+            console.scrollTop = console.scrollHeight;  
+        }  
+  
+        // Initialize viewer on page load  
+        document.addEventListener('DOMContentLoaded', function() {  
+            initViewer();  
+        });  
+    </script>
+{% endblock%}

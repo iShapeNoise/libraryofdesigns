@@ -5,7 +5,7 @@
 
 {% block content %}
     <div class="rounded mt-4 m-6 border border-2 border-primary">
-        <h2 class="mb-4 fw-bold fs-4 text-center">Newest Designs</h2>        
+        <h2 class="mb-4 fw-bold fs-4 text-center">Newest Designs</h2>
         <div class="row justify-content-center">
             {% for design in designs %}
                 <div class="col-md-4 col-lg-3 mb-3">
@@ -13,12 +13,15 @@
                         bg-white">
                         <div class="text-center">
                             {% if design.first_image.url %}
-                                <img src="{{ design.first_image.url }}" class="rounded-t-xl">
-                            {% else %}  
-                                <div class="bg-gray-200 rounded-t-xl h-48 flex items-center justify-center">  
-                                    <span class="text-gray-500">No Image</span>  
+                                <img src="{{ design.first_image.url }}" class="rounded" style="width: 256px; height: 256px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-gray-200 rounded-t-xl h-48 flex items-center justify-center">
+                                    <span class="text-gray-500">No Image</span>
                                 </div>
                             {% endif %}
+                            <div class="p-6 bg-white rounded">
+                                <h4 class="text-2xl">{{ design.name }}</h4>
+                            </div>
                         </div>
                     </a>
                 </div>
@@ -34,7 +37,7 @@
                     <div class="text-center">
                         <h3 class="mb-2">{{ category.name }}</h3>
                         <p class="mb-1">{{ category.get_descendant_count }} subcategories</p>
-                        <p class="mb-0">{{ category.designs.count }} designs</p>
+                        <p class="mb-0">{{ category.get_total_design_count }} designs</p>
                     </div>
                 </a>  
             </div>  

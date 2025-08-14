@@ -11,6 +11,7 @@ import markdown
 from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
+from django.core.paginator import Paginator
 from .models import UserProfile
 # for debugging
 import logging
@@ -66,18 +67,26 @@ def browse_categories(request, category_id=None):
         current_category = get_object_or_404(Category, id=category_id)
         categories = current_category.get_children()
         breadcrumbs = current_category.get_ancestors(include_self=True)
-        # Get designs for this category if it's a leaf category or has designs
-        designs = Design.objects.filter(category=current_category)
+        # Get designs for this category, excluding placeholder images
+        designs_queryset = Design.objects.filter(category=current_category).exclude(image='No image provided')
+
+        # Add pagination
+        paginator = Paginator(designs_queryset, 25)  # 25 designs per page
+        page_number = request.GET.get('page')
+        designs = paginator.get_page(page_number)
     else:
         current_category = None
         categories = Category.objects.filter(parent__isnull=True)
         breadcrumbs = []
-        designs = Design.objects.none()  # No designs at root level 
+        designs = Design.objects.none()  # No designs at root level
+
     return render(request, 'core/browse_categories.html', {
         'categories': categories,
         'current_category': current_category,
         'breadcrumbs': breadcrumbs,
         'designs': designs,
+        'is_paginated': designs.has_other_pages() if hasattr(designs, 'has_other_pages') else False,
+        'page_obj': designs if hasattr(designs, 'has_other_pages') else None,
     })
 
 

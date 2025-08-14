@@ -13,6 +13,8 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>  
         <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/brite/bootstrap.min.css">  
         <link rel="stylesheet" href="{% static 'css/mobile-overrides.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
         <link rel="icon" type="image/x-icon" href="{% static 'admin/img/favicon.ico' %}">
     </head>  
     <body>
@@ -45,7 +47,7 @@
                                     data-bs-toggle="dropdown"  
                                 aria-expanded="false">Tools</button>  
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">  
-                                    <li><a class="dropdown-item" href="" target="_blank">Editor</a></li>  
+                                    <li><a class="dropdown-item" href=""{% url 'editor:editor' %} target="_blank">Editor</a></li>  
                                     <li><a class="dropdown-item" href="" target="_blank">Design Tools</a></li>  
                                     <li><a class="dropdown-item" href="" target="_blank">Production Tools</a></li>  
                                 </ul>  

@@ -31,7 +31,8 @@ def designs(request):
 
 def detail(request, pk):
     design = get_object_or_404(Design, pk=pk)
-    related_designs = Design.objects.filter(category=design.category).exclude(pk=pk)[0:3]
+    related_designs = Design.objects.filter(category=design.category)
+    related_designs = related_designs.exclude(pk=pk).exclude(image='No image provided')[:3]
 
     # Get both images and techdraws from the organized directory structure
     design_images = get_design_images(design)

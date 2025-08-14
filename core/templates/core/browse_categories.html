@@ -1,87 +1,125 @@
-{% extends 'core/base.html' %}  
+{% extends 'core/base.html' %}    
+{% load thumbnail %}  
   
-{% block title %}Browse Categories{% endblock %}  
+{% block title %}Browse Categories{% endblock %}    
   
-{% block content %}  
-<div class="container mt-4">  
-    <!-- Breadcrumbs for navigation -->  
-    {% if breadcrumbs %}  
-    <nav aria-label="breadcrumb">  
-        <ol class="breadcrumb">  
-            <li class="breadcrumb-item"><a href="{% url 'core:browse_categories' %}">All Categories</a></li>  
-            {% for crumb in breadcrumbs %}  
-                {% if forloop.last %}  
-                    <li class="breadcrumb-item active">{{ crumb.name }}</li>  
-                {% else %}  
-                    <li class="breadcrumb-item"><a href="{% url 'core:browse_category' crumb.id %}">{{ crumb.name }}</a></li>  
-                {% endif %}  
-            {% endfor %}  
-        </ol>  
-    </nav>  
-    {% endif %}  
+{% block content %}    
+<div class="container mt-4">    
+    <!-- Breadcrumbs for navigation -->    
+    {% if breadcrumbs %}    
+    <nav aria-label="breadcrumb">    
+        <ol class="breadcrumb">    
+            <li class="breadcrumb-item"><a href="{% url 'core:browse_categories' %}">All Categories</a></li>    
+            {% for crumb in breadcrumbs %}    
+                {% if forloop.last %}    
+                    <li class="breadcrumb-item active">{{ crumb.name }}</li>    
+                {% else %}    
+                    <li class="breadcrumb-item"><a href="{% url 'core:browse_category' crumb.id %}">{{ crumb.name }}</a></li>    
+                {% endif %}    
+            {% endfor %}    
+        </ol>    
+    </nav>    
+    {% endif %}    
   
-    <!-- Current category title -->  
-    {% if current_category %}  
-        <h2 class="mb-4 text-center">{{ current_category.name }}</h2>  
-    {% else %}  
-        <h2 class="mb-4 text-center">All Categories</h2>  
-    {% endif %}  
+    <!-- Current category title -->    
+    {% if current_category %}    
+        <h2 class="mb-4 text-center">{{ current_category.name }}</h2>    
+    {% else %}    
+        <h2 class="mb-4 text-center">All Categories</h2>    
+    {% endif %}    
   
-    <!-- Subcategories as buttons (if any exist) -->  
-    {% if categories %}  
-    <div class="row mb-5">  
-        {% for category in categories %}  
-            <div class="col-md-4 mb-3">  
-                <a href="{% url 'core:browse_category' category.id %}"   
-                   class="btn btn-primary btn-lg w-100 p-3 text-start">  
-                    <div>  
-                        <h5 class="mb-1">{{ category.name }}</h5>  
-                        <small class="d-block">{{ category.get_children_count }} subcategories</small>  
-                        <small class="d-block">{{ category.designs.count }} designs</small>  
-                    </div>  
-                </a>  
-            </div>  
-        {% endfor %}  
-    </div>  
-    {% endif %}  
+    <!-- Subcategories as buttons (if any exist) -->    
+    {% if categories %}    
+    <div class="row mb-5">    
+        {% for category in categories %}    
+            <div class="col-md-4 mb-3">    
+                <a href="{% url 'core:browse_category' category.id %}"     
+                   class="btn btn-primary btn-lg w-100 p-3 text-start">    
+                    <div>    
+                        <h5 class="mb-1">{{ category.name }}</h5>    
+                        <small class="d-block">{{ category.get_descendant_count }} subcategories</small>    
+                        <small class="d-block">{{ category.get_total_design_count }} designs</small>    
+                    </div>    
+                </a>    
+            </div>    
+        {% endfor %}    
+    </div>    
+    {% endif %}    
   
-    <!-- Designs in this category (styled like "Newest Designs" from index.html) -->  
-    {% if designs %}  
-    <div class="rounded mt-4 m-6 border border-2 border-primary">  
-        <h2 class="mb-12 fs-4 fw-bold text-center">  
-            {% if current_category %}  
-                Designs in {{ current_category.name }}  
-            {% else %}  
-                All Designs  
-            {% endif %}  
-        </h2>  
+    <!-- Designs in this category with pagination -->    
+    {% if designs %}    
+    <div class="rounded mt-4 border border-2 border-primary">    
+        <h2 class="mb-4 fs-4 fw-bold text-center p-3">    
+            {% if current_category %}    
+                Designs in {{ current_category.name }}    
+            {% else %}    
+                All Designs    
+            {% endif %}    
+        </h2>
+        <div class="container-fluid px-4 pb-4">
+            <div class="row g-3">
+                {% for design in designs %}
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                        <a href="{% url 'design:detail' design.id %}" class="text-decoration-none">
+                            <div class="card h-100">
+                                {% if design.first_image.url %}
+                                    <img src="{{ design.first_image.url }}" class="card-img-top rounded-top" style="height: 150px; object-fit: cover;">
+                                {% else %}
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center rounded-top" style="height: 150px;">
+                                        <span class="text-muted">No Image</span>
+                                    </div>
+                                {% endif %}
+                                <div class="card-body p-2">
+                                    <h6 class="card-title mb-1 text-truncate">{{ design.name }}</h6>
+                                    <small class="text-muted">{{ design.created_by design.first_image.url}}</small>
+                                </div>
+                            </div>
+                        </a>    
+                    </div>    
+                {% endfor %}    
+            </div>    
+        </div>  
           
-        <div class="grid grid-cols-3 gap-3">  
-            {% for design in designs %}  
-                <div>  
-                    <a href="{% url 'design:detail' design.id %}">  
-                        <div>  
-                            <img src="{{ design.image.url }}" class="rounded-t-xl">  
-                        </div>  
+        <!-- Pagination -->  
+        {% if is_paginated %}  
+        <nav aria-label="Design pagination" class="p-3">  
+            <ul class="pagination justify-content-center">  
+                {% if page_obj.has_previous %}  
+                    <li class="page-item">  
+                        <a class="page-link" href="?page=1">&laquo; First</a>  
+                    </li>  
+                    <li class="page-item">  
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>  
+                    </li>  
+                {% endif %}  
+                  
+                <li class="page-item active">  
+                    <span class="page-link">  
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}  
+                    </span>  
+                </li>  
+                  
+                {% if page_obj.has_next %}  
+                    <li class="page-item">  
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>  
+                    </li>  
+                    <li class="page-item">  
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>  
+                    </li>  
+                {% endif %}  
+            </ul>  
+        </nav>  
+        {% endif %}  
+    </div>    
+    {% endif %}    
   
-                        <div class="p-6 bg-white rounded">  
-                            <h2 class="text-2xl">{{ design.name }}</h2>  
-                            <p class="">Production Costs: {{ design.costs }}</p>  
-                        </div>  
-                    </a>  
-                </div>  
-            {% endfor %}  
-        </div>  
-    </div>  
-    {% endif %}  
-  
-    <!-- Message when no subcategories or designs -->  
-    {% if not categories and not designs %}  
-    <div class="col-12">  
-        <div class="alert alert-info text-center">  
-            <i class="fas fa-info-circle"></i> No subcategories or designs found in this category.  
-        </div>  
-    </div>  
-    {% endif %}  
-</div>  
+    <!-- Message when no subcategories or designs -->    
+    {% if not categories and not designs %}    
+    <div class="col-12">    
+        <div class="alert alert-info text-center">    
+            <i class="fas fa-info-circle"></i> No subcategories or designs found in this category.    
+        </div>    
+    </div>    
+    {% endif %}    
+</div>    
 {% endblock %}
