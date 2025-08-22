@@ -338,6 +338,10 @@ input[type="submit"], button {
         overflow: auto;
     }
 
+    .card-img-top, .bg-secondary {  
+        height: 256px !important;  
+    }
+
     /* Messages */
 
     ul.messagelist li {
@@ -386,6 +390,7 @@ input[type="submit"], button {
     }
 }
 
+
 /* Mobile */
 
 @media (max-width: 767px) {
@@ -412,6 +417,10 @@ input[type="submit"], button {
     .colMS, .colSM {
         margin: 0;
     }
+
+    .card-img-top, .bg-secondary {  
+        height: 128px !important;  
+    }  
 
     #content-related, .colSM #content-related {
         width: 100%;

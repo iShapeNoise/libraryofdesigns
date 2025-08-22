@@ -4,24 +4,29 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <div class="rounded mt-4 m-6 border border-2 border-primary">
+    <div class="rounded mt-4 border border-2 border-primary" style="margin: 5px; padding: 20px;">
         <h2 class="mb-4 fw-bold fs-4 text-center">Newest Designs</h2>
-        <div class="row justify-content-center">
+        <div class="row">
             {% for design in designs %}
-                <div class="col-md-4 col-lg-3 mb-3">
+                <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3"> 
                     <a href="{% url 'design:detail' design.id %}" class="btn btn-outline-secondary btn-lg w-100 p-3 h-100
                         bg-white">
                         <div class="text-center">
                             {% if design.first_image.url %}
-                                <img src="{{ design.first_image.url }}" class="rounded" style="width: 256px; height: 256px; object-fit: cover;">
+                                <img src="{{ design.first_image.url }}"
+                                     class="card-img-top rounded"
+                                     style="width: 220px; height: 220px; object-fit: cover;"
+                                     alt="{{ design.name }}">
                             {% else %}
-                                <div class="bg-gray-200 rounded-t-xl h-48 flex items-center justify-center">
+                                <div class="bg-secondary d-flex align-items-center justify-content-center rounded-top"
+                                     style="height: 128px;">
                                     <span class="text-gray-500">No Image</span>
                                 </div>
                             {% endif %}
-                            <div class="p-6 bg-white rounded">
-                                <h4 class="text-2xl">{{ design.name }}</h4>
-                            </div>
+                        </div>
+                        <div class="card-body p-3">
+                            <h6 class="card-title text-dark fw-bold mb-1 text-truncate">{{ design.name }}</h6>
+                            <small class="text-muted">{{ design.created_by }}</small>
                         </div>
                     </a>
                 </div>
@@ -29,7 +34,7 @@
         </div>
     </div>
 <div class="rounded mt-4 m-6 border border-2 border-primary">  
-    <h2 class="mb-4 fw-bold fs-4 text-center">Categories</h2>
+    <h2 class="m-4 fw-bold fs-4 text-center">Categories</h2>
     <div class="row justify-content-center">
         {% for category in categories %}  
             <div class="col-md-5 mb-3">

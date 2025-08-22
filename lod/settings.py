@@ -48,15 +48,18 @@ INSTALLED_APPS = [
     'design',
     'knowhow',
     'editor',
+    'forum',
     'django_recaptcha',
     'pg_copy',
     'django_object_actions',
     'easy_thumbnails',
     'mptt',
     'multiupload',
+    'taggit',
 ]
 
 MIDDLEWARE = [
+   'django.middleware.gzip.GZipMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -102,6 +105,16 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': config('MEMCACHED_LOCATION', default='127.0.0.1:11211'),
+        'TIMEOUT': 300,  # 5 minutes default
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000,
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

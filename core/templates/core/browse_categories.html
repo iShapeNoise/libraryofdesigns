@@ -47,7 +47,7 @@
     {% endif %}    
   
     <!-- Designs in this category with pagination -->    
-    {% if designs %}    
+    {% if designs %}  
     <div class="rounded mt-4 border border-2 border-primary">    
         <h2 class="mb-4 fs-4 fw-bold text-center p-3">    
             {% if current_category %}    
@@ -71,7 +71,7 @@
                                 {% endif %}
                                 <div class="card-body p-2">
                                     <h6 class="card-title mb-1 text-truncate">{{ design.name }}</h6>
-                                    <small class="text-muted">{{ design.created_by design.first_image.url}}</small>
+                                    <small class="text-muted">{{ design.first_image.url}}</small>
                                 </div>
                             </div>
                         </a>    

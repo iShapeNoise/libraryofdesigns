@@ -10,4 +10,5 @@ urlpatterns = [
     path('<int:pk>/', views.detail, name='detail'),
     path('<int:pk>/delete/', views.delete, name='delete'),
     path('<int:pk>/edit/', views.edit, name='edit'),
+    path('tag/<slug:tag_slug>/', views.designs_by_tag, name='designs_by_tag'),
 ]

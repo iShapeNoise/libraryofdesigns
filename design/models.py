@@ -6,6 +6,7 @@ from django.core.files.storage import FileSystemStorage
 import uuid
 # from easy_thumbnails.fields import ThumbnailerImageField
 from mptt.models import MPTTModel, TreeForeignKey
+from taggit.managers import TaggableManager
 
 
 def unique_file_path():
@@ -86,6 +87,8 @@ class Design(models.Model):
     id = models.BigAutoField(primary_key=True)
     category = models.ForeignKey(Category, related_name='designs',
                                  on_delete=models.CASCADE)
+    tags = TaggableManager(blank=True,
+                           help_text="Add tags separated by commas")
     name = models.CharField(max_length=255)
     # use blank=False if you want * the description
     description = models.TextField()

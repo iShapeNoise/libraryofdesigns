@@ -12,9 +12,9 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">  
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>  
         <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/brite/bootstrap.min.css">  
-        <link rel="stylesheet" href="{% static 'css/mobile-overrides.css' %}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+        <link rel="stylesheet" href="{% static 'admin/css/mobile-overrides.css' %}">
         <link rel="icon" type="image/x-icon" href="{% static 'admin/img/favicon.ico' %}">
     </head>  
     <body>
@@ -36,9 +36,15 @@
                                     data-bs-toggle="dropdown"  
                                 aria-expanded="false">Know-How</button>  
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">  
-                                    <li><a class="dropdown-item" href="{% url 'knowhow:lod' %}" target="_blank">LoD</a></li>  
-                                    <li><a class="dropdown-item" href="{% url 'knowhow:cad' %}" target="_blank">CAD</a></li>  
-                                    <li><a class="dropdown-item" href="{% url 'knowhow:cam' %}" target="_blank">CAM</a></li>  
+                                    <!-- Help Section -->  
+                                    <li><h6 class="dropdown-header">Help</h6></li>  
+                                    <li><a class="dropdown-item" href="{% url 'forum:index' %}">Forum</a></li>  
+                                    <li><hr class="dropdown-divider"></li>
+                                    <!-- Tutorials Section -->  
+                                    <li><h6 class="dropdown-header">Tutorials</h6></li>  
+                                    <li><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
+                                    <li><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
+                                    <li><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
                                 </ul>  
                             </div>  
                             <div class="nav-item dropdown me-3">  
@@ -47,9 +53,11 @@
                                     data-bs-toggle="dropdown"  
                                 aria-expanded="false">Tools</button>  
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">  
-                                    <li><a class="dropdown-item" href=""{% url 'editor:editor' %} target="_blank">Editor</a></li>  
-                                    <li><a class="dropdown-item" href="" target="_blank">Design Tools</a></li>  
-                                    <li><a class="dropdown-item" href="" target="_blank">Production Tools</a></li>  
+                                    <li><h6 class="dropdown-header">Design Tools</h6></li>
+                                    <li><a class="dropdown-item" href=""{% url 'editor:editor' %}
+                                            target="_blank">Editor</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><h6 class="dropdown-header">Production Tools</h6></li>
                                 </ul>  
                             </div>  
                             <!-- Expanded Search bar -->  
@@ -80,52 +88,65 @@
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">  
                                 <!-- Know-How for mobile (only visible on small screens) -->  
                                 <li class="d-lg-none">  
-                                    <h6 class="dropdown-header">Know-How</h6>  
+                                    <h6 class="dropdown-header">Know-How: Help</h6>  
+                                </li>
+                                <li><a class="dropdown-item" href="{% url 'forum:index' %}">Forum</a></li>  
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="d-lg-none">  
+                                    <h6 class="dropdown-header">Know-How: Tutorials</h6>  
                                 </li>  
                                 <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
                                 <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
                                 <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
                                 <li class="d-lg-none"><hr class="dropdown-divider"></li>  
-                                  
-                                <li>    
-                                    <a class="dropdown-item" href="{% url 'design:new' %}">    
-                                        <i class="bi bi-plus-circle me-2"></i>New Design    
-                                    </a>    
-                                </li>    
-                                <li>    
-                                    <a class="dropdown-item" href="{% url 'conversation:inbox' %}">    
-                                        <i class="bi bi-inbox me-2"></i>Inbox    
-                                    </a>    
-                                </li>    
-                                <li>    
-                                    <a class="dropdown-item" href="{% url 'dashboard:index' %}">    
-                                        <i class="bi bi-speedometer2 me-2"></i>Dashboard    
-                                    </a>    
-                                </li>    
-                                <li>    
-                                    <a class="dropdown-item" href="{% url 'core:profile_settings' %}">    
-                                        <i class="bi bi-gear me-2"></i>Settings    
-                                    </a>    
-                                </li>    
-                                <li><hr class="dropdown-divider"></li>    
-                                <li>    
-                                    <a class="dropdown-item" href="{% url 'core:logout' %}">    
-                                        <i class="bi bi-box-arrow-right me-2"></i>Logout    
-                                    </a>    
-                                </li>    
-                            </ul>    
-                        </div>    
-                        {% else %}  
-                        <!-- Guest user dropdown -->  
-                        <div class="dropdown">  
-                            <button class="btn btn-link dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">  
-                                <img src="/static/admin/img/default_avatar.png" class="rounded-circle" width="32" height="32" alt="Default Avatar">  
-                            </button>  
-                            <ul class="dropdown-menu dropdown-menu-end">  
-                                <!-- Know-How for mobile guests -->  
+                                <!-- Tools for mobile (only visible on small screens) -->    
                                 <li class="d-lg-none">  
-                                    <h6 class="dropdown-header">Know-How</h6>  
+                                    <h6 class="dropdown-header">Tools: Design</h6>  
                                 </li>  
+                                <li class="d-lg-none"><a class="dropdown-item" href="" target="_blank">Editor</a></li>    
+                                <li class="d-lg-none">  
+                                    <h6 class="dropdown-header">Tools: Production</h6>  
+                                </li>  
+                                <li class="d-lg-none"><hr class="dropdown-divider"></li>                                  
+                                <li>    
+                                    <a class="dropdown-item" href="{% url 'design:new' %}">
+                                        <i class="bi bi-plus-circle me-2"></i>New Design
+                                    </a>
+                                </li> 
+                                <li>   
+                                    <a class="dropdown-item" href="{% url 'conversation:inbox' %}">
+                                        <i class="bi bi-inbox me-2"></i>Inbox
+                                    </a>
+                                </li> 
+                                <li>   
+                                    <a class="dropdown-item" href="{% url 'dashboard:index' %}">
+                                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                                    </a>
+                                </li> 
+                                <li>   
+                                    <a class="dropdown-item" href="{% url 'core:profile_settings' %}">
+                                        <i class="bi bi-gear me-2"></i>Settings
+                                    </a>
+                                </li> 
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'core:logout' %}">
+                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                    </a>
+                                </li> 
+                            </ul>
+                        </div> 
+                        {% else %}
+                        <!-- Guest user dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-link dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="/static/admin/img/default_avatar.png" class="rounded-circle" width="32" height="32" alt="Default Avatar">
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <!-- Know-How for mobile guests --> 
+                                <li class="d-lg-none">
+                                    <h6 class="dropdown-header">Know-How</h6>
+                                </li>
                                 <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
                                 <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
                                 <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
@@ -147,9 +168,11 @@
                 </div>  
             </div>  
         </nav>
-        <div class="mx-4 my-4">
-            {% block content %}
-            {% endblock %}
+        <div style="max-width: 1280px; margin: 0 auto;">
+            <div class="mx-4 my-4">
+                {% block content %}
+                {% endblock %}
+            </div>
         </div>
         <footer class="bg-primary">
             <div class="container p-4">

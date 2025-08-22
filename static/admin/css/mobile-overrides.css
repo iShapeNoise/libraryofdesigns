@@ -3,7 +3,12 @@
     body {  
         font-size: 1.2rem !important;  
     }  
-              
+
+    .container-fluid {  
+    max-width: 1280px !important;  
+    margin: 0 auto;  
+    }
+
     /* Navigation and dropdown items */  
     .navbar-nav .nav-link,  
     .dropdown-item {  

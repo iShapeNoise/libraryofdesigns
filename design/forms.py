@@ -7,6 +7,8 @@ from django.forms import inlineformset_factory
 from django.core.exceptions import ValidationError
 from .models import Design, Category, BillOfMaterials
 from multiupload.fields import MultiFileField
+from taggit.forms import TagWidget
+
 
 INPUT_CLASSES = 'form-control border col-xs-4'
 
@@ -107,7 +109,7 @@ class NewDesignForm(forms.ModelForm):
 
     class Meta:
         model = Design
-        fields = ('category', 'name', 'description', 'created_by', 'custom_creator_name',
+        fields = ('category', 'tags', 'name', 'description', 'created_by', 'custom_creator_name',
                   'is_modified', 'modified_from', 'utilities', 'module',
                   'example', 'costs', 'production_notes')
 
@@ -116,6 +118,7 @@ class NewDesignForm(forms.ModelForm):
                 'class': INPUT_CLASSES,
                 'required': True
             }),
+            'tags': TagWidget(),
             'name': forms.TextInput(attrs={
                 'class': INPUT_CLASSES,
                 'required': True,
@@ -236,7 +239,7 @@ class EditDesignForm(forms.ModelForm):
 
     class Meta:
         model = Design
-        fields = ('category', 'name', 'description', 'created_by',
+        fields = ('category', 'tags', 'name', 'description', 'created_by',
                   'custom_creator_name', 'is_modified', 'modified_from',
                   'utilities', 'module', 'example', 'costs',
                   'production_notes')
@@ -246,6 +249,7 @@ class EditDesignForm(forms.ModelForm):
                 'class': INPUT_CLASSES,
                 'required': True
             }),
+            'tags': TagWidget(),
             'created_by': forms.Select(attrs={
                 'class': INPUT_CLASSES,
                 'required': True

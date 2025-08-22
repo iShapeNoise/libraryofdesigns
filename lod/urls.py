@@ -12,6 +12,7 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('inbox/', include('conversation.urls')),
     path('knowhow/', include('knowhow.urls')),
+    path('forum/', include('forum.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
   + static(settings.LOD_CONTENT_URL, document_root=settings.LOD_CONTENT_ROOT)

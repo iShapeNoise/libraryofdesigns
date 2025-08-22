@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from .forms import NewDesignForm, EditDesignForm, BOMFormSet
 from .models import Design, Category
+from taggit.models import Tag
 
 
 def designs(request):
@@ -19,7 +20,8 @@ def designs(request):
 
     if query:
         designs = designs.filter(Q(name__icontains=query) |
-                                 Q(description__icontains=query))
+                                 Q(description__icontains=query) |
+                                 Q(tags__icontains=query))
 
     return render(request, 'design/designs.html', {
         'designs': designs,
@@ -29,10 +31,20 @@ def designs(request):
     })
 
 
-def detail(request, pk):
-    design = get_object_or_404(Design, pk=pk)
-    related_designs = Design.objects.filter(category=design.category)
-    related_designs = related_designs.exclude(pk=pk).exclude(image='No image provided')[:3]
+def detail(request, pk): 
+    design = get_object_or_404(Design, pk=pk) 
+ 
+    # Fix the filtering by being more explicit about the exclusion  
+    related_designs = Design.objects.filter(category=design.category).exclude(pk=pk)[:3] 
+
+    # Debug output to verify filtering is working
+    print(f"Current design ID: {design.id}, Name: {design.name}")
+    print(f"Related design IDs: {[(d.id, d.name) for d in related_designs]}")
+
+    # Add first image to each related design object
+    for related_design in related_designs:
+        design_images = get_design_images(related_design)
+        related_design.first_image = design_images[0]  # No need for None check since images are mandatory
 
     # Get both images and techdraws from the organized directory structure
     design_images = get_design_images(design)
@@ -42,7 +54,16 @@ def detail(request, pk):
         'design': design,
         'related_designs': related_designs,
         'design_images': design_images,
-        'design_techdraws': design_techdraws,  # This must be passed to template
+        'design_techdraws': design_techdraws,
+    })
+
+
+def designs_by_tag(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    designs = Design.objects.filter(tags__in=[tag])
+    return render(request, 'design/designs_by_tag.html', {
+        'designs': designs,
+        'tag': tag
     })
 
 

@@ -26,13 +26,13 @@ def get_design_images(design):
     try:
         category_path = design.category.get_full_path().replace(' > ', '/').replace(' ', '_')
         design_name_fs = design.name.replace(' ', '_')
-        images_dir = os.path.join(settings.LOD_CONTENT_URL, 'designs', category_path, design_name_fs, 'images')
+        images_dir = os.path.join(settings.LOD_CONTENT_ROOT, 'designs', category_path, design_name_fs, 'images')
         image_files = []
 
         if os.path.exists(images_dir):
             for filename in os.listdir(images_dir):
                 if filename.endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
-                    image_url = os.path.join(images_dir, filename)
+                    image_url = f"/{settings.LOD_CONTENT_URL}designs/{category_path}/{design_name_fs}/images/{filename}"
                     image_files.append({
                         'filename': filename,
                         'url': image_url
@@ -69,11 +69,16 @@ def browse_categories(request, category_id=None):
         breadcrumbs = current_category.get_ancestors(include_self=True)
         # Get designs for this category, excluding placeholder images
         designs_queryset = Design.objects.filter(category=current_category).exclude(image='No image provided')
-
         # Add pagination
         paginator = Paginator(designs_queryset, 25)  # 25 designs per page
         page_number = request.GET.get('page')
         designs = paginator.get_page(page_number)
+        for design in designs:
+            design_images = get_design_images(design)
+            if design_images:
+                design.first_image = design_images[0]
+            else:
+                None
     else:
         current_category = None
         categories = Category.objects.filter(parent__isnull=True)
@@ -106,13 +111,8 @@ def contact(request):
 
 
 def logout_user(request):
-    designs = Design.objects.filter(is_modified=False)[0:6]
-    categories = Category.objects.all().filter(parent__isnull=True)
     logout(request)
-    return render(request, 'core/index.html', {
-        'categories': categories,
-        'designs': designs,
-    })
+    return redirect('core:index')
 
 
 def signup(request):
