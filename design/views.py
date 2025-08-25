@@ -21,7 +21,8 @@ def designs(request):
     if query:
         designs = designs.filter(Q(name__icontains=query) |
                                  Q(description__icontains=query) |
-                                 Q(tags__icontains=query))
+                                 Q(tags__icontains=query) |
+                                 Q(category__name__icontains=query))
 
     return render(request, 'design/designs.html', {
         'designs': designs,
