@@ -14,6 +14,8 @@ from pathlib import Path
 from decouple import config
 from decouple import Csv 
 import os
+import mimetypes
+mimetypes.add_type("application/javascript", ".js", True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -48,6 +50,7 @@ INSTALLED_APPS = [
     'design',
     'knowhow',
     'editor',
+    'keditor',
     'forum',
     'django_recaptcha',
     'pg_copy',
@@ -59,7 +62,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-   'django.middleware.gzip.GZipMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

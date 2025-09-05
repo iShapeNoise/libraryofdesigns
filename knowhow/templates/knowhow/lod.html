@@ -1,16 +1,40 @@
-
-{% extends 'core/base.html' %}
-
-{% block title %}KnowHow: LoD{% endblock %}
-
-{% block content %}
-
-<div class="container rounded mt-4 mx-6 mb-12 border border-2 border-primary">
-    <div class="row mt-12 mb-12">
-        <h2 class="mt-12 mb-12 fs-4 fw-bold text-center">KnowHow >> LoD</h2>
-    </div>
-    <div class="mx-12 mt-12 mb-12">
-        {{ html_code|safe }}
-    </div>
-</div>
-{% endblock%}
+{% extends 'core/base.html' %}  
+  
+{% block title %}{{ section_title }}{% endblock %}  
+  
+{% block content %}  
+<div class="container-fluid">  
+    <h1 class="mb-4">{{ section_title }}</h1>  
+      
+    {% if has_courses %}  
+    <div class="row">  
+        {% for course in courses %}  
+        <div class="col-md-4 mb-4">  
+            <div class="card h-100">  
+                {% if course.course_image %}  
+                <img src="{{ course.course_image }}" class="card-img-top"   
+                     style="height: 300px; object-fit: cover;"   
+                     alt="{{ course.title }}">  
+                {% endif %}  
+                <div class="card-body">  
+                    <h5 class="card-title">{{ course.title }}</h5>  
+                    <div class="card-text">  
+                        {{ course.about_html|safe }}  
+                    </div>  
+                </div>  
+                <div class="card-footer text-center">  
+                <a href="/knowhow/{{ course.section }}/{{ course.name }}/" class="btn btn-primary btn-lg">  Enter {{ course.title }} Course  </a>
+                </div>  
+            </div>  
+        </div>  
+        {% endfor %}  
+    </div>  
+    {% else %}  
+    <div class="col-12">  
+        <div class="alert alert-info text-center">  
+            <i class="fas fa-info-circle"></i> No courses available yet.  
+        </div>  
+    </div>  
+    {% endif %}  
+</div>  
+{% endblock %}

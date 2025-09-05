@@ -9,6 +9,7 @@ urlpatterns = [
     path('', include('core.urls')),
     path('designs/', include('design.urls')),
     path('editor/', include('editor.urls')),
+    path('keditor/', include('keditor.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('inbox/', include('conversation.urls')),
     path('knowhow/', include('knowhow.urls')),

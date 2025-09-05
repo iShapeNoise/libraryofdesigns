@@ -16,6 +16,7 @@ from .models import UserProfile
 # for debugging
 import logging
 logger = logging.getLogger(__name__)
+from django.core.paginator import Paginator
 
 
 def get_design_images(design):
@@ -56,9 +57,16 @@ def index(request):
         design_images = get_design_images(design)
         design.first_image = design_images[0] if design_images else None
 
+    def chunk_list(lst, n):
+        for i in range(0, len(lst), n):
+            yield lst[i:i + n]
+
+    designs_chunks = list(chunk_list(designs, 4))
+
     return render(request, 'core/index.html', {
         'categories': categories,
         'designs': designs,  # Keep the original variable name  
+        'designs_chunks': designs_chunks,
     })
 
 

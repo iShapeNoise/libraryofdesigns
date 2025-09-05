@@ -36,7 +36,7 @@ def detail(request, pk):
     design = get_object_or_404(Design, pk=pk) 
  
     # Fix the filtering by being more explicit about the exclusion  
-    related_designs = Design.objects.filter(category=design.category).exclude(pk=pk)[:3] 
+    related_designs = Design.objects.filter(category=design.category).exclude(pk=pk)[:12] 
 
     # Debug output to verify filtering is working
     print(f"Current design ID: {design.id}, Name: {design.name}")
@@ -51,9 +51,17 @@ def detail(request, pk):
     design_images = get_design_images(design)
     design_techdraws = get_design_techdraws(design)
 
+    # Chunk related designs for carousel (6 designs per slide)  
+    def chunk_list(lst, n):
+        for i in range(0, len(lst), n):
+            yield lst[i:i + n]
+
+    related_designs_chunks = list(chunk_list(related_designs, 4))
+
     return render(request, 'design/detail.html', {
         'design': design,
         'related_designs': related_designs,
+        'related_designs_chunks': related_designs_chunks,
         'design_images': design_images,
         'design_techdraws': design_techdraws,
     })

@@ -18,200 +18,201 @@
         <link rel="icon" type="image/x-icon" href="{% static 'admin/img/favicon.ico' %}">
     </head>  
     <body>
-        <nav class="navbar navbar-expand-lg border-bottom">  
-            <div class="container-fluid">  
-                <!-- Main navbar row -->  
-                <div class="d-flex justify-content-between align-items-center w-100">  
-                    <a href="/" class="navbar-brand">
-                        <img class="img-responsive ps-3 d-none d-md-block" height="42" src="/static/admin/img/lod_title.png">
-                        <img class="img-responsive ps-2 d-md-none" height="23" src="/static/admin/img/lod_title.png">
-                    </a>  
-                      
-                    <!-- Desktop navigation (hidden on mobile) -->  
-                    <div class="d-none d-lg-flex flex-grow-1 mx-4">  
-                        <div class="d-flex align-items-center w-100">  
-                            <div class="nav-item dropdown me-3">  
-                                <button class="btn btn-outline-secondary dropdown-toggle" href="#"  
-                                    id="navbarDropdown" type="button"  
-                                    data-bs-toggle="dropdown"  
-                                aria-expanded="false">Know-How</button>  
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">  
-                                    <!-- Help Section -->  
-                                    <li><h6 class="dropdown-header">Help</h6></li>  
+        <div class="container-fluid vh-100 p-4">
+            <nav class="navbar navbar-expand-lg border-bottom-0 rounded-top" style="max-width: 1280px; margin: 0 auto;">  
+                <div class="container-fluid" style="max-width: 1280px; margin: 0 auto;">  
+                    <!-- Main navbar row -->  
+                    <div class="d-flex justify-content-between align-items-center w-100">  
+                        <a href="/" class="navbar-brand">
+                            <img class="img-responsive ps-3 d-none d-md-block" height="42" src="/static/admin/img/lod_title.png">
+                            <img class="img-responsive ps-2 d-md-none" height="23" src="/static/admin/img/lod_title.png">
+                        </a>  
+                          
+                        <!-- Desktop navigation (hidden on mobile) -->  
+                        <div class="d-none d-lg-flex flex-grow-1 mx-4">  
+                            <div class="d-flex align-items-center w-100">  
+                                <div class="nav-item dropdown me-3">  
+                                    <button class="btn btn-outline-secondary dropdown-toggle" href="#"  
+                                        id="navbarDropdown" type="button"  
+                                        data-bs-toggle="dropdown"  
+                                    aria-expanded="false">Know-How</button>  
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">  
+                                        <!-- Help Section -->  
+                                        <li><h6 class="dropdown-header">Help</h6></li>  
+                                        <li><a class="dropdown-item" href="{% url 'forum:index' %}">Forum</a></li>  
+                                        <li><hr class="dropdown-divider"></li>
+                                        <!-- Tutorials Section -->  
+                                        <li><h6 class="dropdown-header">Tutorials</h6></li>  
+                                        <li><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
+                                        <li><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
+                                        <li><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
+                                    </ul>  
+                                </div>  
+                                <div class="nav-item dropdown me-3">  
+                                    <button class="btn btn-outline-secondary dropdown-toggle" href="#"  
+                                        id="navbarDropdown" type="button"  
+                                        data-bs-toggle="dropdown"  
+                                    aria-expanded="false">Tools</button>  
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">  
+                                        <li><h6 class="dropdown-header">Design Tools</h6></li>
+                                        <li><a class="dropdown-item" href=""{% url 'editor:editor' %}
+                                                target="_blank">Editor</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><h6 class="dropdown-header">Production Tools</h6></li>
+                                    </ul>  
+                                </div>  
+                                <!-- Expanded Search bar -->  
+                                <div class="flex-grow-1">  
+                                    <form class="d-flex" method="get" action="{% url 'design:designs' %}">  
+                                        <input name="query" class="form-control" type="search" value="{{ query }}" placeholder="Find a design">  
+                                    </form>  
+                                </div>  
+                            </div>  
+                        </div>  
+                          
+                        <!-- Avatar/Auth section (always visible) -->  
+                        <div class="nav-item">  
+                            {% if request.user.is_authenticated %}  
+                            <!-- Avatar Dropdown -->  
+                            <div class="dropdown">    
+                                <button class="btn btn-link dropdown-toggle d-flex align-items-center"  
+                                        type="button"  
+                                        id="avatarDropdown"  
+                                        data-bs-toggle="dropdown"  
+                                        aria-expanded="false">  
+                                    {% if request.user.profile.avatar %}    
+                                        <img src="{% thumbnail request.user.profile.avatar 'profile_avatar_small' %}" class="rounded-circle" width="32" height="32" alt="Avatar">    
+                                    {% else %}  
+                                        <img src="/static/admin/img/default_avatar.png" class="rounded-circle" width="32" height="32" alt="Default Avatar">  
+                                    {% endif %}  
+                                </button>    
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">  
+                                    <!-- Know-How for mobile (only visible on small screens) -->  
+                                    <li class="d-lg-none">  
+                                        <h6 class="dropdown-header">Know-How: Help</h6>  
+                                    </li>
                                     <li><a class="dropdown-item" href="{% url 'forum:index' %}">Forum</a></li>  
                                     <li><hr class="dropdown-divider"></li>
-                                    <!-- Tutorials Section -->  
-                                    <li><h6 class="dropdown-header">Tutorials</h6></li>  
-                                    <li><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
-                                    <li><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
-                                    <li><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
-                                </ul>  
-                            </div>  
-                            <div class="nav-item dropdown me-3">  
-                                <button class="btn btn-outline-secondary dropdown-toggle" href="#"  
-                                    id="navbarDropdown" type="button"  
-                                    data-bs-toggle="dropdown"  
-                                aria-expanded="false">Tools</button>  
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">  
-                                    <li><h6 class="dropdown-header">Design Tools</h6></li>
-                                    <li><a class="dropdown-item" href=""{% url 'editor:editor' %}
-                                            target="_blank">Editor</a></li>
+                                    <li class="d-lg-none">  
+                                        <h6 class="dropdown-header">Know-How: Tutorials</h6>  
+                                    </li>  
+                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
+                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
+                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
+                                    <li class="d-lg-none"><hr class="dropdown-divider"></li>  
+                                    <!-- Tools for mobile (only visible on small screens) -->    
+                                    <li class="d-lg-none">  
+                                        <h6 class="dropdown-header">Tools: Design</h6>  
+                                    </li>  
+                                    <li class="d-lg-none"><a class="dropdown-item" href="" target="_blank">Editor</a></li>    
+                                    <li class="d-lg-none">  
+                                        <h6 class="dropdown-header">Tools: Production</h6>  
+                                    </li>  
+                                    <li class="d-lg-none"><hr class="dropdown-divider"></li>                                  
+                                    <li>    
+                                        <a class="dropdown-item" href="{% url 'design:new' %}">
+                                            <i class="bi bi-plus-circle me-2"></i>New Design
+                                        </a>
+                                    </li> 
+                                    <li>   
+                                        <a class="dropdown-item" href="{% url 'conversation:inbox' %}">
+                                            <i class="bi bi-inbox me-2"></i>Inbox
+                                        </a>
+                                    </li> 
+                                    <li>   
+                                        <a class="dropdown-item" href="{% url 'dashboard:index' %}">
+                                            <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                                        </a>
+                                    </li> 
+                                    <li>   
+                                        <a class="dropdown-item" href="{% url 'core:profile_settings' %}">
+                                            <i class="bi bi-gear me-2"></i>Settings
+                                        </a>
+                                    </li> 
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><h6 class="dropdown-header">Production Tools</h6></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'core:logout' %}">
+                                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                        </a>
+                                    </li> 
+                                </ul>
+                            </div> 
+                            {% else %}
+                            <!-- Guest user dropdown -->
+                            <div class="dropdown">
+                                <button class="btn btn-link dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="/static/admin/img/default_avatar.png" class="rounded-circle" width="32" height="32" alt="Default Avatar">
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <!-- Know-How for mobile guests --> 
+                                    <li class="d-lg-none">
+                                        <h6 class="dropdown-header">Know-How</h6>
+                                    </li>
+                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
+                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
+                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
+                                    <li class="d-lg-none"><hr class="dropdown-divider"></li>  
+                                      
+                                    <li><a class="dropdown-item" href="{% url 'core:login' %}">Login</a></li>  
+                                    <li><a class="dropdown-item" href="{% url 'core:signup' %}">Sign Up</a></li>  
                                 </ul>  
                             </div>  
-                            <!-- Expanded Search bar -->  
-                            <div class="flex-grow-1">  
-                                <form class="d-flex" method="get" action="{% url 'design:designs' %}">  
-                                    <input name="query" class="form-control" type="search" value="{{ query }}" placeholder="Find a design">  
-                                </form>  
-                            </div>  
+                            {% endif %}  
                         </div>  
                     </div>  
                       
-                    <!-- Avatar/Auth section (always visible) -->  
-                    <div class="nav-item">  
-                        {% if request.user.is_authenticated %}  
-                        <!-- Avatar Dropdown -->  
-                        <div class="dropdown">    
-                            <button class="btn btn-link dropdown-toggle d-flex align-items-center"  
-                                    type="button"  
-                                    id="avatarDropdown"  
-                                    data-bs-toggle="dropdown"  
-                                    aria-expanded="false">  
-                                {% if request.user.profile.avatar %}    
-                                    <img src="{% thumbnail request.user.profile.avatar 'profile_avatar_small' %}" class="rounded-circle" width="32" height="32" alt="Avatar">    
-                                {% else %}  
-                                    <img src="/static/admin/img/default_avatar.png" class="rounded-circle" width="32" height="32" alt="Default Avatar">  
-                                {% endif %}  
-                            </button>    
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">  
-                                <!-- Know-How for mobile (only visible on small screens) -->  
-                                <li class="d-lg-none">  
-                                    <h6 class="dropdown-header">Know-How: Help</h6>  
-                                </li>
-                                <li><a class="dropdown-item" href="{% url 'forum:index' %}">Forum</a></li>  
-                                <li><hr class="dropdown-divider"></li>
-                                <li class="d-lg-none">  
-                                    <h6 class="dropdown-header">Know-How: Tutorials</h6>  
-                                </li>  
-                                <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
-                                <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
-                                <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
-                                <li class="d-lg-none"><hr class="dropdown-divider"></li>  
-                                <!-- Tools for mobile (only visible on small screens) -->    
-                                <li class="d-lg-none">  
-                                    <h6 class="dropdown-header">Tools: Design</h6>  
-                                </li>  
-                                <li class="d-lg-none"><a class="dropdown-item" href="" target="_blank">Editor</a></li>    
-                                <li class="d-lg-none">  
-                                    <h6 class="dropdown-header">Tools: Production</h6>  
-                                </li>  
-                                <li class="d-lg-none"><hr class="dropdown-divider"></li>                                  
-                                <li>    
-                                    <a class="dropdown-item" href="{% url 'design:new' %}">
-                                        <i class="bi bi-plus-circle me-2"></i>New Design
-                                    </a>
-                                </li> 
-                                <li>   
-                                    <a class="dropdown-item" href="{% url 'conversation:inbox' %}">
-                                        <i class="bi bi-inbox me-2"></i>Inbox
-                                    </a>
-                                </li> 
-                                <li>   
-                                    <a class="dropdown-item" href="{% url 'dashboard:index' %}">
-                                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
-                                    </a>
-                                </li> 
-                                <li>   
-                                    <a class="dropdown-item" href="{% url 'core:profile_settings' %}">
-                                        <i class="bi bi-gear me-2"></i>Settings
-                                    </a>
-                                </li> 
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'core:logout' %}">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                    </a>
-                                </li> 
-                            </ul>
-                        </div> 
-                        {% else %}
-                        <!-- Guest user dropdown -->
-                        <div class="dropdown">
-                            <button class="btn btn-link dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="/static/admin/img/default_avatar.png" class="rounded-circle" width="32" height="32" alt="Default Avatar">
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <!-- Know-How for mobile guests --> 
-                                <li class="d-lg-none">
-                                    <h6 class="dropdown-header">Know-How</h6>
-                                </li>
-                                <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
-                                <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
-                                <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
-                                <li class="d-lg-none"><hr class="dropdown-divider"></li>  
-                                  
-                                <li><a class="dropdown-item" href="{% url 'core:login' %}">Login</a></li>  
-                                <li><a class="dropdown-item" href="{% url 'core:signup' %}">Sign Up</a></li>  
-                            </ul>  
-                        </div>  
-                        {% endif %}  
+                    <!-- Mobile search bar (second row, only visible on small screens) -->  
+                    <div class="d-lg-none container-fluid py-2 border-bottom">  
+                        <form class="d-flex" method="get" action="{% url 'design:designs' %}">  
+                            <input name="query" class="form-control" type="search" value="{{ query }}" placeholder="Find a design">  
+                        </form>  
                     </div>  
                 </div>  
-                  
-                <!-- Mobile search bar (second row, only visible on small screens) -->  
-                <div class="d-lg-none container-fluid py-2 border-bottom">  
-                    <form class="d-flex" method="get" action="{% url 'design:designs' %}">  
-                        <input name="query" class="form-control" type="search" value="{{ query }}" placeholder="Find a design">  
-                    </form>  
-                </div>  
-            </div>  
-        </nav>
-        <div style="max-width: 1280px; margin: 0 auto;">
-            <div class="mx-4 my-4">
-                {% block content %}
-                {% endblock %}
-            </div>
-        </div>
-        <footer class="bg-primary">
-            <div class="container p-4">
-                <div class="row">
-                    <div class="col-lg-6 col-sm-12 mb-3 text-start">
-                        <h3 class="fw-bold text-white">LoD:</h3>
-                        <ul class="text-white fs-6">
-                            <li>is a library of designs</li>
-                            <li>is a platform for sharing and discovering designs where users
-                                can upload, browse, and interact around design content</li>
-                            <li>has parametric interactive designs created with
-                                well-known OpenSCAD script language</li>
-                            <li>has its focus on creating a support for
-                                Grassroots economy with sustainibility in
-                                mind</li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-6 col-sm-12 mb-3 text-end">
-                        <h3 class="fw-bold text-white">More info</h3>
-                        <ul class="list-unstyled text-decoration-none text-white">
-                            <li><a href="{% url 'core:about_lod' %}" class="fs-6 text-decoration-none text-white">About</a></li>
-                            <li><a href="{% url 'core:contact' %}" class="fs-6 text-decoration-none text-white">Contact</a></li>
-                            <li><a href="{% url 'core:license' %}" class="fs-6 text-decoration-none text-white">License</a></li>
-                            <li><a href="{% url 'core:terms_of_use' %}" class="fs-6 text-decoration-none text-white">Term of
-                                    use</a></li>
-                        </ul>
-                    </div>
-                    <div class="mb-2 text-center">
-                        <a
-                            href="https://creativecommons.org/licenses/by-sa/4.0/"
-                            target="_blank" class="center">
-                            <img src="{% static 'admin/img/CC_BY-SA.svg' %}"
-                            class="center" width="96px" alt="CC-BY-SA-4.0">
-                        </a>
-                    </div>
+            </nav>
+            <div class="border border-bottom-0 border-2 border-dark" style="max-width: 1280px; margin: 0 auto;">
+                <div class="container-fluid p-3">
+                    {% block content %}
+                    {% endblock %}
                 </div>
             </div>
-        </footer>
-
+            <footer class="bg-primary border border-2 border-top-0 rounded-bottom" style="max-width: 1280px; margin: 0 auto;">
+                <div class="container p-4">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12 mb-3 text-start">
+                            <h3 class="fw-bold text-white">LoD:</h3>
+                            <ul class="text-white fs-6">
+                                <li>is a library of designs</li>
+                                <li>is a platform for sharing and discovering designs where users
+                                    can upload, browse, and interact around design content</li>
+                                <li>has parametric interactive designs created with
+                                    well-known OpenSCAD script language</li>
+                                <li>has its focus on creating a support for
+                                    Grassroots economy with sustainibility in
+                                    mind</li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 mb-3 text-end">
+                            <h3 class="fw-bold text-white">More info</h3>
+                            <ul class="list-unstyled text-decoration-none text-white">
+                                <li><a href="{% url 'core:about_lod' %}" class="fs-6 text-decoration-none text-white">About</a></li>
+                                <li><a href="{% url 'core:contact' %}" class="fs-6 text-decoration-none text-white">Contact</a></li>
+                                <li><a href="{% url 'core:license' %}" class="fs-6 text-decoration-none text-white">License</a></li>
+                                <li><a href="{% url 'core:terms_of_use' %}" class="fs-6 text-decoration-none text-white">Term of
+                                        use</a></li>
+                            </ul>
+                        </div>
+                        <div class="mb-2 text-center">
+                            <a
+                                href="https://creativecommons.org/licenses/by-sa/4.0/"
+                                target="_blank" class="center">
+                                <img src="{% static 'admin/img/CC_BY-SA.svg' %}"
+                                class="center" width="96px" alt="CC-BY-SA-4.0">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
         <script>
             function toggleDropdown() {
                 const dropdown = document.getElementById('dropdownMenu');

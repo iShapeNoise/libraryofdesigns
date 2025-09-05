@@ -1,0 +1,337 @@
+/* ===== COMPLETE BOOTSTRAP 3 TO 5 CONVERSION FOR BLOCKSCAD ===== */  
+  
+/* ===== BRITE THEME COLOR VARIABLES ===== */  
+:root {  
+    --brite-primary: #375a7f;  
+    --brite-secondary: #444;  
+    --brite-success: #00bc8c;  
+    --brite-info: #3498db;  
+    --brite-warning: #f39c12;  
+    --brite-danger: #e74c3c;  
+    --brite-light: #adb5bd;  
+    --brite-dark: #303030;  
+    --brite-bg: #222;  
+    --brite-surface: #303030;  
+}  
+  
+/* ===== BOOTSTRAP 3 TO 5 NAVBAR CONVERSION ===== */  
+.navbar-default {  
+    background-color: var(--brite-surface);  
+    border-color: var(--brite-dark);  
+    border: 1px solid var(--brite-dark);  
+}  
+  
+.navbar-nav {  
+    display: flex;  
+    flex-direction: row;  
+    padding-left: 0;  
+    margin-bottom: 0;  
+    list-style: none;  
+}  
+  
+.navbar-nav > li {  
+    display: list-item;  
+    position: relative;  
+}  
+  
+.navbar-nav > li > a {  
+    display: block;  
+    padding: 0.5rem 1rem;  
+    color: #fff;  
+    text-decoration: none;  
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;  
+}  
+  
+.navbar-nav > li > a:hover,  
+.navbar-nav > li > a:focus {  
+    color: var(--brite-info);  
+    background-color: rgba(255, 255, 255, 0.1);  
+}  
+  
+/* ===== BOOTSTRAP 3 TO 5 BUTTON CONVERSION ===== */  
+.btn-default {  
+    color: #fff;  
+    background-color: var(--brite-secondary);  
+    border-color: var(--brite-secondary);  
+    border: 1px solid transparent;  
+    padding: 0.375rem 0.75rem;  
+    font-size: 1rem;  
+    border-radius: 0.375rem;  
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;  
+}  
+  
+.btn-default:hover {  
+    color: #fff;  
+    background-color: var(--brite-dark);  
+    border-color: var(--brite-dark);  
+}  
+  
+.btn-lg {  
+    padding: 0.5rem 1rem;  
+    font-size: 1.25rem;  
+    border-radius: 0.5rem;  
+}  
+  
+/* ===== BOOTSTRAP 3 TO 5 FORM CONVERSION ===== */  
+.form-control {  
+    display: block;  
+    width: 100%;  
+    padding: 0.375rem 0.75rem;  
+    font-size: 1rem;  
+    font-weight: 400;  
+    line-height: 1.5;  
+    color: #212529;  
+    background-color: #fff;  
+    background-image: none;  
+    border: 1px solid #ced4da;  
+    border-radius: 0.375rem;  
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;  
+}  
+  
+.input-group {  
+    position: relative;  
+    display: flex;  
+    flex-wrap: wrap;  
+    align-items: stretch;  
+    width: 100%;  
+}  
+  
+.input-group-addon {  
+    padding: 0.375rem 0.75rem;  
+    margin-bottom: 0;  
+    font-size: 1rem;  
+    font-weight: 400;  
+    line-height: 1.5;  
+    color: #495057;  
+    text-align: center;  
+    background-color: #e9ecef;  
+    border: 1px solid #ced4da;  
+    border-radius: 0.375rem;  
+}  
+  
+/* ===== BOOTSTRAP 3 TO 5 DROPDOWN CONVERSION ===== */  
+.dropdown-menu {  
+    position: absolute;  
+    top: 100%;  
+    left: 0;  
+    z-index: 1000;  
+    display: none;  
+    float: left;  
+    min-width: 10rem;  
+    padding: 0.5rem 0;  
+    margin: 0.125rem 0 0;  
+    font-size: 1rem;  
+    color: #212529;  
+    text-align: left;  
+    list-style: none;  
+    background-color: #fff;  
+    background-clip: padding-box;  
+    border: 1px solid rgba(0, 0, 0, 0.15);  
+    border-radius: 0.375rem;  
+}  
+  
+.dropdown-menu > li > a {  
+    display: block;  
+    padding: 0.25rem 1.5rem;  
+    clear: both;  
+    font-weight: 400;  
+    color: #212529;  
+    text-align: inherit;  
+    text-decoration: none;  
+    white-space: nowrap;  
+    background-color: transparent;  
+    border: 0;  
+}  
+  
+.dropdown-menu > li > a:hover,  
+.dropdown-menu > li > a:focus {  
+    color: #1e2125;  
+    background-color: #e9ecef;  
+}  
+  
+.dropdown-divider {  
+    height: 0;  
+    margin: 0.5rem 0;  
+    overflow: hidden;  
+    border-top: 1px solid #e9ecef;  
+}  
+  
+/* ===== BOOTSTRAP 3 TO 5 PANEL TO CARD CONVERSION ===== */  
+.panel {  
+    position: relative;  
+    display: flex;  
+    flex-direction: column;  
+    min-width: 0;  
+    word-wrap: break-word;  
+    background-color: var(--brite-surface);  
+    background-clip: border-box;  
+    border: 1px solid var(--brite-dark);  
+    border-radius: 0.375rem;  
+    color: #fff;  
+}  
+  
+.panel-heading {  
+    padding: 0.5rem 1rem;  
+    margin-bottom: 0;  
+    background-color: var(--brite-primary);  
+    border-bottom: 1px solid var(--brite-dark);  
+    border-top-left-radius: calc(0.375rem - 1px);  
+    border-top-right-radius: calc(0.375rem - 1px);  
+    color: #fff;  
+}  
+  
+.panel-body {  
+    flex: 1 1 auto;  
+    padding: 1rem 1rem;  
+    background-color: var(--brite-surface);  
+    color: #fff;  
+}  
+  
+/* ===== BOOTSTRAP 3 TO 5 UTILITY CLASSES ===== */  
+.pull-left {  
+    float: left !important;  
+}  
+  
+.pull-right {  
+    float: right !important;  
+}  
+  
+.text-left {  
+    text-align: left !important;  
+}  
+  
+.text-center {  
+    text-align: center !important;  
+}  
+  
+.text-right {  
+    text-align: right !important;  
+}  
+  
+/* ===== BLOCKSCAD SPECIFIC LAYOUT FIXES ===== */  
+#top-navigation-bar {  
+    margin-bottom: 0;  
+    min-height: 50px;  
+}  
+  
+.navbar-narrow {  
+    min-height: 35px;  
+    margin-bottom: 0px;  
+    height: 35px !important;  
+    line-height: 1;  
+}  
+  
+.btn-over-blockly {  
+    position: absolute;  
+    top: -8px;  
+    left: 40%;  
+    z-index: 299;  
+}  
+  
+.btn-group {  
+    position: relative;  
+    display: inline-flex;  
+    vertical-align: middle;  
+}  
+  
+.btn-group > .btn {  
+    position: relative;  
+    flex: 1 1 auto;  
+}  
+  
+.btn-group > .btn:not(:first-child) {  
+    margin-left: -1px;  
+}  
+  
+.btn-group > .btn:first-child {  
+    margin-left: 0;  
+}  
+  
+/* ===== BLOCKSCAD CONTAINER FIXES ===== */  
+.container-fluid {  
+    width: 100%;  
+    padding-right: 15px;  
+    padding-left: 5px;  
+    margin-right: auto;  
+    margin-left: auto;  
+}  
+  
+.resizableDiv {  
+    position: absolute;  
+    z-index: 300;  
+    top: 0px !important;  
+    right: 12px;  
+    border-style: solid solid ridge ridge;  
+    border-width: 1px 1px 8px 8px;  
+    border-color: #cccccc;  
+    width: 30%;  
+    height: 72%;  
+}  
+  
+#renderDiv {  
+    position: absolute;  
+    top: 0;  
+    right: 0;  
+    left: 0;  
+    bottom: 128px;  
+    overflow: hidden;  
+    background-color: var(--brite-dark);  
+}  
+  
+#viewerButtons {  
+    position: absolute;  
+    height: 35px;  
+    width: 100%;  
+    bottom: 93px;  
+    border: 1px solid #ccc;  
+    z-index: 500;  
+}  
+  
+.vbut {  
+    padding: 3px;  
+    width: 34px;  
+    height: 34px;  
+}  
+  
+/* ===== KIDS EDITOR SPECIFIC STYLES ===== */  
+.kids-editor {  
+    min-height: 200vh;  
+    font-family: 'Comic Sans MS', cursive, sans-serif;  
+    background-color: var(--brite-bg);  
+    color: #fff;  
+}  
+  
+.kids-editor .row {  
+    min-height: 180vh;  
+}  
+  
+.kids-editor .col-lg-8 {  
+    min-height: 180vh;  
+}  
+  
+.kids-editor .col-lg-4 {  
+    min-height: 180vh;  
+}  
+  
+#blocklyDiv {  
+    min-height: 800px;  
+    border: 2px solid var(--brite-primary);  
+    border-radius: 10px;  
+    background-color: var(--brite-surface);  
+}  
+  
+/* ===== RESPONSIVE DESIGN ===== */  
+@media (max-width: 992px) {  
+    .kids-editor .col-lg-8,  
+    .kids-editor .col-lg-4 {  
+        min-height: auto;  
+    }  
+      
+    .kids-editor {  
+        min-height: 150vh;  
+    }  
+      
+    #blocklyDiv {  
+        min-height: 600px;  
+    }  
+}

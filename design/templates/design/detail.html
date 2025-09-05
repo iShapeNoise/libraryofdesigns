@@ -239,36 +239,66 @@
 </div>  
   
 <!-- Related Designs Section (Full Width) -->  
-<div class="mt-4 p-4 bg-light rounded" style="margin: 5px; padding: 20px;">
-    <h2 class="mb-4 fw-bold fs-4 text-center">Related Designs</h2>
-    <div class="row">
-        {% for related_design in related_designs %}
-            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3"> 
-                <a href="{% url 'design:detail' related_design.id %}" class="btn btn-outline-secondary btn-lg w-100 p-3 h-100
-                    bg-white">
-                    <div class="text-center">
-                        {% if related_design.first_image.url %}
-                            <img src="{{ related_design.first_image.url }}"
-                                 class="card-img-top rounded"
-                                 style="width: 220px; height: 220px; object-fit: cover;"
-                                 alt="{{ related_design.name }}">
-                        {% else %}
-                            <div class="bg-secondary d-flex align-items-center justify-content-center rounded-top"
-                                 style="height: 128px;">
-                                <span class="text-gray-500">No Image</span>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="card-body p-3">
-                        <h6 class="card-title text-dark fw-bold mb-1 text-truncate">{{ related_design.name }}</h6>
-                        <small class="text-muted">{{ related_design.created_by }}</small>
-                    </div>
-                </a>
+<div class="mt-4 p-4 bg-light rounded">  
+    <h2 class="mb-4 text-center">Related Designs</h2>
+    <!-- Related Designs Carousel -->
+    <div id="relatedDesignsCarousel" class="carousel slide" data-bs-ride="carousel">
+        {% if related_designs %}
+            <!-- Carousel indicators -->
+            <div class="carousel-indicators">
+                {% for chunk in related_designs|slice:":6"|make_list %}
+                    <button type="button" data-bs-target="#relatedDesignsCarousel"
+                            data-bs-slide-to="{{ forloop.counter0 }}"
+                            {% if forloop.first %}class="active" aria-current="true"{% endif %}
+                            aria-label="Related Designs {{ forloop.counter }}"></button>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
+            <!-- Carousel inner -->
+            <div class="carousel-inner">
+                {% for chunk in related_designs_chunks %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}"> 
+                        <div class="row">
+                            {% for related_design in chunk %}
+                                <div class="col-lg-3 col-md-4 col-sm-6 col-6 mb-3">  <!-- Changed col-lg-2 to col-lg-3 -->
+                                    <a href="{% url 'design:detail' related_design.id %}" class="text-decoration-none">
+                                        <div class="border rounded p-2 bg-white h-100">
+                                            {% if related_design.first_image %}
+                                                <img src="{{ related_design.first_image.url }}"
+                                                     class="img-fluid rounded"
+                                                     style="height: 220px; width: 100%; object-fit: cover;"
+                                                     alt="{{ related_design.name }}">
+                                            {% else %}
+                                                <div class="bg-secondary d-flex align-items-center justify-content-center rounded" style="height: 220px;">
+                                                    <i class="bi bi-image text-white" style="font-size: 1.5rem;"></i>
+                                                </div>
+                                            {% endif %}
+                                            <div class="mt-2">
+                                                <h6 class="text-dark fw-bold text-truncate">{{ related_design.name }}</h6>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <!-- Carousel controls with gray background -->  
+            <button class="carousel-control-prev" type="button" data-bs-target="#relatedDesignsCarousel" data-bs-slide="prev"  
+            style="background-color: rgba(162,228,54,1.0); border-radius: 50%; width: 50px; height: 50px;   
+                   top: 50%; transform: translateY(-50%); left: 15px; border: 2px solid rgba(20,20,20,1.0);">  
+                <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: brightness(0);"></span>  
+                <span class="visually-hidden">Previous</span>  
+            </button>  
+            <button class="carousel-control-next" type="button" data-bs-target="#relatedDesignsCarousel" data-bs-slide="next"  
+                    style="background-color: rgba(162,228,54,1.0); border-radius: 50%; width: 50px; height: 50px;   
+                           top: 50%; transform: translateY(-50%); right: 15px; border: 2px solid rgba(20,20,20,1.0);">  
+                <span class="carousel-control-next-icon" aria-hidden="true" style="filter: brightness(0);"></span>  
+                <span class="visually-hidden">Next</span>  
+            </button>
+        {% endif %}  
+    </div>  
 </div>
-
 <script>  
 function showImages() {  
     document.getElementById('imagesCarousel').style.display = 'block';  
