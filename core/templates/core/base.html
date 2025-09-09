@@ -43,20 +43,16 @@
                                         <li><hr class="dropdown-divider"></li>
                                         <!-- Tutorials Section -->  
                                         <li><h6 class="dropdown-header">Tutorials</h6></li>  
-                                        <li><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
-                                        <li><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
-                                        <li><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
+                                        <li><a class="dropdown-item" href="{% url 'knowhow:section_courses' section='lod' %}">LoD</a></li>  
+                                        <li><a class="dropdown-item" href="{% url 'knowhow:section_courses' section='cad' %}">CAD</a></li>  
+                                        <li><a class="dropdown-item" href="{% url 'knowhow:section_courses' section='cam' %}">CAM</a></li>
                                     </ul>  
                                 </div>  
                                 <div class="nav-item dropdown me-3">  
-                                    <button class="btn btn-outline-secondary dropdown-toggle" href="#"  
-                                        id="navbarDropdown" type="button"  
-                                        data-bs-toggle="dropdown"  
-                                    aria-expanded="false">Tools</button>  
+                                    <button class="btn btn-outline-secondary dropdown-toggle" href="#" id="navbarDropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">Tools</button>  
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">  
                                         <li><h6 class="dropdown-header">Design Tools</h6></li>
-                                        <li><a class="dropdown-item" href=""{% url 'editor:editor' %}
-                                                target="_blank">Editor</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'editor:editor' %}" target="_blank">Editor</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><h6 class="dropdown-header">Production Tools</h6></li>
                                     </ul>  
@@ -91,14 +87,14 @@
                                     <li class="d-lg-none">  
                                         <h6 class="dropdown-header">Know-How: Help</h6>  
                                     </li>
-                                    <li><a class="dropdown-item" href="{% url 'forum:index' %}">Forum</a></li>  
-                                    <li><hr class="dropdown-divider"></li>
+                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'forum:index' %}">Forum</a></li>  
+                                    <li class="d-lg-none"><hr class="dropdown-divider"></li>
                                     <li class="d-lg-none">  
                                         <h6 class="dropdown-header">Know-How: Tutorials</h6>  
                                     </li>  
-                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
-                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
-                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
+                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:section_courses' section='lod' %}">LoD</a></li>  
+                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:section_courses' section='cad' %}">CAD</a></li>  
+                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:section_courses' section='cam' %}">CAM</a></li>
                                     <li class="d-lg-none"><hr class="dropdown-divider"></li>  
                                     <!-- Tools for mobile (only visible on small screens) -->    
                                     <li class="d-lg-none">  
@@ -148,9 +144,9 @@
                                     <li class="d-lg-none">
                                         <h6 class="dropdown-header">Know-How</h6>
                                     </li>
-                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:lod' %}">LoD</a></li>  
-                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cad' %}">CAD</a></li>  
-                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:cam' %}">CAM</a></li>  
+                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:section_courses' section='lod' %}">LoD</a></li>  
+                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:section_courses' section='cad' %}">CAD</a></li>  
+                                    <li class="d-lg-none"><a class="dropdown-item" href="{% url 'knowhow:section_courses' section='cam' %}">CAM</a></li>
                                     <li class="d-lg-none"><hr class="dropdown-divider"></li>  
                                       
                                     <li><a class="dropdown-item" href="{% url 'core:login' %}">Login</a></li>  

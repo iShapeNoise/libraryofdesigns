@@ -1,179 +1,404 @@
 {% extends 'core/base.html' %}
-{% load thumbnail %}
+{% load static %}
 
-{% block title %}LoD Editor{% endblock %}
+{% block title %}LoD CAD Editor{% endblock %}
 
-{% block content %}
-    <div class="container-fluid h-100">  
-        <div class="row h-100">  
-            <!-- Text Editor Panel -->  
-            <div class="col-md-6 d-flex flex-column">  
-                <div class="toolbar bg-light p-2 border-bottom">  
-                    <button id="saveBtn" class="btn btn-primary btn-sm">Save</button>  
-                    <button id="renderBtn" class="btn btn-success btn-sm">Render</button>  
-                    <button id="exportBtn" class="btn btn-secondary btn-sm">Export STL</button>  
-                </div>  
-                <div class="flex-grow-1">  
-                    <textarea id="codeEditor">{{ openscad_code }}</textarea>  
-                </div>  
-            </div>  
-              
-            <!-- Preview and Console Panel -->  
-            <div class="col-md-6 d-flex flex-column">  
-                <!-- 3D Preview -->  
-                <div class="preview-panel flex-grow-1 border">  
-                    <div id="renderDiv" style="width: 100%; height: 60%;"></div>  
-                      
-                    <!-- Viewer Controls (adapted from BlocksCAD) -->  
-                    <div id="viewerButtons" class="p-2">  
-                        <div class="btn-group">  
-                            <button id="axesButton" type="button" class="btn btn-outline-secondary btn-sm">  
-                                <svg viewBox="0 0 26 26" width="16" height="16">  
-                                    <path style="stroke:#777;stroke-width:1.6;fill:none" d="m9 0.5v15h15"/>  
-                                    <path style="stroke:#777;stroke-width:1.6;fill:none" d="m9 15-9 9"/>  
-                                </svg>  
-                            </button>  
-                        </div>  
-                          
-                        <div class="btn-group">  
-                            <button id="zInButton" type="button" class="btn btn-outline-secondary btn-sm">+</button>  
-                            <button id="zOutButton" type="button" class="btn btn-outline-secondary btn-sm">-</button>  
-                            <button id="zResetButton" type="button" class="btn btn-outline-secondary btn-sm">Reset</button>  
-                        </div>  
-                          
-                        <select id="viewMenu" class="form-select form-select-sm" style="width: auto;">  
-                            <option value="diagonal">Diagonal</option>  
-                            <option value="front">Front</option>  
-                            <option value="top">Top</option>  
-                            <option value="right">Right</option>  
-                            <option value="left">Left</option>  
-                            <option value="back">Back</option>  
-                            <option value="bottom">Bottom</option>  
-                        </select>  
+{% block extra_css %}  
+<link rel="stylesheet" href="{% static 'cad_editor/css/spectrum.css' %}">  
+<link rel="stylesheet" href="{% static 'cad_editor/css/style.css' %}">  
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">  
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">  
+<style>  
+    .editor-container {  
+        height: calc(100vh - 120px);  
+    }  
+    .console-panel {  
+        font-family: 'Courier New', monospace;  
+        font-size: 12px;  
+    }  
+    .customizer-panel {  
+        border-top: 2px solid #dee2e6;  
+    }  
+    .CodeMirror {  
+        height: 100%;  
+        font-size: 14px;  
+    }  
+    #renderDiv {  
+        background: #f8f9fa;  
+    }  
+</style>  
+{% endblock %}  
+  
+{% block content %}  
+    <div class="container-fluid" style="width: none;">
+        <!-- Editor Title -->  
+        <div class="text-center mb-3">  
+            <h2 class="display-6">LoD CAD Editor</h2>  
+        </div>
+        <div class="border border-2 border-dark rounded p-3">
+            <!-- Top Toolbar -->  
+            <div class="toolbar bg-light border-bottom">  
+                <div class="d-flex justify-content-between align-items-center">  
+                    <div class="btn-group">  
+                        <button id="newBtn" class="btn btn-outline-secondary btn-sm">New</button>  
+                        <button id="openBtn" class="btn btn-outline-secondary btn-sm">Open</button>  
+                        <button id="saveBtn" class="btn btn-primary btn-sm">Save</button>  
                     </div>  
-                </div>  
-                  
-                <!-- Console Panel -->  
-                <div class="console-panel bg-dark text-light p-3" style="height: 40%; overflow-y: auto;">  
-                    <h6>Console Output</h6>  
-                    <div id="consoleOutput">  
-                        <div class="text-muted">Ready...</div>  
+                    <div class="btn-group">  
+                        <button id="previewBtn" class="btn btn-success btn-sm">Preview (F5)</button>  
+                        <button id="renderBtn" class="btn btn-warning btn-sm">Render (F6)</button>  
+                        <button id="exportBtn" class="btn btn-secondary btn-sm">Export STL</button>  
                     </div>  
                 </div>  
             </div>  
-        </div>  
-    </div>  
-  
-    <!-- Parameter Panel (Modal) -->  
-    <div class="modal fade" id="parameterModal" tabindex="-1">  
-        <div class="modal-dialog">  
-            <div class="modal-content">  
-                <div class="modal-header">  
-                    <h5 class="modal-title">Parameters</h5>  
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>  
-                </div>  
-                <div class="modal-body">  
-                    <div id="parameterControls">  
-                        <!-- Dynamic parameter controls will be generated here -->  
-                    </div>  
-                </div>  
-            </div>  
-        </div>  
-    </div>  
-  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>  
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>  
-      
-    <!-- BlocksCAD 3D Engine Integration -->  
-    <script src="{% static 'cad_editor/js/lightgl.js' %}"></script>  
-    <script src="{% static 'cad_editor/js/csg.js' %}"></script>  
-    <script src="{% static 'cad_editor/js/viewer.js' %}"></script>  
-      
-    <script>  
-        // Initialize CodeMirror editor  
-        const editor = CodeMirror.fromTextArea(document.getElementById('codeEditor'), {  
-            mode: 'text/x-csrc',  
-            theme: 'monokai',  
-            lineNumbers: true,  
-            autoCloseBrackets: true,  
-            matchBrackets: true  
-        });  
-  
-        // Initialize 3D viewer (adapted from BlocksCAD)  
-        let processor = null;  
           
-        function initViewer() {  
-            const renderDiv = document.getElementById('renderDiv');  
-            processor = new Blockscad.Processor(renderDiv);  
+            <div class="row editor-container p-3">  
+                <!-- Left Panel: Text Editor + Customizer -->  
+                <div class="col-md-6 d-flex flex-column" style="padding: 0;">  
+                    <!-- Text Editor -->  
+                    <div class="flex-grow-1 border-end">  
+                    <textarea id="codeEditor">{{ openscad_code|default:"// Welcome to OpenSCAD Editor  
+        // Start creating your 3D designs here  
+          
+        cube([10, 10, 10]);" }}</textarea>
+                    </div>  
+                      
+                    <!-- Customizer Panel -->  
+                    <div class="customizer-panel bg-light border-top" style="height: 200px; overflow-y: auto;">  
+                        <div class="p-2">  
+                            <h6 class="mb-2">Customizer</h6>  
+                            <div id="customizerControls">  
+                                <div class="text-muted small">  
+                                    Parameters will appear here when you use customizable variables in your code.  
+                                </div> 
+                            </div>  
+                        </div>  
+                    </div>  
+                </div>  
+          
+                <!-- Right Panel: 3D Preview + Console -->  
+                <div class="col-md-6 d-flex flex-column" style="padding: 0;">  
+                    <!-- 3D Preview -->  
+                    <div class="preview-panel flex-grow-1 border position-relative">  
+                        <div id="renderDiv" style="width: 100%; height: 100%;"></div>  
+                          
+                        <!-- Viewer Controls -->  
+                        <div id="viewerButtons" class="position-absolute bottom-0 start-0 p-2 bg-white bg-opacity-75 rounded-end">  
+                            <div class="btn-group btn-group-sm">  
+                                <button id="axesButton" type="button" class="btn btn-outline-secondary" title="Toggle Axes">  
+                                    <svg viewBox="0 0 26 26" width="16" height="16">  
+                                        <path style="stroke:#777;stroke-width:1.6;fill:none" d="m9 0.5v15h15"/>  
+                                        <path style="stroke:#777;stroke-width:1.6;fill:none" d="m9 15-9 9"/>  
+                                    </svg>  
+                                </button>  
+                                <button id="zInButton" type="button" class="btn btn-outline-secondary" title="Zoom In">+</button>  
+                                <button id="zOutButton" type="button" class="btn btn-outline-secondary" title="Zoom Out">-</button>  
+                                <button id="zResetButton" type="button" class="btn btn-outline-secondary" title="Reset View">Reset</button>  
+                            </div>  
+                            <select id="viewMenu" class="form-select form-select-sm ms-2" style="width: auto;" title="Change View">  
+                                <option value="diagonal">Diagonal</option>  
+                                <option value="front">Front</option>  
+                                <option value="top">Top</option>  
+                                <option value="right">Right</option>  
+                                <option value="left">Left</option>  
+                                <option value="back">Back</option>  
+                                <option value="bottom">Bottom</option>  
+                            </select>  
+                        </div>  
+                    </div>  
+                      
+                    <!-- Console Panel -->  
+                    <div class="console-panel bg-dark text-light p-3" style="height: 150px; overflow-y: auto;">  
+                        <h6 class="text-warning mb-2">Console</h6>  
+                        <div id="consoleOutput">  
+                            <div class="text-muted">Ready...</div>  
+                        </div>  
+                    </div>  
+                </div>  
+            </div>
+        </div>
+    </div>
+ 
+  
+<!-- Script includes following keditor's exact pattern -->  
+<script src="{% static 'cad_editor/js/closure-library/closure/goog/base.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blockly_uncompressed.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/core/msg.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/msg/js/en.js' %}"></script>  
+<script src="{% static 'cad_editor/js/jquery/jquery-1.11.3.js' %}"></script>  
+<script src="{% static 'cad_editor/js/jquery/jquery-ui.min.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockscad/storage.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockscad/utils.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockscad/blockscad.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockscad/viewer.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockscad/csg.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockscad/lightgl.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockscad/openscad-openjscad-translator.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockscad/FileSaver.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockscad/stl.js' %}"></script>  
+  
+<!-- CodeMirror for text editing -->  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>  
+  
+<script>  
+// Global variables  
+let editor;  
+let processor;  
+  
+// CSRF token helper  
+function getCookie(name) {  
+    let cookieValue = null;  
+    if (document.cookie && document.cookie !== '') {  
+        const cookies = document.cookie.split(';');  
+        for (let i = 0; i < cookies.length; i++) {  
+            const cookie = cookies[i].trim();  
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {  
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));  
+                break;  
+            }  
         }  
+    }  
+    return cookieValue;  
+}  
   
-        // Save project  
-        document.getElementById('saveBtn').addEventListener('click', function() {  
-            const code = editor.getValue();  
-            fetch('/save_project/', {  
-                method: 'POST',  
-                headers: {  
-                    'Content-Type': 'application/json',  
-                },  
-                body: JSON.stringify({  
-                    project_id: {{ project.id|default:'null' }},  
-                    code: code,  
-                    name: 'My Project'  
-                })  
-            })  
-            .then(response => response.json())  
-            .then(data => {  
-                if (data.success) {  
-                    addConsoleMessage('Project saved successfully', 'success');  
-                } else {  
-                    addConsoleMessage('Error saving project', 'error');  
-                }  
-            });  
-        });  
+// Initialize CodeMirror editor  
+function initEditor() {  
+    editor = CodeMirror.fromTextArea(document.getElementById('codeEditor'), {  
+        mode: 'text/x-csrc',  
+        theme: 'monokai',  
+        lineNumbers: true,  
+        autoCloseBrackets: true,  
+        matchBrackets: true,  
+        lineWrapping: true,  
+        indentUnit: 2,  
+        tabSize: 2  
+    });  
+}  
   
-        // Render project  
-        document.getElementById('renderBtn').addEventListener('click', function() {  
-            const code = editor.getValue();  
-            addConsoleMessage('Rendering...', 'info');  
-              
-            fetch('/render_project/', {  
-                method: 'POST',  
-                headers: {  
-                    'Content-Type': 'application/json',  
-                },  
-                body: JSON.stringify({  
-                    project_id: {{ project.id|default:'null' }},  
-                    code: code  
-                })  
-            })  
-            .then(response => response.json())  
-            .then(data => {  
-                if (data.success) {  
-                    addConsoleMessage('Render completed successfully', 'success');  
-                    // Update 3D viewer with result  
-                    if (processor && data.result) {  
-                        processor.setBlockscad(data.result);  
-                    }  
-                } else {  
-                    addConsoleMessage('Render error: ' + data.error, 'error');  
-                }  
-            });  
-        });  
-  
-        // Console functions  
-        function addConsoleMessage(message, type = 'info') {  
-            const console = document.getElementById('consoleOutput');  
-            const div = document.createElement('div');  
-            div.className = `text-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'}`;  
-            div.textContent = new Date().toLocaleTimeString() + ': ' + message;  
-            console.appendChild(div);  
-            console.scrollTop = console.scrollHeight;  
+function initViewer() {  
+    // Initialize BlocksCAD globals FIRST (critical)  
+    Blockscad.picSize = [450, 450];  
+    Blockscad.rpicSize = [250, 250];  
+    Blockscad.picQuality = 0.85;  
+    Blockscad.numRotPics = 13;  
+    Blockscad.drawAxes = 1;  // Enable axes/grid  
+    Blockscad.resolution = 1;  
+      
+    const renderDiv = document.getElementById('renderDiv');  
+      
+    // Verify the container exists and has dimensions  
+    if (!renderDiv) {  
+        addConsoleMessage('Error: renderDiv not found', 'error');  
+        return;  
+    }  
+      
+    // Ensure container has proper dimensions  
+    if (renderDiv.offsetWidth === 0 || renderDiv.offsetHeight === 0) {  
+        renderDiv.style.width = '100%';  
+        renderDiv.style.height = '100%';  
+        renderDiv.style.minHeight = '400px';  
+    }  
+      
+    try {  
+        // Create processor with proper error handling  
+        processor = new Blockscad.Processor(renderDiv);  
+          
+        // Wait for processor to initialize, then configure viewer  
+        setTimeout(() => {  
+            if (processor && processor.viewer) {  
+                processor.viewer.plate = true;  // Enable grid plate  
+                processor.viewer.onDraw();     // Force initial draw  
+                addConsoleMessage('3D viewer initialized successfully', 'success');  
+            } else {  
+                addConsoleMessage('Viewer initialization failed', 'error');  
+            }  
+        }, 100);  
+          
+    } catch (e) {  
+        addConsoleMessage('3D viewer error: ' + e.message, 'error');  
+        console.error('BlocksCAD initialization error:', e);  
+    }  
+}
+
+// Preview function - client-side only using BlocksCAD  
+function previewCode() {  
+    const code = editor.getValue();  
+    addConsoleMessage('Previewing...', 'info');  
+      
+    try {  
+        if (processor) {  
+            // Use setBlockscad for client-side rendering  
+            processor.setBlockscad(code);  
+            addConsoleMessage('Preview completed', 'success');  
+        } else {  
+            addConsoleMessage('3D viewer not initialized', 'error');  
         }  
+    } catch (e) {  
+        addConsoleMessage('Preview error: ' + e.message, 'error');  
+    }  
+}  
   
-        // Initialize viewer on page load  
-        document.addEventListener('DOMContentLoaded', function() {  
-            initViewer();  
-        });  
-    </script>
-{% endblock%}
+// Render function - same as preview for client-side rendering  
+function renderCode() {  
+    const code = editor.getValue();  
+    addConsoleMessage('Rendering...', 'info');  
+      
+    try {  
+        if (processor) {  
+            processor.setBlockscad(code);  
+            addConsoleMessage('Render completed', 'success');  
+        } else {  
+            addConsoleMessage('3D viewer not initialized', 'error');  
+        }  
+    } catch (e) {  
+        addConsoleMessage('Render error: ' + e.message, 'error');  
+    }  
+}  
+  
+// Save design function - updated URL and terminology  
+function saveDesign() {  
+    const code = editor.getValue();  
+    addConsoleMessage('Saving design...', 'info');  
+      
+    fetch('/editor/save_design/', {  
+        method: 'POST',  
+        headers: {  
+            'Content-Type': 'application/json',  
+            'X-CSRFToken': getCookie('csrftoken')  
+        },  
+        body: JSON.stringify({  
+            design_id: {{ design.id|default:'null' }},  
+            code: code  
+        })  
+    })  
+    .then(response => response.json())  
+    .then(data => {  
+        if (data.success) {  
+            addConsoleMessage('Design saved successfully', 'success');  
+        } else {  
+            addConsoleMessage('Save error: ' + (data.error || 'Unknown error'), 'error');  
+        }  
+    })  
+    .catch(error => {  
+        addConsoleMessage('Save error: ' + error.message, 'error');  
+    });  
+}  
+  
+// Export STL function  
+function exportSTL() {  
+    addConsoleMessage('Exporting STL...', 'info');  
+      
+    try {  
+        if (processor && processor.viewer) {  
+            const stlData = processor.viewer.exportSTL();  
+            if (stlData) {  
+                const blob = new Blob([stlData], { type: 'application/octet-stream' });  
+                saveAs(blob, 'model.stl');  
+                addConsoleMessage('STL exported successfully', 'success');  
+            } else {  
+                addConsoleMessage('No 3D model to export', 'error');  
+            }  
+        } else {  
+            addConsoleMessage('3D viewer not ready for export', 'error');  
+        }  
+    } catch (e) {  
+        addConsoleMessage('Export error: ' + e.message, 'error');  
+    }  
+}  
+  
+// Console functions  
+function addConsoleMessage(message, type = 'info') {  
+    const console = document.getElementById('consoleOutput');  
+    const div = document.createElement('div');  
+    div.className = `text-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'}`;  
+    div.textContent = new Date().toLocaleTimeString() + ': ' + message;  
+    console.appendChild(div);  
+    console.scrollTop = console.scrollHeight;  
+}  
+  
+// Setup event handlers  
+function setupEventHandlers() {  
+    // Toolbar buttons  
+    document.getElementById('newBtn').addEventListener('click', function() {  
+        if (confirm('Create new design? Unsaved changes will be lost.')) {  
+            editor.setValue('// New OpenSCAD design\n\ncube([10, 10, 10]);');  
+            addConsoleMessage('New design created', 'info');  
+        }  
+    });  
+      
+    document.getElementById('saveBtn').addEventListener('click', saveDesign);  
+    document.getElementById('previewBtn').addEventListener('click', previewCode);  
+    document.getElementById('renderBtn').addEventListener('click', renderCode);  
+    document.getElementById('exportBtn').addEventListener('click', exportSTL);  
+    
+    // Viewer controls with correct method names and error checking
+    document.getElementById('axesButton').addEventListener('click', function() {
+        if (processor && processor.viewer) {
+            Blockscad.drawAxes = Blockscad.drawAxes ? 0 : 1;
+            processor.viewer.onDraw(); // Force redraw
+            addConsoleMessage('Axes ' + (Blockscad.drawAxes ? 'enabled' : 'disabled'), 'info');
+        } else {
+            addConsoleMessage('3D viewer not ready', 'error');
+        }
+    });
+
+    document.getElementById('zInButton').addEventListener('click', function() {
+        if (processor && processor.viewer) {
+            processor.viewer.zoomIn();
+        } else {
+            addConsoleMessage('3D viewer not ready', 'error');
+        }
+    });
+
+    document.getElementById('zOutButton').addEventListener('click', function() {
+        if (processor && processor.viewer) {
+            processor.viewer.zoomOut();
+        } else {
+            addConsoleMessage('3D viewer not ready', 'error');
+        }
+    });
+
+    document.getElementById('zResetButton').addEventListener('click', function() {
+        if (processor && processor.viewer) {
+            processor.viewer.viewReset();
+            addConsoleMessage('View reset', 'info');
+        } else {
+            addConsoleMessage('3D viewer not ready', 'error');
+        }
+    });
+
+    document.getElementById('viewMenu').addEventListener('change', function() {
+        if (processor && processor.viewer) {
+            const view = this.value;
+            processor.viewer.viewReset(view);  // Pass view parameter
+            addConsoleMessage('View changed to ' + view, 'info');
+        } else {
+            addConsoleMessage('3D viewer not ready', 'error');
+        }
+    });
+      
+    // Keyboard shortcuts  
+    document.addEventListener('keydown', function(e) {  
+        if (e.key === 'F5') {  
+            e.preventDefault();  
+            previewCode();  
+        } else if (e.key === 'F6') {  
+            e.preventDefault();  
+            renderCode();  
+        } else if (e.ctrlKey && e.key === 's') {  
+            e.preventDefault();  
+            saveDesign();  
+        }  
+    });  
+}  
+  
+// Initialize everything when DOM is ready  
+document.addEventListener('DOMContentLoaded', function() {  
+    initEditor();  
+    initViewer();  
+    setupEventHandlers();  
+    addConsoleMessage('OpenSCAD Editor ready', 'success');  
+});  
+</script>  
+{% endblock %}

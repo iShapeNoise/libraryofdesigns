@@ -5,7 +5,7 @@ app_name = 'editor'
 
 urlpatterns = [
     path('', views.editor_view, name='editor'),
-    path('project/<int:project_id>/', views.editor_view, name='editor_project'),
-    path('save_project/', views.save_project, name='save_project'),
-    path('render_project/', views.render_project, name='render_project'),
+    path('design/<int:design_id>/', views.editor_view, name='editor_design'),
+    path('save_design/', views.save_design, name='save_design'),
+    path('render_design/', views.render_design, name='render_design'),
 ]

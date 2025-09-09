@@ -1,8 +1,7 @@
 # [CAD for Kids >> BlocksCAD](./index.md)
 
----
 
-![FeatureImage](FeatureImage.png)
+![](FeatureImage.png)
 
 ---
 
@@ -10,4 +9,4 @@ BlocksCAD4Kids is a course that teaches children and/or teachers how to create 3
 
 The course can be hold in English or German. Taking into account the current level of knowledge of the children. The course leader will provide questions and translations into German or respectively into English, if necessary so that the children can follow the course content.
 
-
+ExtraBtn: [BlocksCAD Editor](https://libraryofdesigns.cc/keditor/)

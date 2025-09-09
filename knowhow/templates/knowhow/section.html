@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}  
+  
+{% block title %}{{ section_title }}{% endblock %}  
+  
+{% block content %}  
+<div class="container-fluid">  
+    <h1 class="mb-4">{{ section_title }}</h1>  
+      
+    {% if has_courses %}  
+    <div class="row">  
+        {% for course in courses %}  
+        <div class="col-12 mb-4">  
+            <div class="card h-100">  
+                <div class="row g-0">  
+                    {% if course.course_image %}  
+                    <div class="col-md-3">  
+                        <img src="{{ course.course_image }}" class="img-fluid rounded-start h-100"   
+                             style="object-fit: cover;"   
+                             alt="{{ course.title }}">  
+                    </div>  
+                    <div class="col-md-9">  
+                    {% else %}  
+                    <div class="col-md-3 d-flex align-items-center justify-content-center bg-light">  
+                        <div class="text-center text-muted">  
+                            <i class="fas fa-image fa-3x mb-2"></i>  
+                            <p class="mb-0">No image<br>available</p>  
+                        </div>  
+                    </div>  
+                    <div class="col-md-9">  
+                    {% endif %}  
+                        <div class="card-body">  
+                            
+                            <div class="card-text">  
+                                {{ course.about_html|safe }}  
+                            </div>
+                            <div class="card-footer text-center">
+                                {% if course.extra_btn_link and course.extra_btn_text %}  
+                                <a href="{{ course.extra_btn_link }}"   
+                                   class="btn btn-outline-info btn-lg me-2"  
+                                   {% if course.extra_btn_link|slice:":4" == "http" %}target="_blank"{% endif %}>  
+                                   {{ course.extra_btn_text }}  
+                                </a>  
+                                {% endif %}  
+                                  
+                                <a href="{% url 'knowhow:course_overview' section=course.section course_name=course.name %}"   
+                                   class="btn btn-outline-primary btn-lg me-2">View Overview</a>  
+                                  
+                                <a href="{% url 'knowhow:course_detail' section=course.section course_name=course.name %}"   
+                                   class="btn btn-primary btn-lg">Enter {{ course.title }} Course</a>  
+                            </div>  
+                        </div>  
+                    </div>  
+                </div>  
+            </div>  
+        </div>  
+        {% endfor %}  
+    </div>  
+    {% else %}  
+    <div class="col-12">  
+        <div class="alert alert-info text-center">  
+            <i class="fas fa-info-circle"></i> No courses available yet.  
+        </div>  
+    </div>  
+    {% endif %}  
+</div>
+{% endblock %}
