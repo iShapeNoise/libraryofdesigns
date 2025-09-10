@@ -17,7 +17,7 @@ def keditor_view(request, project_id=None):
         'blocks_xml': project.blocks_xml if project else '',
         'openscad_code': project.openscad_code if project else '',
     }
-    return render(request, 'keditor/editor.html', context)
+    return render(request, 'keditor/keditor.html', context)
 
 
 @csrf_exempt

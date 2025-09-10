@@ -1,0 +1,17 @@
+/* Main site header font size overrides */  
+h1 { font-size: 1.5rem !important; }  
+h2 { font-size: 1.3rem !important; }  
+h3 { font-size: 1.1rem !important; }  
+h4 { font-size: 1rem !important; }  
+h5 { font-size: 0.9rem !important; }  
+h6 { font-size: 0.8rem !important; }  
+  
+/* Exclude navigation dropdowns */  
+.dropdown-menu h1,  
+.dropdown-menu h2,  
+.dropdown-menu h3,  
+.dropdown-menu h4,  
+.dropdown-menu h5,  
+.dropdown-menu h6 {  
+  font-size: inherit !important;  
+}

@@ -14,7 +14,7 @@
         <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/brite/bootstrap.min.css">  
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
-        <link rel="stylesheet" href="{% static 'admin/css/mobile-overrides.css' %}">
+        <link rel="stylesheet" href="{% static 'admin/css/mobile_overrides.css' %}">
         <link rel="icon" type="image/x-icon" href="{% static 'admin/img/favicon.ico' %}">
     </head>  
     <body>
@@ -52,7 +52,7 @@
                                     <button class="btn btn-outline-secondary dropdown-toggle" href="#" id="navbarDropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">Tools</button>  
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">  
                                         <li><h6 class="dropdown-header">Design Tools</h6></li>
-                                        <li><a class="dropdown-item" href="{% url 'editor:editor' %}" target="_blank">Editor</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'editor:editor' %}" target="_blank">CAD Editor</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><h6 class="dropdown-header">Production Tools</h6></li>
                                     </ul>  
