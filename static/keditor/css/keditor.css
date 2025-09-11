@@ -273,7 +273,7 @@
 #renderDiv {  
     position: relative !important;  
     width: 100% !important;  
-    height: 400px !important;  
+    height: 100% !important;  
     overflow: hidden;  
     background-color: var(--brite-dark);  
     border: 1px solid var(--brite-secondary);  
@@ -286,7 +286,13 @@
     border: 1px solid var(--brite-secondary);  
 }  
   
-/* Fix viewer controls */  
+/* Ensure blocklyDiv has proper positioning */  
+#blocklyDiv {  
+    position: relative !important;  
+    z-index: 1 !important;  
+    border: 1px solid #444;  
+}
+ 
 #viewerControls {  
     position: relative !important;  
     height: auto !important;  
@@ -314,6 +320,7 @@
   
 /* ===== KIDS EDITOR SPECIFIC STYLES ===== */  
 .kids-editor {  
+    postion: relative !important;
     min-height: 100vh;  
     font-family: 'Comic Sans MS', cursive, sans-serif;  
     background-color: var(--brite-bg);  

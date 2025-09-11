@@ -1,4 +1,4 @@
- {% extends 'core/base.html' %}    
+{% extends 'core/base.html' %}    
 {% load static %}    
     
 {% block title %}Kids CAD Editor{% endblock %}    
@@ -12,64 +12,51 @@
 {% block content %}    
   
 <!-- Simplified Bootstrap 5 layout without complex flexbox -->  
-<div class="container-fluid kids-editor">  
-    <div class="row">  
-        <!-- BlocksCAD Workspace Panel -->  
-        <div class="col-lg-8">  
-            <div class="toolbar bg-primary p-3 border-bottom">  
-                <div class="d-flex justify-content-between align-items-center">  
-                    <h4 class="text-white mb-0">  
-                        <i class="fas fa-cubes me-2"></i>Kids CAD Editor  
-                    </h4>  
-                    <div class="btn-group">  
-                        <button id="saveBtn" class="btn btn-success btn-lg">  
-                            <i class="fas fa-save me-1"></i>Save  
-                        </button>  
-                        <button id="renderBtn" class="btn btn-warning btn-lg">  
-                            <i class="fas fa-play me-1"></i>Build 3D  
-                        </button>  
-                        <button id="exportBtn" class="btn btn-info btn-lg">  
-                            <i class="fas fa-download me-1"></i>Download  
-                        </button>  
-                    </div>  
-                </div>  
+<div class="container-fluid kids-editor" style="width: none;">  
+    <div class="toolbar flex-grow-1 bg-primary p-3 border rounded-top">  
+        <div class="d-flex justify-content-between align-items-center">  
+            <h4 class="text-white mb-0">  
+                <i class="fas fa-cubes me-2"></i>Kids CAD Editor  
+            </h4>  
+            <div class="btn-group">  
+                <button id="saveBtn" class="btn btn-success">  
+                    <i class="fas fa-save me-1"></i>Save  
+                </button>  
+                <button id="renderBtn" class="btn btn-warning">  
+                    <i class="fas fa-play me-1"></i>Build 3D  
+                </button>  
+                <button id="exportBtn" class="btn btn-info">  
+                    <i class="fas fa-download me-1"></i>Download  
+                </button>  
             </div>  
-            <!-- Fixed height instead of flexbox -->  
+        </div>
+    </div>
+    <div class="row border border-bottom"> 
+        <!-- Left Column: BlocksCAD Workspace Panel -->  
+        <div class="col-lg-8 d-flex flex-column">  
             <div id="blocklyDiv" style="height: 600px; width: 100%;"></div>  
         </div>  
           
-        <!-- 3D Preview Panel -->  
-        <div class="col-lg-4">  
-            <div class="preview-panel border rounded m-2">  
-                <div class="bg-dark text-white p-2 rounded-top">  
-                    <h6 class="mb-0"><i class="fas fa-cube me-1"></i>3D Preview</h6>  
-                </div>  
-                <!-- Fixed height for 3D viewport -->  
-                <div id="renderDiv" style="height: 400px;"></div>  
-                  
-                <!-- Kid-friendly Controls -->  
-                <div id="viewerControls" class="p-3 bg-white">  
-                    <div class="row g-2">  
-                        <div class="col-6">  
-                            <button id="zInButton" class="btn btn-outline-primary btn-lg w-100">  
-                                <i class="fas fa-search-plus"></i><br>Zoom In  
-                            </button>  
-                        </div>  
-                        <div class="col-6">  
-                            <button id="zOutButton" class="btn btn-outline-primary btn-lg w-100">  
-                                <i class="fas fa-search-minus"></i><br>Zoom Out  
-                            </button>  
-                        </div>
-                        <div class="col-6">  
-                            <button id="zResetButton" class="btn btn-outline-secondary btn-lg w-100">  
-                                <i class="fas fa-home"></i><br>Reset View  
-                            </button>  
-                        </div>
-                        <div class="col-6">  
-                            <button id="axesButton" class="btn btn-outline-info btn-lg w-100">  
-                                <i class="fas fa-arrows-alt"></i><br>Show Axes  
-                            </button>  
-                        </div>  
+        <!-- Right Column 3D Preview Panel -->  
+        <div class="col-lg-5 d-flex flex-column">
+            <div class="preview-panel flex-grow-1 border position-relative">  
+                <!-- 3D viewport -->  
+                <div id="renderDiv" style="width: 100%; height: 100%"></div>  
+                <!-- Controls -->
+                <div id="viewerControls" class="position-absolute bottom-0 start-0 p-2 bg-white bg-opacity-75 rounded-end">  
+                    <div class="btn-group">    
+                        <button id="zInButton" class="btn btn-outline-primary">  
+                            <i class="fas fa-search-plus"></i><br>Zoom In  
+                        </button>  
+                        <button id="zOutButton" class="btn btn-outline-primary">  
+                            <i class="fas fa-search-minus"></i><br>Zoom Out  
+                        </button>  
+                        <button id="zResetButton" class="btn btn-outline-secondary">  
+                            <i class="fas fa-home"></i><br>Reset View  
+                        </button>  
+                        <button id="axesButton" class="btn btn-outline-info">  
+                            <i class="fas fa-arrows-alt"></i><br>Show Axes  
+                        </button>  
                     </div>  
                 </div>  
             </div>  
@@ -84,7 +71,18 @@
         </div>  
     </div>  
 </div>  
-  
+
+<script src="{% static 'cad_editor/js/blockly/blocks/colour.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/geom_set_ops.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/lists.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/logic.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/loops.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/math.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/primitives.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/procedures.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/text.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/variables.js' %}"></script>
+
 <xml id="toolbox" style="display: none">  
   <category name="🟦 Shapes" colour="210">  
     <block type="cube"></block>  
@@ -114,48 +112,48 @@
 <textarea id="blocksXml" style="display: none;">{{ blocks_xml }}</textarea>  
   
 <!-- JavaScript Dependencies -->  
-<!-- 1. Load Closure Library FIRST -->  
-<script src="{% static 'cad_editor/js/closure-library/closure/goog/base.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blockly_uncompressed.js' %}"></script>  
   
-<!-- 2. Load message files -->  
-<script src="{% static 'cad_editor/js/blockly/core/msg.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/msg/js/en.js' %}"></script>  
-<script src="{% static 'keditor/js/en.js' %}"></script>  
-  
-<!-- 3. Load jQuery and dependencies -->  
+<!-- Load jQuery FIRST (critical for 'each' method) -->  
 <script src="{% static 'cad_editor/js/jquery/jquery-1.11.3.js' %}"></script>  
 <script src="{% static 'cad_editor/js/jquery/jquery-ui.min.js' %}"></script>  
-<script src="{% static 'cad_editor/js/jquery/jquery.hammer.js' %}"></script>  
-<script src="{% static 'cad_editor/js/jquery/jquery.ui.touch-punch.min.js' %}"></script>  
   
-<!-- 4. Load Blockly core -->  
+<!-- Load Blockly core -->  
 <script src="{% static 'cad_editor/js/blockly/blockly_compressed.js' %}"></script>  
 <script src="{% static 'cad_editor/js/blockly/blocks_compressed.js' %}"></script>  
 <script src="{% static 'cad_editor/js/blockly/openscad_compressed.js' %}"></script>  
   
-<!-- 5. Load BlocksCAD utilities BEFORE blockscad.js -->  
+<!-- Load BlocksCAD files in correct order -->  
 <script src="{% static 'cad_editor/js/blockscad/storage.js' %}"></script>  
 <script src="{% static 'cad_editor/js/blockscad/utils.js' %}"></script>  
-  
-<!-- 6. Load main BlocksCAD file -->  
-<script src="{% static 'cad_editor/js/blockscad/blockscad.js' %}"></script>  
-  
-<!-- 7. Load other BlocksCAD components -->  
-<script src="{% static 'cad_editor/js/blockscad/viewer.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockscad/csg.js' %}"></script>  
 <script src="{% static 'cad_editor/js/blockscad/lightgl.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockscad/FileSaver.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockscad/stl.js' %}"></script>  
-<script src="{% static 'cad_editor/js/spectrum/spectrum.js' %}"></script>  
-  
+<script src="{% static 'cad_editor/js/blockscad/csg.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockscad/viewer.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockscad/blockscad.js' %}"></script>
+<script src="{% static 'cad_editor/js/jquery/jquery.hammer.js' %}"></script>
+
+
 <script>  
 // Initialize BlocksCAD for kids  
 let workspace;  
 let processor;  
-  
+
+
+function initViewer() {  
+    const renderDiv = document.getElementById('renderDiv');  
+    if (renderDiv && typeof Blockscad !== 'undefined' && typeof Blockscad.Processor !== 'undefined') {  
+        processor = new Blockscad.Processor(renderDiv);  
+    } else {  
+        console.error('Failed to initialize viewer - missing dependencies');  
+    }  
+}
+
 document.addEventListener('DOMContentLoaded', function() {  
     // Initialize BlocksCAD globals FIRST  
+    if (typeof Blockscad === 'undefined') {  
+        window.Blockscad = {};  
+        Blockscad.Toolbox = {};  
+    }  
+      
     Blockscad.picSize = [450, 450];  
     Blockscad.rpicSize = [250, 250];  
     Blockscad.picQuality = 0.85;  
@@ -163,20 +161,41 @@ document.addEventListener('DOMContentLoaded', function() {
     Blockscad.drawAxes = 1;  
     Blockscad.resolution = 1;  
       
-    // Initialize Blockly workspace  
-    workspace = Blockly.inject('blocklyDiv', {  
-        media: '{% static "cad_editor/js/blockly/media/" %}',  
-        toolbox: document.getElementById('toolbox'),  
-        sounds: true  
-    });  
-      
-    // Initialize 3D processor  
-    const renderDiv = document.getElementById('renderDiv');  
-    processor = new Blockscad.Processor(renderDiv);  
-      
-    setupEventHandlers();  
-});  
-  
+    // Wait for all dependencies to load  
+    setTimeout(function() {  
+        // CRITICAL: Create toolbox before workspace injection  
+        if (typeof Blockscad.Toolbox.createToolbox === 'function') {  
+            Blockscad.Toolbox.createToolbox();  
+        }  
+          
+        // Initialize workspace with BlocksCAD's advanced toolbox  
+        workspace = Blockly.inject('blocklyDiv', {  
+            media: '{% static "cad_editor/js/blockly/media/" %}',  
+            toolbox: Blockscad.Toolbox.adv, // Use BlocksCAD's toolbox, not DOM element  
+            zoom: {  
+                controls: true,  
+                wheel: true,  
+                startScale: 1.0,  
+                maxScale: 3,  
+                minScale: 0.3,  
+                scaleSpeed: 1.2  
+            },  
+            trashcan: false,  
+            sounds: false  
+        });  
+          
+        // Set color scheme and category colors  
+        if (typeof Blockscad.Toolbox.setColorScheme === 'function') {  
+            Blockscad.Toolbox.setColorScheme(Blockscad.Toolbox.colorScheme['one']);  
+            Blockscad.Toolbox.setCatColors();  
+        }  
+          
+        initViewer();  
+        setupEventHandlers();  
+    }, 2000);  
+});
+
+
 function setupEventHandlers() {  
     // Save project  
     document.getElementById('saveBtn').addEventListener('click', function() {  
@@ -322,6 +341,19 @@ function downloadSTL(stlData, filename) {
     document.body.removeChild(a);  
     URL.revokeObjectURL(url);  
 }  
+
+function debugBlocksCAD() {  
+    console.log('Blockly available:', typeof Blockly !== 'undefined');  
+    console.log('Blockscad available:', typeof Blockscad !== 'undefined');  
+    console.log('Workspace:', workspace);  
+    console.log('Processor:', processor);  
+    console.log('RenderDiv:', document.getElementById('renderDiv'));  
+    console.log('Toolbox:', document.getElementById('toolbox'));  
+}  
+  
+// Call this after initialization  
+setTimeout(debugBlocksCAD, 1000);
+
 </script>  
   
 {% endblock %}
