@@ -6,14 +6,17 @@
 {% block extra_css %}    
 <link rel="stylesheet" href="{% static 'cad_editor/css/spectrum.css' %}">    
 <link rel="stylesheet" href="{% static 'cad_editor/css/style.css' %}">    
-<link rel="stylesheet" href="{% static 'keditor/css/keditor.css' %}">  
+<link rel="stylesheet" href="{% static 'cad_editor/css/bootstrap/bootstrap.min.css' %}">  
+<link rel="stylesheet" href="{% static 'cad_editor/css/bootstrap/bootstrap-theme.min.css' %}">  
+<link rel="stylesheet" href="{% static 'cad_editor/css/blockscad_style.css' %}">
+<link rel="stylesheet" href="{% static 'keditor/css/keditor.css' %}">
 {% endblock %}    
     
 {% block content %}    
   
 <!-- Simplified Bootstrap 5 layout without complex flexbox -->  
 <div class="container-fluid kids-editor" style="width: none;">  
-    <div class="toolbar flex-grow-1 bg-primary p-3 border rounded-top">  
+    <div class="toolbar flex-grow-1 bg-primary p-3 border rounded">  
         <div class="d-flex justify-content-between align-items-center">  
             <h4 class="text-white mb-0">  
                 <i class="fas fa-cubes me-2"></i>Kids CAD Editor  
@@ -30,58 +33,48 @@
                 </button>  
             </div>  
         </div>
+        <div class="row p-3"> 
+            <!-- Left Column: BlocksCAD Workspace Panel -->  
+            <div class="col-md-8 d-flex flex-column">  
+                <div id="blocklyDiv" style="height: 600px; width: 100%;"></div>  
+            </div>  
+              
+            <!-- Right Column 3D Preview Panel -->  
+            <div class="col-md-4 d-flex flex-column">
+                <div class="position-relative border">  
+                    <!-- 3D viewport -->  
+                    <div class="resizableDiv">
+                        <div id="renderDiv" style="width: 100%; height: 100%"></div>
+                    </div>
+                    <!-- Controls -->
+                    <div id="viewerControls" class="p-2 rounded-end">  
+                        <div class="btn-group">    
+                            <button id="zInButton" class="btn btn-outline-primary">  
+                                <i class="fas fa-search-plus"></i><br>Zoom In  
+                            </button>  
+                            <button id="zOutButton" class="btn btn-outline-primary">  
+                                <i class="fas fa-search-minus"></i><br>Zoom Out  
+                            </button>  
+                            <button id="zResetButton" class="btn btn-outline-secondary">  
+                                <i class="fas fa-home"></i><br>Reset View  
+                            </button>  
+                            <button id="axesButton" class="btn btn-outline-info">  
+                                <i class="fas fa-arrows-alt"></i><br>Show Axes  
+                            </button>  
+                        </div>  
+                    </div>        
+                    <!-- Console Panel -->  
+                    <div class="console-panel bg-dark text-light p-3 rounded m-2" style="height: 100%;">  
+                        <h6 class="text-warning"><i class="fas fa-terminal me-1"></i>Messages</h6>  
+                        <div id="consoleOutput" class="overflow-auto h-75">  
+                            <div class="text-success">Ready to build! 🚀</div>  
+                        </div>  
+                    </div>
+                </div>
+            </div>  
+        </div> 
     </div>
-    <div class="row border border-bottom"> 
-        <!-- Left Column: BlocksCAD Workspace Panel -->  
-        <div class="col-lg-8 d-flex flex-column">  
-            <div id="blocklyDiv" style="height: 600px; width: 100%;"></div>  
-        </div>  
-          
-        <!-- Right Column 3D Preview Panel -->  
-        <div class="col-lg-5 d-flex flex-column">
-            <div class="preview-panel flex-grow-1 border position-relative">  
-                <!-- 3D viewport -->  
-                <div id="renderDiv" style="width: 100%; height: 100%"></div>  
-                <!-- Controls -->
-                <div id="viewerControls" class="position-absolute bottom-0 start-0 p-2 bg-white bg-opacity-75 rounded-end">  
-                    <div class="btn-group">    
-                        <button id="zInButton" class="btn btn-outline-primary">  
-                            <i class="fas fa-search-plus"></i><br>Zoom In  
-                        </button>  
-                        <button id="zOutButton" class="btn btn-outline-primary">  
-                            <i class="fas fa-search-minus"></i><br>Zoom Out  
-                        </button>  
-                        <button id="zResetButton" class="btn btn-outline-secondary">  
-                            <i class="fas fa-home"></i><br>Reset View  
-                        </button>  
-                        <button id="axesButton" class="btn btn-outline-info">  
-                            <i class="fas fa-arrows-alt"></i><br>Show Axes  
-                        </button>  
-                    </div>  
-                </div>  
-            </div>  
-                
-            <!-- Console Panel -->  
-            <div class="console-panel bg-dark text-light p-3 rounded m-2" style="height: 30%;">  
-                <h6 class="text-warning"><i class="fas fa-terminal me-1"></i>Messages</h6>  
-                <div id="consoleOutput" class="overflow-auto h-75">  
-                    <div class="text-success">Ready to build! 🚀</div>  
-                </div>  
-            </div>  
-        </div>  
-    </div>  
 </div>  
-
-<script src="{% static 'cad_editor/js/blockly/blocks/colour.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/geom_set_ops.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/lists.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/logic.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/loops.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/math.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/primitives.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/procedures.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/text.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/variables.js' %}"></script>
 
 <xml id="toolbox" style="display: none">  
   <category name="🟦 Shapes" colour="210">  
@@ -111,8 +104,22 @@
 <!-- Hidden XML storage -->  
 <textarea id="blocksXml" style="display: none;">{{ blocks_xml }}</textarea>  
   
-<!-- JavaScript Dependencies -->  
-  
+<!-- JavaScript Dependencies -->
+
+<!-- Bootstrap 3 JS -->  
+<script src="{% static 'cad_editor/js/bootstrap/bootstrap-3.3.4-dist/js/bootstrap.min.js' %}"></script>  
+
+<script src="{% static 'cad_editor/js/blockly/blocks/colour.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/geom_set_ops.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/lists.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/logic.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/loops.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/math.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/primitives.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/procedures.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/text.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockly/blocks/variables.js' %}"></script>
+
 <!-- Load jQuery FIRST (critical for 'each' method) -->  
 <script src="{% static 'cad_editor/js/jquery/jquery-1.11.3.js' %}"></script>  
 <script src="{% static 'cad_editor/js/jquery/jquery-ui.min.js' %}"></script>  
@@ -129,13 +136,15 @@
 <script src="{% static 'cad_editor/js/blockscad/csg.js' %}"></script>  
 <script src="{% static 'cad_editor/js/blockscad/viewer.js' %}"></script>  
 <script src="{% static 'cad_editor/js/blockscad/blockscad.js' %}"></script>
-<script src="{% static 'cad_editor/js/jquery/jquery.hammer.js' %}"></script>
+<script src="{% static 'cad_editor/js/jquery/jquery.hammer.js' %}"></script>  
+<script src="{% static 'cad_editor/js/jquery/jquery.ui.touch-punch.min.js' %}"></script>  
 
 
 <script>  
 // Initialize BlocksCAD for kids  
 let workspace;  
-let processor;  
+//let viewer;
+//let processor;  
 
 
 function initViewer() {  

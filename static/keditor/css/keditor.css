@@ -117,163 +117,178 @@
     z-index: 1000;    
     display: none;    
     float: left;    
-    min-width: 10rem;    
-    padding: 0.5rem 0;    
-    margin: 0.125rem 0 0;    
-    font-size: 1rem;    
-    color: #212529;    
+    min-width: 160px;    
+    padding: 5px 0;    
+    margin: 2px 0 0;    
+    font-size: 14px;    
     text-align: left;    
     list-style: none;    
     background-color: #fff;    
     background-clip: padding-box;    
+    border: 1px solid #ccc;    
     border: 1px solid rgba(0, 0, 0, 0.15);    
-    border-radius: 0.375rem;    
+    border-radius: 4px;    
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);    
 }    
     
 .dropdown-menu > li > a {    
     display: block;    
-    padding: 0.25rem 1.5rem;    
+    padding: 3px 20px;    
     clear: both;    
-    font-weight: 400;    
-    color: #212529;    
-    text-align: inherit;    
-    text-decoration: none;    
+    font-weight: normal;    
+    line-height: 1.42857143;    
+    color: #333;    
     white-space: nowrap;    
-    background-color: transparent;    
-    border: 0;    
+    text-decoration: none;    
 }    
     
 .dropdown-menu > li > a:hover,    
 .dropdown-menu > li > a:focus {    
-    color: #1e2125;    
-    background-color: #e9ecef;    
+    color: #262626;    
+    text-decoration: none;    
+    background-color: #f5f5f5;    
 }    
     
-.dropdown-divider {    
-    height: 0;    
-    margin: 0.5rem 0;    
-    overflow: hidden;    
-    border-top: 1px solid #e9ecef;    
-}    
-    
-/* ===== BOOTSTRAP 3 TO 5 PANEL TO CARD CONVERSION ===== */    
+/* ===== BOOTSTRAP 3 TO 5 PANEL CONVERSION ===== */    
 .panel {    
-    position: relative;    
-    display: flex;    
-    flex-direction: column;    
-    min-width: 0;    
-    word-wrap: break-word;    
-    background-color: var(--brite-surface);    
-    background-clip: border-box;    
-    border: 1px solid var(--brite-dark);    
-    border-radius: 0.375rem;    
-    color: #fff;    
+    margin-bottom: 20px;    
+    background-color: #fff;    
+    border: 1px solid transparent;    
+    border-radius: 4px;    
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);    
+}    
+    
+.panel-default {    
+    border-color: #ddd;    
+}    
+    
+.panel-default > .panel-heading {    
+    color: #333;    
+    background-color: #f5f5f5;    
+    border-color: #ddd;    
 }    
     
 .panel-heading {    
-    padding: 0.5rem 1rem;    
-    margin-bottom: 0;    
-    background-color: var(--brite-primary);    
-    border-bottom: 1px solid var(--brite-dark);    
-    border-top-left-radius: calc(0.375rem - 1px);    
-    border-top-right-radius: calc(0.375rem - 1px);    
-    color: #fff;    
+    padding: 10px 15px;    
+    border-bottom: 1px solid transparent;    
+    border-top-left-radius: 3px;    
+    border-top-right-radius: 3px;    
 }    
     
 .panel-body {    
-    flex: 1 1 auto;    
-    padding: 1rem 1rem;    
-    background-color: var(--brite-surface);    
-    color: #fff;    
+    padding: 15px;    
 }    
     
-/* ===== BOOTSTRAP 3 TO 5 UTILITY CLASSES ===== */    
-.pull-left {    
-    float: left !important;    
+/* ===== BOOTSTRAP 3 TO 5 WELL CONVERSION ===== */    
+.well {    
+    min-height: 20px;    
+    padding: 19px;    
+    margin-bottom: 20px;    
+    background-color: #f5f5f5;    
+    border: 1px solid #e3e3e3;    
+    border-radius: 4px;    
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);    
 }    
     
-.pull-right {    
-    float: right !important;    
-}    
-    
-.text-left {    
-    text-align: left !important;    
-}    
-    
-.text-center {    
-    text-align: center !important;    
-}    
-    
-.text-right {    
-    text-align: right !important;    
-}    
-    
-/* ===== BLOCKSCAD SPECIFIC LAYOUT FIXES ===== */    
-#top-navigation-bar {    
-    margin-bottom: 0;    
-    min-height: 50px;    
-}    
-    
-.navbar-narrow {    
-    min-height: 35px;    
-    margin-bottom: 0px;    
-    height: 35px !important;    
+/* ===== BOOTSTRAP 3 TO 5 LABEL CONVERSION ===== */    
+.label {    
+    display: inline;    
+    padding: 0.2em 0.6em 0.3em;    
+    font-size: 75%;    
+    font-weight: 700;    
     line-height: 1;    
+    color: #fff;    
+    text-align: center;    
+    white-space: nowrap;    
+    vertical-align: baseline;    
+    border-radius: 0.25em;    
 }    
     
-.btn-over-blockly {    
-    position: absolute;    
-    top: -8px;    
-    left: 40%;    
-    z-index: 299;    
+.label-default {    
+    background-color: #777;    
 }    
     
-.btn-group {    
-    position: relative;    
-    display: inline-flex;    
-    vertical-align: middle;    
+.label-primary {    
+    background-color: var(--brite-primary);    
 }    
     
-.btn-group > .btn {    
-    position: relative;    
-    flex: 1 1 auto;    
+.label-success {    
+    background-color: var(--brite-success);    
 }    
     
-.btn-group > .btn:not(:first-child) {    
-    margin-left: -1px;    
+.label-info {    
+    background-color: var(--brite-info);    
 }    
     
-.btn-group > .btn:first-child {    
-    margin-left: 0;    
+.label-warning {    
+    background-color: var(--brite-warning);    
 }    
     
-/* ===== BLOCKSCAD CONTAINER FIXES ===== */    
-.container-fluid {    
-    width: 100%;    
-    padding-right: 15px;    
-    padding-left: 5px;    
-    margin-right: auto;    
-    margin-left: auto;    
+.label-danger {    
+    background-color: var(--brite-danger);    
 }    
     
-.resizableDiv {    
-    position: absolute;    
-    z-index: 300;    
-    top: 0px !important;    
-    right: 12px;    
-    border-style: solid solid ridge ridge;    
-    border-width: 1px 1px 8px 8px;    
-    border-color: #cccccc;    
-    width: 30%;    
-    height: 72%;    
+/* ===== BOOTSTRAP 3 TO 5 ALERT CONVERSION ===== */    
+.alert {    
+    padding: 15px;    
+    margin-bottom: 20px;    
+    border: 1px solid transparent;    
+    border-radius: 4px;    
 }    
-  
+    
+.alert-success {    
+    color: #3c763d;    
+    background-color: #dff0d8;    
+    border-color: #d6e9c6;    
+}    
+    
+.alert-info {    
+    color: #31708f;    
+    background-color: #d9edf7;    
+    border-color: #bce8f1;    
+}    
+    
+.alert-warning {    
+    color: #8a6d3b;    
+    background-color: #fcf8e3;    
+    border-color: #faebcc;    
+}    
+    
+.alert-danger {    
+    color: #a94442;    
+    background-color: #f2dede;    
+    border-color: #ebccd1;    
+}    
+    
+/* ===== BOOTSTRAP 3 TO 5 PROGRESS BAR CONVERSION ===== */    
+.progress {    
+    height: 20px;    
+    margin-bottom: 20px;    
+    overflow: hidden;    
+    background-color: #f5f5f5;    
+    border-radius: 4px;    
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);    
+}    
+    
+.progress-bar {    
+    float: left;    
+    width: 0%;    
+    height: 100%;    
+    font-size: 12px;    
+    line-height: 20px;    
+    color: #fff;    
+    text-align: center;    
+    background-color: var(--brite-primary);    
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);    
+    transition: width 0.6s ease;    
+}    
+    
 /* ===== CRITICAL BOOTSTRAP 5 FIXES FOR BLOCKSCAD ===== */  
 /* Fix 3D viewport positioning for Bootstrap 5 */  
 #renderDiv {  
     position: relative !important;  
     width: 100% !important;  
-    height: 100% !important;  
+    height: 400px !important;  
     overflow: hidden;  
     background-color: var(--brite-dark);  
     border: 1px solid var(--brite-secondary);  
@@ -286,13 +301,7 @@
     border: 1px solid var(--brite-secondary);  
 }  
   
-/* Ensure blocklyDiv has proper positioning */  
-#blocklyDiv {  
-    position: relative !important;  
-    z-index: 1 !important;  
-    border: 1px solid #444;  
-}
- 
+/* Fix viewer controls */  
 #viewerControls {  
     position: relative !important;  
     height: auto !important;  
@@ -320,7 +329,6 @@
   
 /* ===== KIDS EDITOR SPECIFIC STYLES ===== */  
 .kids-editor {  
-    postion: relative !important;
     min-height: 100vh;  
     font-family: 'Comic Sans MS', cursive, sans-serif;  
     background-color: var(--brite-bg);  
@@ -337,5 +345,3 @@
 .toolbar {  
     background-color: var(--brite-primary) !important;  
 }
-
-
