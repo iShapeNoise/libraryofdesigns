@@ -781,8 +781,8 @@ Blockscad.readStlFile = function(evt) {
 // Load Blockly's (and Blockscad's) language strings.
 // console.log("trying to include message strings");
 // console.log("language is: ", BSUtils.LANG);
-document.write('<script src="blockly/msg/js/' + BSUtils.LANG + '.js"></script>\n');
-document.write('<script src="blockscad/msg/js/' + BSUtils.LANG + '.js"></script>\n');
+// document.write('<script src="blockly/msg/js/' + BSUtils.LANG + '.js"></script>\n');
+// document.write('<script src="blockscad/msg/js/' + BSUtils.LANG + '.js"></script>\n');
 
 // on page load, call blockscad init function.
 window.addEventListener('load', Blockscad.init);

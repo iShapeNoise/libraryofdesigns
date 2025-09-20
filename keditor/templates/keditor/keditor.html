@@ -34,101 +34,84 @@
             </div>  
         </div>
         <div class="row p-3"> 
-            <!-- Left Column: BlocksCAD Workspace Panel -->  
-            <div class="col-md-8 d-flex flex-column">  
-                <div id="blocklyDiv" style="height: 600px; width: 100%;"></div>  
-            </div>  
-              
-            <!-- Right Column 3D Preview Panel -->  
-            <div class="col-md-4 d-flex flex-column">
-                <div class="position-relative border">  
-                    <!-- 3D viewport -->  
-                    <div class="resizableDiv">
-                        <div id="renderDiv" style="width: 100%; height: 100%"></div>
-                    </div>
-                    <!-- Controls -->
-                    <div id="viewerControls" class="p-2 rounded-end">  
-                        <div class="btn-group">    
-                            <button id="zInButton" class="btn btn-outline-primary">  
-                                <i class="fas fa-search-plus"></i><br>Zoom In  
-                            </button>  
-                            <button id="zOutButton" class="btn btn-outline-primary">  
-                                <i class="fas fa-search-minus"></i><br>Zoom Out  
-                            </button>  
-                            <button id="zResetButton" class="btn btn-outline-secondary">  
-                                <i class="fas fa-home"></i><br>Reset View  
-                            </button>  
-                            <button id="axesButton" class="btn btn-outline-info">  
-                                <i class="fas fa-arrows-alt"></i><br>Show Axes  
-                            </button>  
+            <!-- Left Column: BlocksCAD Workspace Panel -->    
+            <div class="col-md-8 d-flex flex-column">    
+                <div id="blocklyDiv" style="height: calc(100vh - 200px); width: 100%; min-height: 550px;"></div>    
+            </div> 
+            <!-- Right Column: 3D Preview + Console -->    
+            <div class="col-md-4 d-flex flex-column">  
+                <!-- 3D viewport container -->  
+                <div class="position-relative border" style="flex: 1; min-height: 400px;">    
+                    <div class="resizableDiv" style="height: 100%;">  
+                        <div id="renderDiv" style="width: 100%; height: 100%"></div>  
+                    </div>  
+                      
+                    <!-- Controls positioned over 3D viewer -->  
+                    <div id="viewerControls" class="position-absolute bottom-0 start-0 p-2 bg-white bg-opacity-75 rounded-end">    
+                        <div class="btn-group">      
+                            <button id="zInButton" class="btn btn-outline-primary btn-sm">    
+                                <i class="fas fa-search-plus"></i><br>Zoom In    
+                            </button>    
+                            <button id="zOutButton" class="btn btn-outline-primary btn-sm">    
+                                <i class="fas fa-search-minus"></i><br>Zoom Out    
+                            </button>    
+                            <button id="zResetButton" class="btn btn-outline-secondary btn-sm">    
+                                <i class="fas fa-home"></i><br>Reset View    
+                            </button>    
+                            <button id="axesButton" class="btn btn-outline-info btn-sm">    
+                                <i class="fas fa-arrows-alt"></i><br>Show Axes    
+                            </button>    
                         </div>  
-                    </div>        
-                    <!-- Console Panel -->  
-                    <div class="console-panel bg-dark text-light p-3 rounded m-2" style="height: 100%;">  
-                        <h6 class="text-warning"><i class="fas fa-terminal me-1"></i>Messages</h6>  
-                        <div id="consoleOutput" class="overflow-auto h-75">  
-                            <div class="text-success">Ready to build! 🚀</div>  
-                        </div>  
-                    </div>
-                </div>
-            </div>  
-        </div> 
+                          
+                        <!-- View dropdown menu -->  
+                        <select id="viewMenu" class="form-select form-select-sm ms-2" style="width: auto;" title="Change View">      
+                            <option value="diagonal">Diagonal</option>      
+                            <option value="front">Front</option>      
+                            <option value="top">Top</option>      
+                            <option value="right">Right</option>      
+                            <option value="left">Left</option>      
+                            <option value="back">Back</option>      
+                            <option value="bottom">Bottom</option>      
+                        </select>  
+                    </div>          
+                </div>  
+                  
+                <!-- Console Panel - separate from 3D viewer -->    
+                <div class="console-panel bg-dark text-light p-3 rounded mt-2" style="height: 150px; flex-shrink: 0;">    
+                    <h6 class="text-warning"><i class="fas fa-terminal me-1"></i>Messages</h6>    
+                    <div id="consoleOutput" class="overflow-auto" style="height: calc(100% - 30px);">    
+                        <div class="text-success">Ready to build! 🚀</div>    
+                    </div>    
+                </div>  
+            </div>
+        </div>
     </div>
 </div>  
 
-<xml id="toolbox" style="display: none">  
-  <category name="🟦 Shapes" colour="210">  
-    <block type="cube"></block>  
-    <block type="sphere"></block>  
-    <block type="cylinder"></block>  
-  </category>  
-  <category name="🔄 Move & Turn" colour="120">  
-    <block type="translate"></block>  
-    <block type="rotate"></block>  
-    <block type="scale"></block>  
-  </category>  
-  <category name="➕ Combine" colour="45">  
-    <block type="union"></block>  
-    <block type="difference"></block>  
-    <block type="intersection"></block>  
-  </category>  
-  <category name="🎨 Colors" colour="300">  
-    <block type="color"></block>  
-  </category>  
-  <category name="🔢 Numbers" colour="230">  
-    <block type="math_number"></block>  
-    <block type="math_arithmetic"></block>  
-  </category>  
-</xml>  
   
 <!-- Hidden XML storage -->  
 <textarea id="blocksXml" style="display: none;">{{ blocks_xml }}</textarea>  
   
 <!-- JavaScript Dependencies -->
 
-<!-- Bootstrap 3 JS -->  
-<script src="{% static 'cad_editor/js/bootstrap/bootstrap-3.3.4-dist/js/bootstrap.min.js' %}"></script>  
-
-<script src="{% static 'cad_editor/js/blockly/blocks/colour.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/geom_set_ops.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/lists.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/logic.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/loops.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/math.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/primitives.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/procedures.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/text.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockly/blocks/variables.js' %}"></script>
-
 <!-- Load jQuery FIRST (critical for 'each' method) -->  
 <script src="{% static 'cad_editor/js/jquery/jquery-1.11.3.js' %}"></script>  
 <script src="{% static 'cad_editor/js/jquery/jquery-ui.min.js' %}"></script>  
   
+<!-- Bootstrap 3 JS -->  
+<script src="{% static 'cad_editor/js/bootstrap/bootstrap-3.3.4-dist/js/bootstrap.min.js' %}"></script>  
+
+
 <!-- Load Blockly core -->  
-<script src="{% static 'cad_editor/js/blockly/blockly_compressed.js' %}"></script>  
+<script src="{% static 'cad_editor/js/closure-library/closure/goog/base.js' %}"></script>
+<script src="{% static 'cad_editor/js/blockly/blockly_uncompressed.js' %}"></script>  
 <script src="{% static 'cad_editor/js/blockly/blocks_compressed.js' %}"></script>  
 <script src="{% static 'cad_editor/js/blockly/openscad_compressed.js' %}"></script>  
-  
+
+
+<script src="{% static 'cad_editor/js/blockscad/msg/js/en.js' %}"></script>
+<script src="{% static 'cad_editor/js/blockly/msg/js/en.js' %}"></script>
+
 <!-- Load BlocksCAD files in correct order -->  
 <script src="{% static 'cad_editor/js/blockscad/storage.js' %}"></script>  
 <script src="{% static 'cad_editor/js/blockscad/utils.js' %}"></script>  
@@ -138,36 +121,79 @@
 <script src="{% static 'cad_editor/js/blockscad/blockscad.js' %}"></script>
 <script src="{% static 'cad_editor/js/jquery/jquery.hammer.js' %}"></script>  
 <script src="{% static 'cad_editor/js/jquery/jquery.ui.touch-punch.min.js' %}"></script>  
-
+<script src="{% static 'cad_editor/js/blockscad/toolbox.js' %}"></script>
+<script src="{% static 'cad_editor/js/blockly/blocks/blockscad_changes.js' %}"></script>  
 
 <script>  
 // Initialize BlocksCAD for kids  
 let workspace;  
-//let viewer;
-//let processor;  
+let viewer; 
 
 
 function initViewer() {  
-    const renderDiv = document.getElementById('renderDiv');  
-    if (renderDiv && typeof Blockscad !== 'undefined' && typeof Blockscad.Processor !== 'undefined') {  
-        processor = new Blockscad.Processor(renderDiv);  
-    } else {  
-        console.error('Failed to initialize viewer - missing dependencies');  
-    }  
-}
-
-document.addEventListener('DOMContentLoaded', function() {  
-    // Initialize BlocksCAD globals FIRST  
-    if (typeof Blockscad === 'undefined') {  
-        window.Blockscad = {};  
-        Blockscad.Toolbox = {};  
-    }  
-      
+    // Initialize BlocksCAD globals FIRST (critical)  
     Blockscad.picSize = [450, 450];  
     Blockscad.rpicSize = [250, 250];  
     Blockscad.picQuality = 0.85;  
     Blockscad.numRotPics = 13;  
-    Blockscad.drawAxes = 1;  
+    Blockscad.drawAxes = 1;  // Enable axes/grid  
+    Blockscad.resolution = 1;  
+  
+    const renderDiv = document.getElementById('renderDiv');  
+  
+    // Ensure Hammer.js is loaded before initializing viewer  
+    if (typeof $.fn.hammer === 'undefined') {  
+        console.error('Error: Hammer.js jQuery plugin not loaded');  
+        return;  
+    }  
+  
+    // Verify the container exists and has dimensions  
+    if (!renderDiv) {  
+        console.error('Error: renderDiv not found');  
+        return;  
+    }  
+          
+    // Ensure container has proper dimensions  
+    if (renderDiv.offsetWidth === 0 || renderDiv.offsetHeight === 0) {  
+        renderDiv.style.width = '100%';  
+        renderDiv.style.height = '100%';  
+        renderDiv.style.minHeight = '400px';  
+    }  
+          
+    try {  
+        // Create viewer directly instead of processor to avoid snapshot DOM issues  
+        viewer = new Blockscad.Viewer(  
+            renderDiv,   
+            renderDiv.offsetWidth,   
+            renderDiv.offsetHeight,   
+            100 // initial distance  
+        );  
+            
+        // Configure viewer settings  
+        viewer.plate = true;  // Enable grid plate  
+        viewer.onDraw();      // Force initial draw  
+            
+        console.log('3D viewer initialized successfully');  
+              
+    } catch (e) {  
+        console.error('3D viewer error: ' + e.message);  
+    }  
+}
+
+document.addEventListener('DOMContentLoaded', function() {  
+    // Initialize BlocksCAD globals FIRST (critical)  
+    if (typeof Blockscad === 'undefined') {  
+        window.Blockscad = {};  
+        Blockscad.Toolbox = {};  
+        Blockscad.Msg = {};  
+    }  
+      
+    // Set BlocksCAD configuration  
+    Blockscad.picSize = [450, 450];  
+    Blockscad.rpicSize = [250, 250];  
+    Blockscad.picQuality = 0.85;  
+    Blockscad.numRotPics = 13;  
+    Blockscad.drawAxes = 1;  // Enable axes/grid  
     Blockscad.resolution = 1;  
       
     // Wait for all dependencies to load  
@@ -175,12 +201,22 @@ document.addEventListener('DOMContentLoaded', function() {
         // CRITICAL: Create toolbox before workspace injection  
         if (typeof Blockscad.Toolbox.createToolbox === 'function') {  
             Blockscad.Toolbox.createToolbox();  
+            console.log('Toolbox created successfully');  
+        } else {  
+            console.error('Blockscad.Toolbox.createToolbox not available');  
+            return;  
+        }  
+          
+        // Verify toolbox content exists  
+        if (!Blockscad.Toolbox.adv) {  
+            console.error('Blockscad.Toolbox.adv not available');  
+            return;  
         }  
           
         // Initialize workspace with BlocksCAD's advanced toolbox  
         workspace = Blockly.inject('blocklyDiv', {  
             media: '{% static "cad_editor/js/blockly/media/" %}',  
-            toolbox: Blockscad.Toolbox.adv, // Use BlocksCAD's toolbox, not DOM element  
+            toolbox: Blockscad.Toolbox.adv, // Use BlocksCAD's advanced toolbox  
             zoom: {  
                 controls: true,  
                 wheel: true,  
@@ -189,21 +225,47 @@ document.addEventListener('DOMContentLoaded', function() {
                 minScale: 0.3,  
                 scaleSpeed: 1.2  
             },  
-            trashcan: false,  
-            sounds: false  
+            trashcan: true, // Enable trashcan for drag-to-delete functionality  
+            sounds: false,  
+            scrollbars: true,  
+            grid: {  
+                spacing: 20,  
+                length: 3,  
+                colour: '#ccc',  
+                snap: true  
+            }  
         });  
           
         // Set color scheme and category colors  
         if (typeof Blockscad.Toolbox.setColorScheme === 'function') {  
             Blockscad.Toolbox.setColorScheme(Blockscad.Toolbox.colorScheme['one']);  
             Blockscad.Toolbox.setCatColors();  
+            console.log('Color scheme applied');  
         }  
           
+        // CRITICAL: Record delete areas after workspace initialization  
+        workspace.recordDeleteAreas();  
+        console.log('Delete areas recorded');  
+          
+        // Debug delete areas to verify they're working  
+        setTimeout(() => {  
+            if (workspace.trashcan) {  
+                const rect = workspace.trashcan.getClientRect();  
+                console.log('Trashcan delete area:', rect);  
+                console.log('Trashcan SVG position:', workspace.trashcan.svgGroup_.getBoundingClientRect());  
+                console.log('Delete area trash:', workspace.deleteAreaTrash_);  
+                console.log('Delete area toolbox:', workspace.deleteAreaToolbox_);  
+            }  
+        }, 1000);  
+          
+        // Initialize viewer with direct approach (no processor)  
         initViewer();  
         setupEventHandlers();  
+          
+        showMessage('Kids CAD Editor ready! 🚀', 'success');  
+        console.log('Workspace initialized with toolbox and delete areas');  
     }, 2000);  
 });
-
 
 function setupEventHandlers() {  
     // Save project  
@@ -235,7 +297,7 @@ function setupEventHandlers() {
         });  
     });  
       
-    // Render 3D  
+    // Render 3D    
     document.getElementById('renderBtn').addEventListener('click', function() {  
         const xml = Blockly.Xml.workspaceToDom(workspace);  
         const blocksXml = Blockly.Xml.domToText(xml);  
@@ -265,7 +327,7 @@ function setupEventHandlers() {
             }  
         });  
     });  
-      
+
     // Export STL  
     document.getElementById('exportBtn').addEventListener('click', function() {  
         if (processor && processor.viewer) {  
@@ -276,35 +338,71 @@ function setupEventHandlers() {
             showMessage('Please build your 3D model first! 🔨', 'warning');  
         }  
     });  
-      
-    // 3D viewer controls  
-    document.getElementById('zInButton').addEventListener('click', () => {  
-        if (processor && processor.viewer) {  
-            processor.viewer.zoomIn();  
-            showMessage('Zoomed in! 🔍', 'info');  
-        }  
-    });  
-      
-    document.getElementById('zOutButton').addEventListener('click', () => {  
-        if (processor && processor.viewer) {  
-            processor.viewer.zoomOut();  
-            showMessage('Zoomed out! 🔍', 'info');  
-        }  
-    });  
-      
+
+    document.getElementById('zInButton').addEventListener('click', () => {
+        if (viewer) {
+            viewer.zoomIn();
+            showMessage('Zoomed in! 🔍', 'info');
+        } else {
+            showMessage('3D viewer not ready', 'error');
+        }
+    });
+
+    document.getElementById('zOutButton').addEventListener('click', () => {
+        if (viewer) {
+            viewer.zoomOut();
+            showMessage('Zoomed out! 🔍', 'info');
+        } else {
+            showMessage('3D viewer not ready', 'error');
+        }
+    });
+
     document.getElementById('zResetButton').addEventListener('click', () => {  
-        if (processor && processor.viewer) {  
-            processor.viewer.viewReset();  
-            showMessage('View reset! 🏠', 'info');  
+        if (viewer) {  
+            // Get the currently selected view from dropdown, or default to diagonal  
+            const selectedView = document.getElementById('viewMenu') ?   
+                               document.getElementById('viewMenu').value : 'diagonal';  
+            viewer.viewReset(selectedView);  
+            showMessage('View reset to ' + selectedView + '! 🏠', 'info');  
+        } else {  
+            showMessage('3D viewer not ready', 'error');  
         }  
-    });  
-      
-    document.getElementById('axesButton').addEventListener('click', () => {  
-        if (processor && processor.viewer) {  
-            processor.viewer.toggleAxes();  
-            showMessage('Axes toggled! 📐', 'info');  
-        }  
-    });  
+    });
+
+    document.getElementById('axesButton').addEventListener('click', () => {
+        if (viewer) {
+            Blockscad.drawAxes = Blockscad.drawAxes ? 0 : 1;
+            viewer.onDraw(); // Force redraw
+            showMessage('Axes ' + (Blockscad.drawAxes ? 'enabled' : 'disabled'), 'info');
+        } else {
+            showMessage('3D viewer not ready', 'error');
+        }
+    });
+    document.getElementById('viewMenu').addEventListener('change', function() {
+        if (viewer) {
+            const view = this.value;
+            viewer.viewReset(view);  // Pass view parameter
+            showMessage('View changed to ' + view, 'info');
+        } else {
+            showMessage('3D viewer not ready', 'error');
+        }
+    });
+
+    // Debug function to check delete areas
+    function debugDeleteAreas() {
+        if (workspace && workspace.trashcan) {
+            console.log('Trashcan exists:', !!workspace.trashcan);
+            console.log('Delete area trash:', workspace.deleteAreaTrash_);
+            console.log('Delete area toolbox:', workspace.deleteAreaToolbox_);
+
+            // Force record delete areas
+            workspace.recordDeleteAreas();
+            console.log('After recording - Delete area trash:', workspace.deleteAreaTrash_);
+        }
+    }
+
+    // Call this after workspace initialization
+    setTimeout(debugDeleteAreas, 3000);
 }  
   
 // Utility functions  

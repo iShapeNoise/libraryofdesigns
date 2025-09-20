@@ -30,110 +30,116 @@
 {% endblock %}    
     
 {% block content %}    
-    <div class="container-fluid" style="width: none;">  
-        <div class="border border-dark rounded">  
-            <!-- Top Toolbar -->    
-            <div class="toolbar bg-primary rounded-top border-bottom">    
-                <!-- Editor Title -->    
-                <div class="text-center mb-3">    
-                    <h2 class="display-6 text-white p-2">CAD Editor</h2>    
-                </div>  
-                <div class="d-flex justify-content-between align-items-center p-3">    
-                    <div class="btn-group">    
-                        <button id="newBtn" class="btn btn-outline-secondary btn-sm">New</button>    
-                        <button id="openBtn" class="btn btn-outline-secondary btn-sm">Open</button>    
-                        <button id="saveBtn" class="btn btn-primary btn-sm">Save</button>    
-                    </div>    
-                    <div class="btn-group">    
-                        <button id="previewBtn" class="btn btn-success btn-sm">Preview (F5)</button>    
-                        <button id="renderBtn" class="btn btn-warning btn-sm">Render (F6)</button>    
-                        <button id="exportBtn" class="btn btn-secondary btn-sm">Export STL</button>    
+<div class="container-fluid" style="width: none;">  
+    <div class="border border-dark rounded">  
+        <!-- Top Toolbar -->    
+        <div class="toolbar bg-primary rounded-top border-bottom">    
+            <!-- Editor Title -->    
+            <div class="text-center mb-3">    
+                <h2 class="display-6 text-white p-2">CAD Editor</h2>    
+            </div>  
+            <div class="d-flex justify-content-between align-items-center p-3">    
+                <div class="btn-group">    
+                    <button id="newBtn" class="btn btn-outline-secondary btn-sm">New</button>    
+                    <button id="openBtn" class="btn btn-outline-secondary btn-sm">Open</button>    
+                    <button id="saveBtn" class="btn btn-primary btn-sm">Save</button>    
+                </div>    
+                <div class="btn-group">    
+                    <button id="previewBtn" class="btn btn-success btn-sm">Preview (F5)</button>    
+                    <button id="renderBtn" class="btn btn-warning btn-sm">Render (F6)</button>    
+                    <button id="exportBtn" class="btn btn-secondary btn-sm">Export STL</button>    
+                </div>    
+            </div>    
+        </div>    
+        
+        <div class="row editor-container p-3">    
+            <!-- Left Panel: Text Editor + Customizer -->    
+            <div class="col-md-6 d-flex flex-column" style="padding: 0;">    
+                <!-- Text Editor -->    
+                <div class="flex-grow-1 border-end">    
+                <textarea id="codeEditor"></textarea>  
+                </div>    
+                    
+                <!-- Customizer Panel -->    
+                <div class="customizer-panel bg-light border-top" style="height: 200px; overflow-y: auto;">    
+                    <div class="p-2">    
+                        <h6 class="mb-2">Customizer</h6>    
+                        <div id="customizerControls">    
+                            <div class="text-muted small">    
+                                Parameters will appear here when you use customizable variables in your code.    
+                            </div>   
+                        </div>    
                     </div>    
                 </div>    
             </div>    
-            
-            <div class="row editor-container p-3">    
-                <!-- Left Panel: Text Editor + Customizer -->    
-                <div class="col-md-6 d-flex flex-column" style="padding: 0;">    
-                    <!-- Text Editor -->    
-                    <div class="flex-grow-1 border-end">    
-                    <textarea id="codeEditor"></textarea>  
-                    </div>    
+        
+            <!-- Right Panel: 3D Preview + Console -->    
+            <div class="col-md-6 d-flex flex-column" style="padding: 0;">    
+                <!-- 3D Preview -->    
+                <div class="preview-panel flex-grow-1 border position-relative">    
+                    <div id="renderDiv" style="width: 100%; height: 100%;"></div>    
                         
-                    <!-- Customizer Panel -->    
-                    <div class="customizer-panel bg-light border-top" style="height: 200px; overflow-y: auto;">    
-                        <div class="p-2">    
-                            <h6 class="mb-2">Customizer</h6>    
-                            <div id="customizerControls">    
-                                <div class="text-muted small">    
-                                    Parameters will appear here when you use customizable variables in your code.    
-                                </div>   
-                            </div>    
+                    <!-- Viewer Controls -->    
+                    <div id="viewerButtons" class="position-absolute bottom-0 start-0 p-2 bg-white bg-opacity-75 rounded-end">    
+                        <div class="btn-group btn-group-sm">    
+                            <button id="axesButton" type="button" class="btn btn-outline-secondary" title="Toggle Axes">    
+                                <svg viewBox="0 0 26 26" width="16" height="16">    
+                                    <path style="stroke:#777;stroke-width:1.6;fill:none" d="m9 0.5v15h15"/>    
+                                    <path style="stroke:#777;stroke-width:1.6;fill:none" d="m9 15-9 9"/>    
+                                </svg>    
+                            </button>    
+                            <button id="zInButton" type="button" class="btn btn-outline-secondary" title="Zoom In">+</button>    
+                            <button id="zOutButton" type="button" class="btn btn-outline-secondary" title="Zoom Out">-</button>    
+                            <button id="zResetButton" type="button" class="btn btn-outline-secondary" title="Reset View">Reset</button>    
                         </div>    
+                        <select id="viewMenu" class="form-select form-select-sm ms-2" style="width: auto;" title="Change View">    
+                            <option value="diagonal">Diagonal</option>    
+                            <option value="front">Front</option>    
+                            <option value="top">Top</option>    
+                            <option value="right">Right</option>    
+                            <option value="left">Left</option>    
+                            <option value="back">Back</option>    
+                            <option value="bottom">Bottom</option>    
+                        </select>    
                     </div>    
                 </div>    
-            
-                <!-- Right Panel: 3D Preview + Console -->    
-                <div class="col-md-6 d-flex flex-column" style="padding: 0;">    
-                    <!-- 3D Preview -->    
-                    <div class="preview-panel flex-grow-1 border position-relative">    
-                        <div id="renderDiv" style="width: 100%; height: 100%;"></div>    
-                            
-                        <!-- Viewer Controls -->    
-                        <div id="viewerButtons" class="position-absolute bottom-0 start-0 p-2 bg-white bg-opacity-75 rounded-end">    
-                            <div class="btn-group btn-group-sm">    
-                                <button id="axesButton" type="button" class="btn btn-outline-secondary" title="Toggle Axes">    
-                                    <svg viewBox="0 0 26 26" width="16" height="16">    
-                                        <path style="stroke:#777;stroke-width:1.6;fill:none" d="m9 0.5v15h15"/>    
-                                        <path style="stroke:#777;stroke-width:1.6;fill:none" d="m9 15-9 9"/>    
-                                    </svg>    
-                                </button>    
-                                <button id="zInButton" type="button" class="btn btn-outline-secondary" title="Zoom In">+</button>    
-                                <button id="zOutButton" type="button" class="btn btn-outline-secondary" title="Zoom Out">-</button>    
-                                <button id="zResetButton" type="button" class="btn btn-outline-secondary" title="Reset View">Reset</button>    
-                            </div>    
-                            <select id="viewMenu" class="form-select form-select-sm ms-2" style="width: auto;" title="Change View">    
-                                <option value="diagonal">Diagonal</option>    
-                                <option value="front">Front</option>    
-                                <option value="top">Top</option>    
-                                <option value="right">Right</option>    
-                                <option value="left">Left</option>    
-                                <option value="back">Back</option>    
-                                <option value="bottom">Bottom</option>    
-                            </select>    
-                        </div>    
-                    </div>    
-                        
-                    <!-- Console Panel -->    
-                    <div class="console-panel bg-dark text-light p-3" style="height: 150px; overflow-y: auto;">    
-                        <h6 class="text-warning mb-2">Console</h6>    
-                        <div id="consoleOutput">    
-                            <div class="text-muted">Ready...</div>    
-                        </div>    
+                    
+                <!-- Console Panel -->    
+                <div class="console-panel bg-dark text-light p-3" style="height: 150px; overflow-y: auto;">    
+                    <h6 class="text-warning mb-2">Console</h6>    
+                    <div id="consoleOutput">    
+                        <div class="text-muted">Ready...</div>    
                     </div>    
                 </div>    
-            </div>  
+            </div>    
         </div>  
     </div>  
+</div>  
    
     
-<!-- Script includes following keditor's exact pattern -->    
+<!-- Script includes following keditor's exact pattern -->   
+<script src="{% static 'cad_editor/js/blockly/generators/openscad.js' %}"></script>
+<script src="{% static 'cad_editor/js/closure-library/closure/goog/base.js' %}"></script>
+<script src="{% static 'cad_editor/js/blockly/blockly_compressed.js' %}"></script>
+<script src="{% static 'cad_editor/js/blockly/msg/js/en.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockscad/msg/js/en.js' %}"></script>   
 <!-- Load jQuery and dependencies -->  
 <script src="{% static 'cad_editor/js/jquery/jquery-1.11.3.js' %}"></script>  
-<script src="{% static 'cad_editor/js/jquery/jquery-ui.min.js' %}"></script>  
+<script>console.log('jQuery loaded:', typeof $, typeof jQuery);
+<script src="{% static 'cad_editor/js/jquery/jquery-ui.min.js' %}"></script>
+<script>console.log('jQuery UI loaded:', typeof $.ui);</script>
 <!-- Load BlocksCAD utilities -->  
-<script src="{% static 'cad_editor/js/blockscad/storage.js' %}"></script>  
+<script src="{% static 'cad_editor/js/blockscad/storage.js' %}"></script> 
+<script>console.log('BlocksCAD storage loaded');</script>
 <script src="{% static 'cad_editor/js/blockscad/utils.js' %}"></script>  
 <script src="{% static 'cad_editor/js/blockscad/blockscad.js' %}"></script>
 <!-- CodeMirror for text editing -->    
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>    
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>    
-<script src="{% static 'cad_editor/js/closure-library/closure/goog/base.js' %}"></script>    
-<script src="{% static 'cad_editor/js/blockly/blockly_uncompressed.js' %}"></script>    
 <script src="{% static 'cad_editor/js/blockly/core/msg.js' %}"></script>    
 <script src="{% static 'cad_editor/js/blockly/msg/js/en.js' %}"></script>    
 <script src="{% static 'cad_editor/js/blockscad/viewer.js' %}"></script>    
-<script src="{% static 'cad_editor/jsockscad/csg.js' %}"></script>    
+<script src="{% static 'cad_editor/js/blockscad/csg.js' %}"></script>    
 <script src="{% static 'cad_editor/js/blockscad/lightgl.js' %}"></script>    
 <script src="{% static 'cad_editor/js/blockscad/openscad-openjscad-translator.js' %}"></script>    
 <script src="{% static 'cad_editor/js/blockscad/FileSaver.js' %}"></script>    
@@ -227,7 +233,7 @@ function initViewer() {
             renderDiv,   
             renderDiv.offsetWidth,   
             renderDiv.offsetHeight,   
-            100 // initial distance  
+            100, 
         );  
           
         // Configure viewer settings  
@@ -244,9 +250,32 @@ function initViewer() {
   
 // Preview function - client-side only using BlocksCAD    
 function previewCode() {    
+
+    // Debug: Check if jQuery is available  
+    if (typeof $ === 'undefined' || typeof jQuery === 'undefined') {  
+        addConsoleMessage('Error: jQuery not loaded', 'error');  
+        console.error('jQuery availability:', { $: typeof $, jQuery: typeof jQuery });  
+        return;  
+    }  
+      
+    // Debug: Check if jQuery.each exists  
+    if (typeof $.each !== 'function') {  
+        addConsoleMessage('Error: jQuery.each not available', 'error');  
+        console.error('jQuery.each type:', typeof $.each);  
+        return;  
+    }  
+      
     const code = editor.getValue();    
     addConsoleMessage('Previewing...', 'info');    
-        
+
+    // Before calling openscadOpenJscadParser.parse()  
+    console.log('Parser availability:', {  
+        parser: typeof openscadOpenJscadParser,  
+        CSG: typeof CSG,  
+        CAG: typeof CAG,  
+        viewer: typeof viewer  
+    });
+
     try {    
         if (viewer) {    
             // Parse OpenSCAD code and render directly  

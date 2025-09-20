@@ -9,18 +9,18 @@ from .models import CADProject
 @login_required  
 def editor_view(request, design_id=None):  
     design = None  
-    openscad_code = None  
-      
-    if design_id:  
-        design = get_object_or_404(CADProject, id=design_id, user=request.user)  
-        if design.openscad_code and design.openscad_code.strip():  
-            openscad_code = design.openscad_code  
-  
-    context = {  
-        'design': design,  
-        'openscad_code': openscad_code,  
-    }  
-    return render(request, 'editor/editor.html', context)  
+    openscad_code = None
+
+    if design_id:
+        design = get_object_or_404(CADProject, id=design_id, user=request.user)
+        if design.openscad_code and design.openscad_code.strip():
+            openscad_code = design.openscad_code
+
+    context = {
+        'design': design,
+        'openscad_code': openscad_code,
+    }
+    return render(request, 'editor/editor.html', context)
 
 
 @csrf_exempt  

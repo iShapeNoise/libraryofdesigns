@@ -288,20 +288,13 @@
 #renderDiv {  
     position: relative !important;  
     width: 100% !important;  
-    height: 400px !important;  
+    height: 100% !important;  
+    min-height: 400px !important;  
     overflow: hidden;  
     background-color: var(--brite-dark);  
     border: 1px solid var(--brite-secondary);  
 }  
-  
-/* Reset BlocksCAD positioning for Bootstrap 5 */  
-.kids-editor #blocklyDiv {  
-    position: relative !important;  
-    z-index: 1 !important;  
-    border: 1px solid var(--brite-secondary);  
-}  
-  
-/* Fix viewer controls */  
+
 #viewerControls {  
     position: relative !important;  
     height: auto !important;  
@@ -334,7 +327,97 @@
     background-color: var(--brite-bg);  
     color: #fff;  
 }  
+
+.kids-editor .row {
+    min-height: calc(100vh - 150px);
+}
+
+.kids-editor .col-md-8,
+.kids-editor .col-md-4 {
+    display: flex;
+    flex-direction: column;
+}
+
+.kids-editor .blocklyToolboxDiv {  
+    position: absolute !important;  
+    top: 0 !important;  
+    left: 0 !important;  
+    width: 200px !important;  
+    height: 100% !important;  
+    z-index: 10 !important;  
+    background-color: #ddd !important;  
+    border-right: 1px solid var(--brite-secondary) !important;  
+    /* Override any JavaScript positioning */  
+    transform: none !important;  
+    margin: 0 !important;
+}
+
+.kids-editor #blocklyDiv .blocklySvg {  
+    margin-left: 200px !important; /* Match toolbox width */
+
+}
+
+.kids-editor .blocklyFlyout {
+    position: absolute !important;
+    left: 200px !important; /* Position next to toolbox */  
+    top: 0 !important;  
+    z-index: 11 !important; /* Higher than toolbox */  
+    background-color: #ddd !important;  
+    border-right: 1px solid var(--brite-secondary) !important; 
+
+}
+
+/* Ensure workspace container has relative positioning */  
+.kids-editor #blocklyDiv {  
+    position: relative !important;
+    border: 1px solid var(--brite-secondary);  
+    overflow: hidden !important;i
+    contain: layout !important;
+}  
   
+/* Fix toolbox tree styling */  
+.kids-editor .blocklyTreeRoot {  
+    padding: 2px 0 !important;  
+    background-color: #ddd !important;  
+}  
+  
+.kids-editor .blocklyTreeRow {  
+    line-height: 40px !important;  
+    height: 40px !important;  
+    padding-right: 1em !important;  
+    white-space: nowrap !important;  
+    margin-top: 3px !important;  
+}
+
+/* Ensure delete area detection works for toolbox */
+.kids-editor .blocklyToolboxDiv {
+    pointer-events: auto !important;
+}
+
+/* Make sure blocks can be detected over the toolbox */
+.kids-editor .blocklyDragging {
+    pointer-events: none !important;
+}
+
+/* Ensure trashcan hover effects work */  
+.kids-editor .blocklyTrash {  
+    position: absolute !important;  
+    z-index: 15 !important;  
+    pointer-events: auto !important;  
+    cursor: pointer !important;  
+    /* Don't override opacity - let JavaScript handle it */  
+}  
+
+.kids-editor .blocklyTrash:hover {
+    opacity: 0.8 !important;
+}
+
+/* Ensure trashcan images respond to hover */
+.kids-editor .blocklyTrash image {
+    pointer-events: none !important;
+}
+
+
 /* Console styling */  
 .console-panel {  
     background-color: var(--brite-dark) !important;  
