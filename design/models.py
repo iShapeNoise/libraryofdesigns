@@ -92,8 +92,9 @@ class Design(models.Model):
     name = models.CharField(max_length=255)
     # use blank=False if you want * the description
     description = models.TextField()
-    costs = models.FloatField()
+    costs = models.FloatField(blank=True, null=True)
     production_notes = models.TextField(blank=True, null=True)
+    standardization = models.TextField(blank=True, null=True, help_text="ISO/GPS norm of design")
     path_to_save = unique_file_path()
     image = models.ImageField(
         upload_to=design_image_path,

@@ -1,9 +1,14 @@
 import re
 import os
+import zipfile
+import tempfile
+import shutil
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from .forms import NewDesignForm, EditDesignForm, BOMFormSet
 from .models import Design, Category
 from taggit.models import Tag
@@ -12,31 +17,78 @@ from taggit.models import Tag
 def designs(request):
     query = request.GET.get('query', '')
     category_id = request.GET.get('category', 0)
-    categories = Category.objects.all()
-    designs = Design.objects.filter()
+    per_page = request.GET.get('per_page', '25')  # Default to 25  
 
-    if category_id:
-        designs = designs.filter(category_id=category_id)
+    # Start with all designs  
+    designs = Design.objects.all()
 
+    # Apply search filter if query exists  
     if query:
         designs = designs.filter(Q(name__icontains=query) |
                                  Q(description__icontains=query) |
-                                 Q(tags__icontains=query) |
-                                 Q(category__name__icontains=query))
+                                 Q(tags__name__icontains=query) |
+                                 Q(category__name__icontains=query) |
+                                 Q(created_by__username__icontains=query) |
+                                 Q(added_by__username__icontains=query))
+
+    # Apply category filter if specified  
+    if category_id:
+        designs = designs.filter(category_id=category_id)
+
+    # Get categories that contain matching designs  
+    if query:
+        category_ids_with_results = designs.values_list('category_id', flat=True).distinct()
+        categories = Category.objects.filter(id__in=category_ids_with_results)
+        for category in categories:
+            category.search_result_count = designs.filter(category=category).count()
+    else:
+        categories = Category.objects.all()
+        for category in categories:
+            category.search_result_count = category.get_total_design_count()
+
+    # Handle pagination  
+    if per_page == 'all':
+        # Show all results without pagination
+        paginated_designs = designs
+        page_obj = None
+        is_paginated = False
+    else:
+        # Use pagination  
+        try:
+            per_page_int = int(per_page)
+            if per_page_int not in [25, 50]:
+                per_page_int = 25
+        except ValueError:
+            per_page_int = 25
+
+        paginator = Paginator(designs, per_page_int)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        paginated_designs = page_obj
+        is_paginated = page_obj.has_other_pages()
+
+    # Add image processing for thumbnail display  
+    for design in paginated_designs:
+        design_images = get_design_images(design)
+        design.first_image = design_images[0] if design_images else {'url': None}
 
     return render(request, 'design/designs.html', {
-        'designs': designs,
+        'designs': paginated_designs,
         'query': query,
         'categories': categories,
         'category_id': int(category_id),
+        'has_search_results': bool(query),
+        'page_obj': page_obj,
+        'is_paginated': is_paginated,
+        'per_page': per_page,
     })
 
 
-def detail(request, pk): 
-    design = get_object_or_404(Design, pk=pk) 
- 
+def detail(request, pk):
+    design = get_object_or_404(Design, pk=pk)
+
     # Fix the filtering by being more explicit about the exclusion  
-    related_designs = Design.objects.filter(category=design.category).exclude(pk=pk)[:12] 
+    related_designs = Design.objects.filter(category=design.category).exclude(pk=pk)[:12]
 
     # Debug output to verify filtering is working
     print(f"Current design ID: {design.id}, Name: {design.name}")
@@ -177,9 +229,10 @@ def generate_scad_content(design):
         f"// Description: {design.description or 'No description provided'}",
         f"// Created by: {created_by_username}",
         f"// Created at: {design.created_at.strftime('%Y-%m-%d %H:%M:%S')}",
-        f"// Costs: ${design.costs}"
+        f"// Production Notes: {design.production_notes or 'None specified'}",
+        f"// Standardization: {design.standardization or 'None specified'}"
+        f"// Costs: ${design.costs if design.costs is not None else 'Not specified'}",
     ]
-
     # Add modified_from information if available
     if hasattr(design, 'modified_from') and design.modified_from:
         header_lines.append(f"// Modified from: {design.modified_from}")
@@ -191,7 +244,7 @@ def generate_scad_content(design):
     if design.utilities:
         utility_files = [line.strip() for line in design.utilities.split('\n') if line.strip().endswith('.scad')]
         for utility_file in utility_files:
-            utilities_section += f"include <lod_content/utilities/{utility_file}>\n"
+            utilities_section += f"include <lod_content/designs/utilities/{utility_file}>\n"
     utilities_section += "\n"
 
     # BOM DESIGN IMPORTS section with line breaks  
@@ -350,6 +403,139 @@ def delete_design_techdraws(design):
                 os.remove(file_path)
 
 
+def generate_design_markdown(design):
+    """Generate markdown file with header, BOM, and utilities information"""
+    # Build paths
+    category_path = design.category.get_full_path().replace(' > ', '/').replace(' ', '_')
+    design_name_fs = design.name.replace(' ', '_')
+    design_dir = os.path.join(settings.LOD_CONTENT_ROOT, 'designs', category_path, design_name_fs)
+
+    # Create markdown content  
+    markdown_content = [] 
+
+    # Header section - matching SCAD file header  
+    markdown_content.append(f"# {design.name}")
+    markdown_content.append(f"**Category:** {design.category.get_full_path()}")
+    markdown_content.append(f"**Full Path:** designs/{category_path}/{design_name_fs}/design/{design_name_fs}.scad")
+    markdown_content.append(f"**Description:** {design.description or 'No description provided'}")
+
+    # Use fallback "Unknown" if created_by is None  
+    created_by_username = design.created_by.username if design.created_by else "Unknown"
+    markdown_content.append(f"**Created by:** {created_by_username}")
+    markdown_content.append(f"**Created at:** {design.created_at.strftime('%Y-%m-%d %H:%M:%S')}")
+    markdown_content.append(f"**Costs:** ${design.costs if design.costs is not None else 'Not specified'}")
+    markdown_content.append(f"**Production Notes:** {design.production_notes or 'None specified'}")
+    markdown_content.append(f"**Standardization:** {design.standardization or 'None specified'}")
+
+    # Add custom creator if available  
+    if design.custom_creator_name:
+        markdown_content.append(f"**Custom Creator:** {design.custom_creator_name}")
+
+    # Add modified from information if available
+    if design.is_modified and design.modified_from:
+        markdown_content.append(f"**Modified from:** {design.modified_from}")
+
+    # Add tags if they exist  
+    if design.tags.exists():
+        tag_names = [tag.name for tag in design.tags.all()]
+        markdown_content.append(f"**Tags:** {', '.join(tag_names)}")
+
+    markdown_content.append("")
+
+    # Images section with list format for smaller display
+    images_dir = os.path.join(design_dir, 'images')
+    if os.path.exists(images_dir):
+        image_files = [f for f in os.listdir(images_dir)
+                       if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
+        if image_files:
+            markdown_content.append("## Images")
+            # Create a table for side-by-side display
+            markdown_content.append("| | | |")
+            markdown_content.append("|---|---|---|")
+
+            # Group images in rows of 3 
+            for i in range(0, len(image_files), 3):
+                row_images = image_files[i:i+3]
+                row_content = []
+                for image_file in row_images:
+                    row_content.append(f'<img src="images/{image_file}" alt="{image_file}" width="200"/>')
+
+                # Fill empty cells if needed
+                while len(row_content) < 3:
+                    row_content.append("")
+
+                markdown_content.append(f"| {' | '.join(row_content)} |")
+
+            markdown_content.append("")
+
+    # Techdraws section with links only
+    techdraws_dir = os.path.join(design_dir, 'techdraws')
+    if os.path.exists(techdraws_dir):
+        techdraw_files = [f for f in os.listdir(techdraws_dir)
+                          if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.pdf'))]
+        if techdraw_files:
+            markdown_content.append("## Technical Drawings")
+            for techdraw_file in techdraw_files:
+                if techdraw_file.lower().endswith('.pdf'):
+                    markdown_content.append(f"- 📄 [PDF: {techdraw_file}](techdraws/{techdraw_file})")
+                else:
+                    markdown_content.append(f"- 🖼️ [Image: {techdraw_file}](techdraws/{techdraw_file})")
+            markdown_content.append("")
+
+    # BOM and Utilities sections (keep existing code)
+    markdown_content.append("## Bill of Materials")
+    bom_items = design.bom_items.filter(bom_link__icontains='lod')
+    if bom_items.exists():
+        for bom_item in bom_items:
+            if bom_item.bom_link: 
+                markdown_content.append(f"- [{bom_item.name}]({bom_item.bom_link})")
+    else:
+        markdown_content.append("No LoD BOM items found.")
+
+    markdown_content.append("")
+
+    markdown_content.append("## Utilities")
+    if design.utilities:
+        utility_files = [line.strip() for line in design.utilities.split('\n') if line.strip().endswith('.scad')]
+        for utility_file in utility_files:
+            markdown_content.append(f"- `lod_content/utilities/{utility_file}`")
+    else:
+        markdown_content.append("No utility files used.")
+
+    # Write markdown file to parent folder
+    md_file_path = os.path.join(design_dir, f"{design_name_fs}.md")
+    with open(md_file_path, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(markdown_content))
+
+    return md_file_path
+
+
+def copy_license_file(design):
+    """Copy LICENSE.md from lod_content root to design folder"""
+    import shutil
+
+    # Build paths
+    category_path = design.category.get_full_path().replace(' > ', '/').replace(' ', '_')
+    design_name_fs = design.name.replace(' ', '_')
+    design_dir = os.path.join(settings.LOD_CONTENT_ROOT, 'designs', category_path, design_name_fs)
+
+    # Source and destination paths
+    source_license = os.path.join(settings.LOD_CONTENT_ROOT, 'LICENSE.md')
+    dest_license = os.path.join(design_dir, 'LICENSE.md')
+
+    # Copy the license file if it exists
+    if os.path.exists(source_license):
+        try:
+            shutil.copy2(source_license, dest_license)
+            return dest_license
+        except Exception as e:
+            print(f"Error copying LICENSE.md: {e}")
+            return None
+    else:
+        print("LICENSE.md not found in lod_content root")
+        return None
+
+
 @login_required
 def new(request):
     if request.method == 'POST':
@@ -382,6 +568,8 @@ def new(request):
             try:
                 design_dir = create_design_files(design)
                 handle_multiple_file_uploads(design, design_dir, images, techdraws)
+                generate_design_markdown(design)
+                copy_license_file(design)
             except Exception as e:
                 print(f"Error handling files: {e}")
                 pass
@@ -450,6 +638,8 @@ def edit(request, pk):
             # Regenerate the .scad file with updated data  
             try:
                 create_design_files(design)
+                generate_design_markdown(design)
+                copy_license_file(design)
                 # Note: For edit, we're not handling new file uploads via multiupload  
                 # The edit form focuses on updating existing design data  
             except Exception as e:
@@ -498,3 +688,205 @@ def delete(request, pk):
     design.delete()
 
     return redirect('dashboard:index')
+
+
+def download_design(request, pk):
+    """Create and serve a ZIP file with standalone design"""
+    design = get_object_or_404(Design, pk=pk)
+
+    # Build source paths
+    category_path = design.category.get_full_path().replace(' > ', '/').replace(' ', '_')
+    design_name_fs = design.name.replace(' ', '_')
+    source_dir = os.path.join(settings.LOD_CONTENT_ROOT, 'designs', category_path, design_name_fs)
+
+    # Create temporary directory for processing
+    with tempfile.TemporaryDirectory() as temp_dir:
+        # Copy entire design folder to temp
+        temp_design_dir = os.path.join(temp_dir, design_name_fs)
+        shutil.copytree(source_dir, temp_design_dir)
+
+        # Process the design for standalone use
+        process_standalone_design(design, temp_design_dir)
+
+        # Create ZIP file
+        zip_filename = f"{design_name_fs}.zip"
+        response = HttpResponse(content_type='application/zip')
+        response['Content-Disposition'] = f'attachment; filename="{zip_filename}"'
+
+        with zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            for root, dirs, files in os.walk(temp_design_dir):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    arcname = os.path.relpath(file_path, temp_dir)
+                    zipf.write(file_path, arcname)
+
+        return response
+
+
+def process_standalone_design(design, temp_design_dir):
+    """Process design to be standalone by copying utilities and BOM files"""
+    design_code_dir = os.path.join(temp_design_dir, 'design')
+    design_name_fs = design.name.replace(' ', '_')
+
+    # Collect all SCAD files to scan (main design + BOM files)  
+    scad_files_to_scan = []
+    files_to_copy = set()
+
+    # Add main design SCAD file  
+    main_scad_path = os.path.join(design_code_dir, f"{design_name_fs}.scad")
+    if os.path.exists(main_scad_path):
+        scad_files_to_scan.append(main_scad_path)
+
+    # Add BOM SCAD files first and copy them to design folder  
+    bom_items = design.bom_items.filter(bom_link__icontains='lod')
+    for bom_item in bom_items:
+        if bom_item.bom_link and bom_item.bom_link.endswith('.scad'):
+            # Extract path from LoD link
+            bom_path = bom_item.bom_link.replace('lod_content/', '')
+            source_path = os.path.join(settings.LOD_CONTENT_ROOT, bom_path)
+            if os.path.exists(source_path):
+                filename = os.path.basename(bom_path)
+                dest_path = os.path.join(design_code_dir, filename)
+                shutil.copy2(source_path, dest_path)
+                # Add to scan list for utility dependencies  
+                scad_files_to_scan.append(dest_path)
+
+    # Now scan all SCAD files for utility dependencies  
+    for scad_file_path in scad_files_to_scan:
+        extract_utility_dependencies(scad_file_path, files_to_copy)
+
+    # Copy all collected utility files to design folder  
+    for source_path, filename in files_to_copy:
+        dest_path = os.path.join(design_code_dir, filename)
+        if not os.path.exists(dest_path):  # Avoid overwriting  
+            shutil.copy2(source_path, dest_path)
+
+    # Update paths in all SCAD files (but not utility files)  
+    for scad_file_path in scad_files_to_scan:
+        update_scad_file_paths(scad_file_path, design.bom_items.filter(bom_link__icontains='lod'))
+
+
+def find_utility_dependencies(utility_file_path, files_to_copy):
+    """Recursively find utility dependencies in SCAD files"""
+    try:
+        with open(utility_file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # Find include statements  
+        import re
+        includes = re.findall(r'include <lod_content/designs/utilities/(.+?)>', content)
+        for include_file in includes:
+            source_path = os.path.join(settings.LOD_CONTENT_ROOT, 'designs', 'utilities', include_file)
+            if os.path.exists(source_path):
+                files_to_copy.add((source_path, include_file))
+                # Recursively check this file too
+                find_utility_dependencies(source_path, files_to_copy)
+    except Exception as e:
+        print(f"Error processing {utility_file_path}: {e}")
+
+
+def extract_utility_dependencies(scad_file_path, files_to_copy):
+    """Extract utility dependencies from a SCAD file"""
+    try:
+        with open(scad_file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # Find utility includes  
+        import re
+        utility_includes = re.findall(r'include <lod_content/designs/utilities/(.+?)>', content)
+        for utility_file in utility_includes:
+            source_path = os.path.join(settings.LOD_CONTENT_ROOT, 'designs', 'utilities', utility_file)
+            if os.path.exists(source_path):
+                files_to_copy.add((source_path, utility_file))
+                # Recursively find dependencies in utility files  
+                find_utility_dependencies(source_path, files_to_copy)
+    except Exception as e:
+        print(f"Error processing {scad_file_path}: {e}")
+
+
+def update_scad_file_paths(scad_file_path, bom_items):
+    """Update include paths in a single SCAD file"""
+    try:
+        with open(scad_file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # Replace utility paths 
+        content = re.sub(r'include <lod_content/designs/utilities/([^>]+)>', r'include <\1>', content)
+
+        # Replace BOM paths with local filenames
+        for bom_item in bom_items:
+            if bom_item.bom_link and bom_item.bom_link.endswith('.scad'):
+                filename = os.path.basename(bom_item.bom_link)
+                content = content.replace(f'include <{bom_item.bom_link}>', f'include <{filename}>')
+
+        # Write updated content 
+        with open(scad_file_path, 'w', encoding='utf-8') as f:
+            f.write(content)
+    except Exception as e:
+        print(f"Error updating paths in {scad_file_path}: {e}")
+
+
+def bom_search(request):
+    """BOM search view for selecting designs to add to BOM"""
+    query = request.GET.get('query', '')
+    category_id = request.GET.get('category', 0)
+    per_page = request.GET.get('per_page', '25')
+
+    # Start with all designs  
+    designs = Design.objects.all()
+
+    # Apply search filter if query exists  
+    if query:
+        designs = designs.filter(Q(name__icontains=query) |
+                                 Q(description__icontains=query) |
+                                 Q(tags__name__icontains=query) |
+                                 Q(category__name__icontains=query) |
+                                 Q(created_by__username__icontains=query) |
+                                 Q(added_by__username__icontains=query))
+
+    # Apply category filter if specified
+    if category_id:
+        designs = designs.filter(category_id=category_id)
+
+    # Get categories with design counts (only categories with matching designs)  
+    if query:
+        categories_with_counts = []
+        for category in Category.objects.all():
+            category_designs = designs.filter(category=category)
+            if category_designs.exists():
+                categories_with_counts.append({
+                    'id': category.id,
+                    'name': category.name,
+                    'design_count': category_designs.count()
+                })
+    else:
+        categories_with_counts = [
+            {
+                'id': cat.id,
+                'name': cat.name,
+                'design_count': designs.filter(category=cat).count()
+            }
+            for cat in Category.objects.all()
+            if designs.filter(category=cat).exists()
+        ]
+
+    # Handle pagination  
+    if per_page != 'all':
+        paginator = Paginator(designs, int(per_page))
+        page_number = request.GET.get('page')
+        designs = paginator.get_page(page_number)
+
+    # Add image processing for each design  
+    design_list = designs if per_page == 'all' else designs.object_list
+    for design in design_list:
+        design_images = get_design_images(design)
+        design.first_image = design_images[0] if design_images else {'url': None}
+
+    return render(request, 'design/bom_search.html', {
+        'designs': designs,
+        'query': query,
+        'categories': categories_with_counts,
+        'category_id': int(category_id) if category_id else 0,
+        'per_page': per_page,
+        'has_search_results': bool(query),
+    })

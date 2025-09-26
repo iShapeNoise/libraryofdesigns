@@ -17,11 +17,7 @@ BOMFormSet = inlineformset_factory(
     BillOfMaterials,
     fields=['bom_position',
             'bom_count',
-            'bom_name',
-            'bom_standard',
-            'bom_material',
-            'bom_notes',
-            'bom_link'],
+            'bom_material'],
     extra=1,
     can_delete=True,
     widgets={
@@ -34,26 +30,9 @@ BOMFormSet = inlineformset_factory(
             'placeholder': 'Quantity',
             'value': '1'
         }),
-        'bom_name': forms.TextInput(attrs={
-            'class': INPUT_CLASSES,
-            'placeholder': 'Component name'
-        }),
-        'bom_standard': forms.TextInput(attrs={
-            'class': INPUT_CLASSES,
-            'placeholder': 'ISO, DIN, ANSI standards'
-        }),
         'bom_material': forms.TextInput(attrs={
             'class': INPUT_CLASSES,
             'placeholder': 'Material specification'
-        }),
-        'bom_notes': forms.Textarea(attrs={
-            'class': INPUT_CLASSES,
-            'placeholder': 'Additional notes and specifications',
-            'rows': 2
-        }),
-        'bom_link': forms.URLInput(attrs={
-            'class': INPUT_CLASSES,
-            'placeholder': 'https://example.com/design-link'
         }),
     }
 )
@@ -65,8 +44,7 @@ class OpenSCADFileChoiceField(forms.ChoiceField):
         self.choices = self.get_openscad_files()
 
     def get_openscad_files(self):
-        openscad_path = os.path.join(settings.LOD_CONTENT_ROOT,
-                                     'designs/utilities')
+        openscad_path = os.path.join(settings.LOD_CONTENT_ROOT, 'designs/utilities')
         choices = [('', '--- Select a file ---')]
 
         if os.path.exists(openscad_path):
@@ -111,7 +89,7 @@ class NewDesignForm(forms.ModelForm):
         model = Design
         fields = ('category', 'tags', 'name', 'description', 'created_by', 'custom_creator_name',
                   'is_modified', 'modified_from', 'utilities', 'module',
-                  'example', 'costs', 'production_notes')
+                  'example', 'costs', 'production_notes', 'standardization')
 
         widgets = {
             'category': forms.Select(attrs={
@@ -153,7 +131,7 @@ class NewDesignForm(forms.ModelForm):
                 'id': 'id_utilities',
                 'readonly': True,
                 'placeholder': 'Selected utility files will appear here',
-                'style': 'user-select: text; cursor: pointer;',  # Allow text selection
+                'style': 'user-select: text; cursor: pointer;',
             }),
             'module': forms.Textarea(attrs={
                 'class': INPUT_CLASSES,
@@ -169,11 +147,17 @@ class NewDesignForm(forms.ModelForm):
             }),
             'costs': forms.TextInput(attrs={
                 'class': INPUT_CLASSES,
-                'placeholder': '25.50 (enter amount without currency symbol)'
+                'placeholder': '25.50 (enter amount without currency symbol)',
+                'required': False
             }),
             'production_notes': forms.Textarea(attrs={
                 'class': INPUT_CLASSES,
                 'placeholder': 'Manufacturing instructions, material requirements, assembly notes',
+                'rows': 3
+            }),
+            'standardization': forms.Textarea(attrs={
+                'class': INPUT_CLASSES,
+                'placeholder': 'ISO/GPS norms and standards (e.g., ISO 286-1, GPS tolerancing)',
                 'rows': 3
             })
         }
@@ -199,6 +183,23 @@ class NewDesignForm(forms.ModelForm):
                     f"A design with the name '{name}' already exists. "
                     f"Please choose a different name to avoid conflicts."
                 )
+            # Check for problematic characters  
+            problematic_chars = ['#', '?', '&', '%', '<', '>', '"', '|', '*', ':', '\\', '/']
+            found_chars = [char for char in problematic_chars if char in name]
+
+            if found_chars:
+                char_list = ', '.join(f"'{char}'" for char in found_chars)
+                raise forms.ValidationError(
+                    f"Design name contains invalid characters: {char_list}. "
+                    f"Please use only letters, numbers, spaces, hyphens, and underscores."
+                )
+
+            # Check for names that start/end with problematic characters
+            if name.startswith('.') or name.endswith('.'):
+                raise forms.ValidationError(
+                    "Design name cannot start or end with a period."
+                )
+
         return name
 
 
@@ -242,7 +243,7 @@ class EditDesignForm(forms.ModelForm):
         fields = ('category', 'tags', 'name', 'description', 'created_by',
                   'custom_creator_name', 'is_modified', 'modified_from',
                   'utilities', 'module', 'example', 'costs',
-                  'production_notes')
+                  'production_notes', 'standardization')
 
         widgets = {
             'category': forms.Select(attrs={
@@ -282,7 +283,8 @@ class EditDesignForm(forms.ModelForm):
             }),
             'costs': forms.TextInput(attrs={
                 'class': INPUT_CLASSES,
-                'placeholder': 'Enter production costs (e.g., 25.50)'
+                'placeholder': 'Enter production costs (e.g., 25.50)',
+                'required': False
             }),
             'module': forms.Textarea(attrs={
                 'class': INPUT_CLASSES,
@@ -299,6 +301,11 @@ class EditDesignForm(forms.ModelForm):
                 'placeholder': 'Enter information about production and use of machines',
                 'rows': 7
             }),
+            'standardization': forms.Textarea(attrs={
+                'class': INPUT_CLASSES,
+                'placeholder': 'ISO/GPS norms and standards (e.g., ISO 286-1, GPS tolerancing)',
+                'rows': 3
+            })
         }
 
     def __init__(self, *args, **kwargs):  # ADD THIS METHOD HERE  

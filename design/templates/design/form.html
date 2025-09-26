@@ -36,6 +36,10 @@
                                 {{ form.name.label }} <span class="text-danger">*</span>
                             </label>
                             {{ form.name }}
+                            <small class="form-text text-muted">  
+                                <i class="fas fa-exclamation-triangle text-warning"></i>  
+                                Avoid special characters like # ? & % < > " | * : \ / as they may cause display issues  
+                            </small> 
                         </div>
                         <div class="mt-6 mb-3">
                             <label for="{{ form.description.id_for_label }}" class="form-label">
@@ -162,16 +166,22 @@
                             </div>
                         </div>
                         <div class="mt-3 mb-3">
-                            <label for="{{ form.costs.id_for_label }}" class="form-label">
-                                Production costs
+                            <label for="{{ form.standardization.id_for_label }}" class="form-label">
+                                {{ form.standardization.label }}
                             </label>
-                            {{ form.costs }}
+                            {{ form.standardization }}
                         </div>
                         <div class="mt-3 mb-3">
                             <label for="{{ form.production_notes.id_for_label }}" class="form-label">
                                 {{ form.production_notes.label }}
                             </label>
                                 {{ form.production_notes }}
+                        </div>
+                        <div class="mt-3 mb-3">
+                            <label for="{{ form.costs.id_for_label }}" class="form-label">
+                                Production costs
+                            </label>
+                            {{ form.costs }}
                         </div>
                     </div>
                 </div>
@@ -196,63 +206,33 @@
                             document.getElementById('id_utilities').style.display = 'none';  
                         </script>  
                     </div>
-                    <label for="{{ form.utilities_file.id_for_label }}" class="form-label">B.O.M. (Bills of Materials)
-                    </label>
-                    <br>
-                    <div class="mb-3">
-                        <div class="row g-2">
-                            {% for form in bom_formset %}
-                                <div class="col-12 col-md-1">    
-                                    <label class="form-label">Position</label>    
-                                    {{ form.bom_position }}    
-                                </div>    
-                                <div class="col-12 col-md-1">    
-                                    <label class="form-label">Count</label>    
-                                    {{ form.bom_count }}    
-                                </div>    
-                                <div class="col-12 col-md-2">    
-                                    <label class="form-label">Name</label>    
-                                    {{ form.bom_name }}   
-                                </div>    
-                                <div class="col-12 col-md-4">    
-                                    <label class="form-label">Standardization Notes</label>    
-                                    {{ form.bom_standard }}    
-                                </div>    
-                                <div class="col-12 col-md-4">    
-                                    <label class="form-label">Material</label>    
-                                    {{ form.bom_material }}    
-                                </div>     
-                                <div class="col-12 col-md-6">    
-                                    <label class="form-label">Notes</label>    
-                                    {{ form.bom_notes }}    
-                                </div>    
-                                <div class="col-12 col-md-6">    
-                                    <label class="form-label">LoD Link</label>    
-                                    {{ form.bom_link }}    
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <div class="mt-2">  
-                            <button type="button" onclick="addBOMItem()" class="btn btn-primary">Add BOM Item</button>  
-                            <button type="button" onclick="editBOMItem()" id="edit-bom-btn" class="btn btn-warning ms-2">Edit</button>  
-                            <button type="button" onclick="removeSelectedBOMItem()" class="btn btn-danger ms-2">Remove Selected Item</button>  
-                        </div>    
-                        <!-- BOM List -->  
-                        <div class="mt-3 mb-3">  
-                            <ul id="bom-list" class="list-group mt-3" style="max-height: 300px; overflow-y: auto;">  
-                            <!-- Dynamic BOM items will be added here -->  
-                            </ul>  
-                            <!-- Hidden formset for form submission -->  
-                            {{ bom_formset.management_form }} 
-                        </div>
-                        <div id="bom-formset-container" style="display: none;">  
-                            {% for form in bom_formset %}  
-                                <div class="bom-formset-item">  
-                                    {{ form.as_p }}  
-                                </div>  
-                            {% endfor %}  
+                    <div class="mt-3 mb-3">
+                        <label for="{{ form.utilities_file.id_for_label }}" class="form-label">B.O.M. (Bills of Materials)</label>  
+                        <br>  
+                        <div class="mb-3">  
+                        <!-- BOM Buttons -->  
+                        <div class="mt-2">    
+                            <button type="button" onclick="openBOMSearch()" class="btn btn-primary">Search Design</button>    
+                            <button type="button" onclick="removeSelectedBOMItem()" class="btn btn-danger ms-2">Remove Selected
+                            Design</button>    
+                        </div>      
+                          
+                        <!-- BOM List -->    
+                        <div class="mt-3 mb-3">    
+                            <ul id="bom-list" class="list-group mt-3" style="max-height: 300px; overflow-y: auto;">    
+                            <!-- Dynamic BOM items will be added here -->    
+                            </ul>    
+                            <!-- Hidden formset for form submission -->    
+                            {{ bom_formset.management_form }}   
                         </div>  
-                    </div>
+                        <div id="bom-formset-container" style="display: none;">    
+                            {% for form in bom_formset %}    
+                                <div class="bom-formset-item">    
+                                    {{ form.as_p }}    
+                                </div>    
+                            {% endfor %}    
+                        </div>    
+                    </div>              
                     <!-- Module Section -->   
                     <div class="mb-3">  
                         <label for="{{ form.module.id_for_label }}" class="form-label">  
@@ -263,7 +243,7 @@
                     <!-- Parameters Section --> 
                     <div class="mb-3">  
                         <label for="{{ form.example.id_for_label }}" class="form-label">
-                            Assembled Example <span class="text-danger">*</span></label>  
+                            (Assembled) Example <span class="text-danger">*</span></label>  
                         {{ form.example }}
                     </div>
                 </div>
@@ -509,182 +489,143 @@ document.addEventListener('DOMContentLoaded', function() {
     }    
 });
 
-let selectedBOMItem = null;  
-let editingBOMItem = null;  
-let bomItems = [];  
- 
-function addBOMItem() {  
-    const bom_position = document.getElementById('bom_position').value;
-    const bom_count = document.getElementById('bom_count').value || 1;
-    const bom_name = document.getElementById('bom_name').value;
-    const bom_standard = document.getElementById('bom_standard').value;
-    const bom_material = document.getElementById('bom_material').value;
-    const bom_notes = document.getElementById('bom_notes').value;
-    const bom_link = document.getElementById('bom_link').value;
+let selectedBOMItem = null;
+let bomItems = [];
+let bomPosition = 1; // Auto-increment position
+
+function openBOMSearch() {  
+    // Open BOM search in popup window with specific dimensions  
+    const popup = window.open(  
+        '{% url "design:bom_search" %}',   
+        'bomSearchPopup',   
+        'width=1200,height=800,scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no'  
+    );  
       
-    if (!bom_position || !bom_name) {  
-        alert('Position and Name are required fields.');  
+    // Check if popup was blocked  
+    if (!popup || popup.closed || typeof popup.closed == 'undefined') {  
+        alert('Popup blocked! Please allow popups for this site and try again.');  
         return;  
     }  
       
-    const bomItem = {  
-        bom_position: parseInt(bom_position),  
-        bom_count: parseInt(bom_count),  
-        bom_name: bom_name,  
-        bom_standard: bom_standard,  
-        bom_material: bom_material,  
-        bom_notes: bom_notes,  
-        bom_link: bom_link
+    // Focus the popup window  
+    popup.focus();  
+      
+    // Store reference for communication  
+    window.bomSearchPopup = popup;  
+}
+
+function addBOMItemFromSearch(designData) {
+    // This function is called from the BOM search window
+    const bomItem = {
+        bom_position: bomPosition++,
+        bom_count: 1, // Default count
+        bom_name: designData.name,
+        bom_standard: designData.standardization || '',
+        bom_material: '', // User can edit this later
+        bom_notes: designData.production_notes || '',
+        bom_link: designData.lod_link
     };
-      
-    // Check if we're in editing mode  
-    if (editingBOMItem !== null) {  
-        // Replace existing item (this is the "Append" functionality)  
-        bomItems[editingBOMItem] = bomItem;
-        editingBOMItem = null;  
-        document.getElementById('edit-bom-btn').textContent = 'Edit';  
-        selectedBOMItem = null; // Clear selection after append  
-    } else {  
-        // Add new item  
-        bomItems.push(bomItem);  
+
+    bomItems.push(bomItem);
+    renderBOMList();
+    updateBOMFormset();
+}
+
+function removeSelectedBOMItem() {    
+    if (!selectedBOMItem) {    
+        alert('Please select a design first before removing it from the B.O.M. list.');    
+        return;    
+    }    
+        
+    // Add confirmation dialog  
+    if (!confirm('Are you sure you want to remove this item from the B.O.M.?')) {  
+        return;  
     }  
-      
-    clearBOMForm();  
-    renderBOMList();  
+        
+    const itemIndex = parseInt(selectedBOMItem.dataset.bomIndex);    
+    bomItems.splice(itemIndex, 1);    
+    selectedBOMItem = null;
+
+    bomItems.forEach((item, index) => {  
+        item.bom_position = index + 1;  
+    });
+
+    bomPosition = bomItems.length + 1;
+
+    renderBOMList();    
     updateBOMFormset();  
 }
 
-function editBOMItem() {  
-    if (!selectedBOMItem) {  
-        alert('Please select a BOM item to edit.');  
-        return;  
-    }  
-      
-    const itemIndex = parseInt(selectedBOMItem.dataset.bomIndex);  
-    const item = bomItems[itemIndex];  
-      
-    if (!item) {  
-        console.error('BOM item not found at index:', itemIndex);  
-        return;  
-    }  
-      
-    console.log('Editing item:', item); // Debug log to see what data we have  
-      
-    // Populate form with selected item data using underscore naming  
-    const elements = {  
-        position: document.getElementById('bom_position'),  
-        count: document.getElementById('bom_count'),  
-        name: document.getElementById('bom_name'),  
-        standard: document.getElementById('bom_standard'),  
-        material: document.getElementById('bom_material'),  
-        notes: document.getElementById('bom_notes'),  
-        link: document.getElementById('bom_link')  
-    };  
-      
-    // Check which elements are found and populate them  
-    Object.keys(elements).forEach(key => {  
-        const element = elements[key];  
-        if (!element) {  
-            console.error(`Element not found: bom_${key}`);  
-            return;  
-        }  
+function renderBOMList() {    
+    const bomList = document.getElementById('bom-list');    
+    bomList.innerHTML = '';    
+        
+    bomItems.forEach((item, index) => {    
+        const listItem = document.createElement('li');    
+        listItem.className = 'list-group-item bom-item';    
+        listItem.style.cursor = 'pointer';    
+        listItem.dataset.bomIndex = index;    
           
-        let value = '';  
-        switch(key) {  
-            case 'position':  
-                value = item.bom_position || '';  
-                break;  
-            case 'count':  
-                value = item.bom_count || 1;  
-                break;  
-            case 'name':  
-                value = item.bom_name || '';  
-                break;  
-            case 'standard':  
-                value = item.bom_standard || '';  
-                break;  
-            case 'material':  
-                value = item.bom_material || '';  
-                break;  
-            case 'notes':  
-                value = item.bom_notes || '';  
-                break;  
-            case 'link':  
-                value = item.bom_link || '';  
-                break;  
-        }  
+        const nameDisplay = item.bom_link ?   
+            `<a href="${item.bom_link}" target="_blank" class="text-decoration-none">${item.bom_name}</a>` :   
+            item.bom_name;  
+            
+        listItem.innerHTML = `    
+            <div class="row">    
+                <div class="col-1">  
+                    <strong>Pos:</strong>   
+                    <input type="number" class="form-control form-control-sm d-inline-block"   
+                           style="width: 60px;" value="${item.bom_position}"   
+                           onchange="updateBOMPosition(${index}, this.value)" min="1">  
+                </div>    
+                <div class="col-1">  
+                    <strong>Count:</strong>   
+                    <input type="number" class="form-control form-control-sm d-inline-block"   
+                           style="width: 60px;" value="${item.bom_count}"   
+                           onchange="updateBOMCount(${index}, this.value)" min="1">  
+                </div>    
+                <div class="col-2"><strong>Name:</strong> ${nameDisplay}</div>    
+                <div class="col-1"><strong>Material:</strong> ${item.bom_material || '-'}</div>    
+                <div class="col-2"><strong>Standardization:</strong> ${item.bom_standard || '-'}</div>    
+                <div class="col-3"><strong>Production Notes:</strong> ${item.bom_notes || '-'}</div> 
+                <div class="col-2"><strong>LoD Link:</strong> <a href="${item.bom_link}" target="_blank">Design Details</a></div>
+            </div>    
+        `;    
           
-        element.value = value;  
-        console.log(`Set ${key} to:`, value); // Debug log  
-    });  
-      
-    editingBOMItem = itemIndex;  
-    const editBtn = document.getElementById('edit_bom_btn');  
-    if (editBtn) editBtn.textContent = 'Append';  
-}
-
-function removeSelectedBOMItem() {  
-    if (!selectedBOMItem) {  
-        alert('Please select a BOM item to remove.');  
-        return;  
-    }  
-      
-    const itemIndex = parseInt(selectedBOMItem.dataset.bomIndex);  
-    bomItems.splice(itemIndex, 1);  
-    selectedBOMItem = null;  
-      
-    renderBOMList();  
-    updateBOMFormset();
-}  
-  
-function clearBOMForm() {  
-    const fields = ['bom_position', 'bom_count', 'bom_name', 'bom_standard', 'bom_material', 'bom_notes', 'bom_link'];  
-    fields.forEach(fieldId => {  
-        const field = document.getElementById(fieldId);  
-        if (field) {  
-            field.value = fieldId === 'bom_count' ? '1' : '';  
-        }  
-    });  
-}  
-
-function renderBOMList() {  
-    const bomList = document.getElementById('bom-list');  
-    bomList.innerHTML = '';  
-      
-    bomItems.forEach((item, index) => {  
-        const listItem = document.createElement('li');  
-        listItem.className = 'list-group-item bom-item';  
-        listItem.style.cursor = 'pointer';  
-        listItem.dataset.bomIndex = index;  
-          
-        listItem.innerHTML = `  
-            <div class="row">  
-                <div class="col-1"><strong>Pos:</strong> ${item.bom_position}</div>  
-                <div class="col-1"><strong>Count:</strong> ${item.bom_count}</div>  
-                <div class="col-2"><strong>Name:</strong> ${item.bom_name}</div>  
-                <div class="col-1"><strong>Material:</strong> ${item.bom_material || 'N/A'}</div>  
-                <div class="col-3"><strong>Standardization Notes:</strong> ${item.bom_standard || 'N/A'}</div>  
-                <div class="col-4"><strong>Notes:</strong> ${item.bom_notes || 'N/A'}</div>
-            </div>  
-            ${item.bom_link ? `<div class="mt-1"><strong>LoD Link:</strong> <a href="${item.bom_link}" target="_blank">${item.bom_link}</a></div>` : ''}  
-        `;  
-          
-        // Add click handler for selection  
-        listItem.addEventListener('click', function() {  
-            // Clear previous selection  
-            document.querySelectorAll('.bom-item').forEach(item => {  
-                item.classList.remove('active', 'bg-primary', 'text-white');  
-            });  
+        // Add click handler for selection (but prevent on input fields)  
+        listItem.addEventListener('click', function(e) {  
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'A') return;  
               
-            // Select this item  
-            this.classList.add('active', 'bg-primary', 'text-white');  
-            selectedBOMItem = this;  
-        });  
-          
-        bomList.appendChild(listItem);  
-    });  
+            // Clear previous selection    
+            document.querySelectorAll('.bom-item').forEach(item => {    
+                item.classList.remove('active', 'bg-primary', 'text-white');    
+            });    
+                
+            // Select this item    
+            this.classList.add('active', 'bg-primary', 'text-white');    
+            selectedBOMItem = this;    
+        });    
+            
+        bomList.appendChild(listItem);    
+    });    
 }  
   
+function updateBOMPosition(index, newPosition) {  
+    const pos = parseInt(newPosition);  
+    if (pos > 0) {  
+        bomItems[index].bom_position = pos;  
+        updateBOMFormset();  
+    }  
+}  
+  
+function updateBOMCount(index, newCount) {  
+    const count = parseInt(newCount);  
+    if (count > 0) {  
+        bomItems[index].bom_count = count;  
+        updateBOMFormset();  
+    }  
+}  
+
 function updateBOMFormset() {  
     // Update Django formset with current BOM items  
     const totalForms = document.querySelector('input[name="bom_items-TOTAL_FORMS"]');  

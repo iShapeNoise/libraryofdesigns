@@ -25,19 +25,19 @@ def section_courses(request, section):
             course_path = os.path.join(section_path, course_folder)
             if os.path.isdir(course_path):
                 about_path = os.path.join(course_path, 'about.md')
-                if os.path.exists(about_path):  
-                    try:  
-                        with open(about_path, 'r', encoding="utf-8") as f:  
-                            about_content = f.read()  
-                              
+                if os.path.exists(about_path):
+                    try:
+                        with open(about_path, 'r', encoding="utf-8") as f:
+                            about_content = f.read()
+
                             # Look for ExtraBtn pattern before converting to HTML  
-                            extra_btn_link = None  
-                            extra_btn_text = None  
-                              
+                            extra_btn_link = None
+                            extra_btn_text = None
+
                             # Search for ExtraBtn: pattern in raw markdown  
                             lines = about_content.split('\n')
                             for line in lines:
-                                if line.strip().startswith('ExtraBtn:'):  
+                                if line.strip().startswith('ExtraBtn:'):
                                     # Extract the title after "ExtraBtn:"  
                                     btn_info = line.strip()[9:].strip()  # Remove "ExtraBtn:" prefix  
 
@@ -51,7 +51,14 @@ def section_courses(request, section):
                                         # If no link pattern, use the text as button text  
                                         extra_btn_text = btn_info
                                     break
-
+                            filtered_lines = []  
+                            for i, line in enumerate(lines):  
+                                # Skip first line if it's a header (starts with #)  
+                                if i == 0 and line.strip().startswith('#'):  
+                                    continue  
+                                if not line.strip().startswith('ExtraBtn:'):  
+                                    filtered_lines.append(line)  
+                            about_content = '\n'.join(filtered_lines)  
                             about_html = markdown.markdown(about_content)
                             # Remove all hyperlinks from about.md content using BeautifulSoup  
                             soup = BeautifulSoup(about_html, 'html.parser')

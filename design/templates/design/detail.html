@@ -152,7 +152,8 @@
             <div class="p-4 bg-light rounded">  
                   
                 <div class="mb-3">  
-                    <strong class="text-muted">Production Costs:</strong>  
+                    <strong class="text-muted">Production Costs:</strong> 
+                    <span>${{ design.costs|default:"Not specified" }}</span>
                 </div>  
                   
                 <div class="mb-3">  
@@ -208,14 +209,19 @@
                         <p class="mt-2">{{ design.description }}</p>  
                     </div>  
                 {% endif %}  
-                  
+                {% if design.standardization %}  
+                    <div class="mb-4">  
+                        <strong class="text-muted">Standardization:</strong>  
+                        <p class="mt-2">{{ design.standardization }}</p>  
+                    </div>  
+                {% endif %}                  
                 {% if design.production_notes %}  
                     <div class="mb-4">  
                         <strong class="text-muted">Production Notes:</strong>  
                         <p class="mt-2">{{ design.production_notes }}</p>  
                     </div>  
                 {% endif %}        
-                <!-- Action Buttons -->  
+                <!-- Action Buttons -->
                 <div class="mt-4">  
                     {% if request.user == design.created_by %}  
                         <div class="alert alert-info">  
@@ -232,7 +238,13 @@
                             <i class="bi bi-chat-dots me-2"></i>Contact Creator  
                         </a>  
                     {% endif %}  
-                </div>  
+                </div> 
+                <hr>
+                <div class="mb-3 text-center">  
+                    <a href="{% url 'design:download' design.pk %}" class="btn btn-success">  
+                        <i class="fas fa-download"></i> Download Design  
+                    </a>  
+                </div>
             </div>  
         </div>
     </div>  
