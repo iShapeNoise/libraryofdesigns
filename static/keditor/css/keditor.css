@@ -338,17 +338,27 @@
     flex-direction: column;
 }
 
-.kids-editor .blocklyToolboxDiv {    
-    position: absolute !important;    
-    top: 150px !important; /* Account for navbar + toolbar height */  
-    left: 0 !important;    
-    width: 200px !important;    
-    height: calc(100vh - 150px) !important; /* Subtract navbar/toolbar height */  
-    z-index: 10 !important;    
-    background-color: #ddd !important;    
-    border-right: 1px solid var(--brite-secondary) !important;    
-    transform: none !important;    
+.kids-editor .blocklyToolboxDiv {  
+    position: absolute !important;  
+    top: 150px !important;  
+    left: 150px !important;  
+    width: 200px !important;  
+    height: calc(100vh - 150px) !important;  
+    z-index: 10 !important;  
+    background-color: #ddd !important;  
+    border-right: 1px solid var(--brite-secondary) !important;  
+    transform: none !important;  
     margin: 0 !important;  
+}  
+  
+/* Ensure delete detection works */  
+.kids-editor .blocklyToolboxDiv {  
+    pointer-events: auto !important;  
+}  
+  
+.kids-editor .blocklyTrash {  
+    pointer-events: auto !important;  
+    z-index: 15 !important;  
 }
 
 .kids-editor #blocklyDiv .blocklySvg {  

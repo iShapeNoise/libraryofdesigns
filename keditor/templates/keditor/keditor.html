@@ -242,7 +242,15 @@ document.addEventListener('DOMContentLoaded', function() {
             Blockscad.Toolbox.setCatColors();  
             console.log('Color scheme applied');  
         }  
-          
+        
+        // Override the resize function to maintain positioning  
+        const originalResize = workspace.resize;  
+        workspace.resize = function() {  
+            originalResize.call(this);  
+            fixToolboxPosition(); // Reapply our positioning after resize  
+        };
+
+
         // CRITICAL: Record delete areas after workspace initialization  
         workspace.recordDeleteAreas();  
         console.log('Delete areas recorded');  
@@ -404,7 +412,80 @@ function setupEventHandlers() {
     // Call this after workspace initialization
     setTimeout(debugDeleteAreas, 3000);
 }  
+
+// Override toolbox positioning after workspace creation  
+function fixToolboxPosition() {  
+    if (workspace && workspace.toolbox_) {  
+        const toolboxDiv = workspace.toolbox_.HtmlDiv;  
+        if (toolboxDiv) {  
+            // Override the JavaScript positioning  
+            toolboxDiv.style.top = '150px';  
+            toolboxDiv.style.position = 'absolute';  
+            toolboxDiv.style.left = '150px';  
+              
+            // Also fix flyout positioning  
+            if (workspace.toolbox_.flyout_) {  
+                const flyoutSvg = workspace.toolbox_.flyout_.svgGroup_;  
+                if (flyoutSvg) {  
+                    flyoutSvg.setAttribute('transform', 'translate(200, 150)');  
+                }  
+            }  
+        }  
+    }  
+      
+    // Force record delete areas after positioning  
+    if (workspace) {  
+        workspace.recordDeleteAreas();  
+        console.log('Delete areas recorded:', {  
+            trash: workspace.deleteAreaTrash_,  
+            toolbox: workspace.deleteAreaToolbox_  
+        });  
+    }  
+}  
   
+// Call after workspace initialization and on resize  
+setTimeout(fixToolboxPosition, 100);  
+window.addEventListener('resize', fixToolboxPosition);
+
+// Override the onMouseUp handler to debug and fix deletion  
+function fixBlockDeletion() {  
+    const originalOnMouseUp = Blockly.BlockSvg.prototype.onMouseUp_;  
+      
+    Blockly.BlockSvg.prototype.onMouseUp_ = function(e) {  
+        console.log('Mouse up on block:', this.type);  
+        console.log('Block parent:', this.getParent());  
+        console.log('Block deletable:', Blockly.selected ? Blockly.selected.isDeletable() : 'No selection');  
+        console.log('Is delete area:', this.workspace.isDeleteArea(e));  
+          
+        // Call original handler first  
+        originalOnMouseUp.call(this, e);  
+          
+        // Additional check for deletion if original failed  
+        if (!this.getParent() && Blockly.selected &&   
+            Blockly.selected.isDeletable() && this.workspace.isDeleteArea(e)) {  
+            console.log('Forcing block deletion');  
+              
+            // Ensure proper event grouping  
+            if (!Blockly.Events.getGroup()) {  
+                Blockly.Events.setGroup(true);  
+            }  
+              
+            // Force disposal with animation  
+            Blockly.selected.dispose(false, true);  
+              
+            // Close trashcan  
+            if (this.workspace.trashcan) {  
+                this.workspace.trashcan.close();  
+            }  
+              
+            Blockly.Events.setGroup(false);  
+        }  
+    };  
+}  
+  
+// Apply the fix after workspace initialization  
+setTimeout(fixBlockDeletion, 100);
+
 // Utility functions  
 function showMessage(message, type = 'info') {  
     const console = document.getElementById('consoleOutput');  
