@@ -118,34 +118,7 @@
    
     
 <!-- Script includes following keditor's exact pattern -->   
-<script src="{% static 'cad_editor/js/blockly/generators/openscad.js' %}"></script>
-<script src="{% static 'cad_editor/js/closure-library/closure/goog/base.js' %}"></script>
-<script src="{% static 'cad_editor/js/blockly/blockly_compressed.js' %}"></script>
-<script src="{% static 'cad_editor/js/blockly/msg/js/en.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockscad/msg/js/en.js' %}"></script>   
-<!-- Load jQuery and dependencies -->  
-<script src="{% static 'cad_editor/js/jquery/jquery-1.11.3.js' %}"></script>  
-<script>console.log('jQuery loaded:', typeof $, typeof jQuery);
-<script src="{% static 'cad_editor/js/jquery/jquery-ui.min.js' %}"></script>
-<script>console.log('jQuery UI loaded:', typeof $.ui);</script>
-<!-- Load BlocksCAD utilities -->  
-<script src="{% static 'cad_editor/js/blockscad/storage.js' %}"></script> 
-<script>console.log('BlocksCAD storage loaded');</script>
-<script src="{% static 'cad_editor/js/blockscad/utils.js' %}"></script>  
-<script src="{% static 'cad_editor/js/blockscad/blockscad.js' %}"></script>
-<!-- CodeMirror for text editing -->    
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>    
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>    
-<script src="{% static 'cad_editor/js/blockly/core/msg.js' %}"></script>    
-<script src="{% static 'cad_editor/js/blockly/msg/js/en.js' %}"></script>    
-<script src="{% static 'cad_editor/js/blockscad/viewer.js' %}"></script>    
-<script src="{% static 'cad_editor/js/blockscad/csg.js' %}"></script>    
-<script src="{% static 'cad_editor/js/blockscad/lightgl.js' %}"></script>    
-<script src="{% static 'cad_editor/js/blockscad/openscad-openjscad-translator.js' %}"></script>    
-<script src="{% static 'cad_editor/js/blockscad/FileSaver.js' %}"></script>    
-<script src="{% static 'cad_editor/js/blockscad/stl.js' %}"></script>    
-<script src="{% static 'cad_editor/js/jquery/jquery.hammer.js' %}"></script>    
-
+{% include 'editor/editor_scripts.html' %}
 
 <script>    
 // Global variables    
@@ -473,12 +446,5 @@ function setupEventHandlers() {
     });
 }
 
-// Initialize everything when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    initEditor();
-    initViewer();
-    setupEventHandlers();
-    addConsoleMessage('OpenSCAD Editor ready', 'success');
-});
 </script>
 {% endblock %}

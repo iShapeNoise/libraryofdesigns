@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'design',
     'knowhow',
     'editor',
-    'keditor',
     'forum',
     'django_recaptcha',
     'pg_copy',
