@@ -6,8 +6,8 @@
 
 // Create a namespace.
 var BlocklyStorage = BlocklyStorage || {};
-var Blockscad = Blockscad || {};
-Blockscad.Auth = Blockscad.Auth || {};
+var Openscad = Openscad || {};
+Openscad.Auth = Openscad.Auth || {};
 var Blockly = Blockly || {};
 Blockly.Xml = Blockly.Xml || {};
 
@@ -42,7 +42,7 @@ BlocklyStorage.backupBlocks_ = function() {
   if ('localStorage' in window) {
     // clear out old stuff from localStorage
     localStorage.clear();
-    var xml = Blockly.Xml.workspaceToDom(Blockscad.workspace);
+    var xml = Blockly.Xml.workspaceToDom(Openscad.workspace);
     // Gets the current URL, not including the hash.
     var url = window.location.href.split('#')[0];
     url = url.split('?lang')[0];
@@ -54,7 +54,7 @@ BlocklyStorage.backupBlocks_ = function() {
 
     // do I have any stl files (converted to CSG commands) I want to save?
     // TO-DO: don't do this unless you find it in the xml you're saving.  
-    var blocks = Blockscad.workspace.getAllBlocks();
+    var blocks = Openscad.workspace.getAllBlocks();
     for (var i = 0; i < blocks.length; i++){
       if (blocks[i].type == 'stl_import') {
         var csg_key = blocks[i].getField('STL_CONTENTS').getText();
@@ -63,7 +63,7 @@ BlocklyStorage.backupBlocks_ = function() {
           var url_csg_center = url + csg_key + 'center';
           // can I zip up the text?
           // only save this if it isn't too big.
-          if (Blockscad.csg_commands[csg_key].length < 3000000) {
+          if (Openscad.csg_commands[csg_key].length < 3000000) {
             var compressed_data = Base64.toBase64(RawDeflate.deflate(Base64.utob(Blockscad.csg_commands[csg_key])));
             window.localStorage.setItem(url_csg, compressed_data);
             window.localStorage.setItem(url_csg_center, Blockscad.csg_center[csg_key]);
@@ -74,12 +74,12 @@ BlocklyStorage.backupBlocks_ = function() {
 
     window.localStorage.setItem(url, Blockly.Xml.domToText(xml));
     window.localStorage.setItem(url2, $('#project-name').val());
-    window.localStorage.setItem(url3, Blockscad.Auth.currentProject);
-    window.localStorage.setItem(url4, Blockscad.Auth.currentProjectKey);
-    window.localStorage.setItem(url5, Blockscad.needToSave);
+    window.localStorage.setItem(url3, Openscad.Auth.currentProject);
+    window.localStorage.setItem(url4, Openscad.Auth.currentProjectKey);
+    window.localStorage.setItem(url5, Openscad.needToSave);
 
-    if (Blockscad.pLang)
-      window.localStorage.setItem(url6, Blockscad.pLang);
+    if (Openscad.pLang)
+      window.localStorage.setItem(url6, Openscad.pLang);
     else
       localStorage.removeItem(url6);
   }
@@ -108,9 +108,9 @@ BlocklyStorage.restoreBlocks = function() {
   // console.log(window.localStorage);
   if ('localStorage' in window && window.localStorage[url]) {
     var xml = Blockly.Xml.textToDom(window.localStorage[url]);
-    Blockly.Xml.domToWorkspace(xml, Blockscad.workspace);
+    Blockly.Xml.domToWorkspace(xml, Openscad.workspace);
 
-    var blocks = Blockscad.workspace.getAllBlocks();
+    var blocks = Openscad.workspace.getAllBlocks();
     for (var i = 0; i < blocks.length; i++){
       if (blocks[i].type == 'stl_import') {
         var csg_key = blocks[i].getField('STL_CONTENTS').getText();
@@ -128,10 +128,10 @@ BlocklyStorage.restoreBlocks = function() {
             console.log("csg contents compressed length is:",csg_contents.length);
             var decompressed = Base64.btou(RawDeflate.inflate(Base64.fromBase64(csg_contents)));
             console.log("decompressed lengeth is:",decompressed.length);
-            Blockscad.csg_commands[csg_key] = decompressed;
+            Openscad.csg_commands[csg_key] = decompressed;
             // I need to populate the filename->key variable too.  
-            Blockscad.csg_filename[csg_key] = csg_filename + ":::";
-            Blockscad.csg_center[csg_key] = csg_center;
+            Openscad.csg_filename[csg_key] = csg_filename + ":::";
+            Openscad.csg_center[csg_key] = csg_center;
             blocks[i].render();
           }
           else {
@@ -185,17 +185,17 @@ BlocklyStorage.restoreBlocks = function() {
     else $('#project-name').val('Untitled');
     var current_project = window.localStorage[url3];
     if (current_project != "undefined") {
-      Blockscad.Auth.currentProject = current_project;
+      Openscad.Auth.currentProject = current_project;
     }
-    else Blockscad.Auth.currentProject = '';
+    else Openscad.Auth.currentProject = '';
     var current_project_key = window.localStorage[url4];
     if (current_project_key != "undefined") {
-      Blockscad.Auth.currentProjectKey = current_project_key;
+      Openscad.Auth.currentProjectKey = current_project_key;
     }
     var needToSave = Number(window.localStorage[url5]);
     if (needToSave != "undefined" && (needToSave == 1 || needToSave == 0)) {
       setTimeout(function() {
-        Blockscad.needToSave = needToSave;
+        Openscad.needToSave = needToSave;
         // console.log("loading from storage. setting needToSave to:", needToSave);
       }, 300);
     }
@@ -205,7 +205,7 @@ BlocklyStorage.restoreBlocks = function() {
   }
 }
 
-Blockscad.getLangFromLS = function() {
+Openscad.getLangFromLS = function() {
   var url = window.location.href.split('#')[0];
   url = url.split('?lang')[0];
   var url6 = url + "pLang"; 

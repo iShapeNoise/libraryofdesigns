@@ -2,7 +2,7 @@
 
 'use strict';
 
-goog.provide('Blockscad.Msg.sl');
+goog.provide('Openscad.Msg.sl');
 
 
 Blockscad.Msg.ABORT_BUTTON = "Prekliči!";

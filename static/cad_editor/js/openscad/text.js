@@ -21,14 +21,14 @@
 'use strict';
 
 // create Blockscad namespace
-var Blockscad = Blockscad || {};
+var Openscad = Openscad || {};
 
 // Hold pre-loaded font object created by opentype.js
 Blockscad.fonts = {};
 
 
 // List and location of fonts to load into BlocksCAD
-Blockscad.fontList = ['/fonts/Roboto/Roboto-Bold.ttf',
+Openscad.fontList = ['/fonts/Roboto/Roboto-Bold.ttf',
                       '/fonts/liberation/LiberationSerif-Bold.ttf',
                       '/fonts/nimbus/nimbus-sans-l_bold.ttf',
                       '/fonts/AverageMono/AverageMonoSimp.ttf',
@@ -38,7 +38,7 @@ Blockscad.fontList = ['/fonts/Roboto/Roboto-Bold.ttf',
                       '/fonts/bangers/Bangers.ttf'];
 
 // display names for fonts, used in font block (also used to key fonts object)
-Blockscad.fontName = ['Roboto',
+Openscad.fontName = ['Roboto',
                       'Liberation Serif',
                       'Nimbus Sans',
                       'Average Mono',
@@ -50,27 +50,27 @@ Blockscad.fontName = ['Roboto',
 
 // pre-load all fonts in Blockscad.fontList
 // calls the loadFont() function because of asynchronous font load
-Blockscad.loadFonts = function() {
-  for (var i = 0; i < Blockscad.fontList.length; i++) {
-    Blockscad.loadFont(i);
+Openscad.loadFonts = function() {
+  for (var i = 0; i < Openscad.fontList.length; i++) {
+    Openscad.loadFont(i);
   }
 };
-Blockscad.loadFont = function(index) {
-  opentype.load(Blockscad.fontList[index], function(err, font) {
+Openscad.loadFont = function(index) {
+  opentype.load(Openscad.fontList[index], function(err, font) {
     if (err) {
       console.log('Could not load font: ', font + ":" + err);
     } else {
-      Blockscad.fonts[Blockscad.fontName[index]] = font;
+      Openscad.fonts[Openscad.fontName[index]] = font;
       return font; // if I do this, can I use this in synchronous code?
     }
   });
 };
 
 
-Blockscad.loadFontThenRender = function(i,code) {
+Openscad.loadFontThenRender = function(i,code) {
   try {
-    var name = Blockscad.fontName[Blockscad.loadTheseFonts[i]];
-    var url = Blockscad.fontList[Blockscad.loadTheseFonts[i]];
+    var name = Openscad.fontName[Openscad.loadTheseFonts[i]];
+    var url = Openscad.fontList[Openscad.loadTheseFonts[i]];
 
     var request = new XMLHttpRequest();
     request.open('get', url, true);
@@ -79,9 +79,9 @@ Blockscad.loadFontThenRender = function(i,code) {
         if (request.status !== 200) {
             throw new Error('failed to load font in loadRawFont:' + url + request.statusText);
         }
-        Blockscad.fonts[Blockscad.fontName[Blockscad.loadTheseFonts[i]]] = request.response; // save the loaded fonts
-        Blockscad.numloaded++;
-        if (Blockscad.numloaded == Blockscad.loadTheseFonts.length) Blockscad.renderCode(code);  
+        Openscad.fonts[Openscad.fontName[Openscad.loadTheseFonts[i]]] = request.response; // save the loaded fonts
+        Openscad.numloaded++;
+        if (Openscad.numloaded == Openscad.loadTheseFonts.length) Openscad.renderCode(code);  
     };
 
     request.send();
@@ -110,11 +110,11 @@ Blockscad.loadFontThenRender = function(i,code) {
 
 
 
-Blockscad.whichFonts = function(code) {
+Openscad.whichFonts = function(code) {
   var loadThisIndex = [];
-  for (var i = 0; i < Blockscad.fontList.length; i++) {
-    if (code.indexOf(Blockscad.fontName[i]) > -1)
-      if (!Blockscad.fonts[Blockscad.fontName[i]])
+  for (var i = 0; i < Openscad.fontList.length; i++) {
+    if (code.indexOf(Openscad.fontName[i]) > -1)
+      if (!Openscad.fonts[Openscad.fontName[i]])
         loadThisIndex.push(i);
   }
   return loadThisIndex;

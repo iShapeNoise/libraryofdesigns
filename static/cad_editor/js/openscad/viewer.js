@@ -5,13 +5,13 @@
 //
 
 
-var Blockscad =  Blockscad || {};
+var Openscad =  Openscad || {};
 var CSG = CSG || {};
 var CAG = CAG || {};
 
 // A viewer is a WebGL canvas that lets the user view a mesh. The user can
 // tumble it around by dragging the mouse.
-Blockscad.Viewer = function(containerelement, width, height, initialdepth) {
+Openscad.Viewer = function(containerelement, width, height, initialdepth) {
   var gl = GL.create();
   this.gl = gl;
   this.angleX = -60;
@@ -180,7 +180,7 @@ Blockscad.Viewer = function(containerelement, width, height, initialdepth) {
   this.clear();
 };
 
-Blockscad.Viewer.prototype = {
+Openscad.Viewer.prototype = {
   setCsg: function(csg) {
     // if(0&&csg.length) {                            // preparing multiple CSG's (not union-ed), not yet working
     //    for(var i=0; i<csg.length; i++)
@@ -687,7 +687,7 @@ Blockscad.Viewer.prototype = {
 
 // Convert from CSG solid to an array of GL.Mesh objects
 // limiting the number of vertices per mesh to less than 2^16
-Blockscad.Viewer.csgToMeshes = function(initial_csg, defaultColor) {
+Openscad.Viewer.csgToMeshes = function(initial_csg, defaultColor) {
   var csg = initial_csg.canonicalized();
   var mesh = new GL.Mesh({ normals: true, colors: true });
   var meshes = [ mesh ];
@@ -758,7 +758,7 @@ Blockscad.Viewer.csgToMeshes = function(initial_csg, defaultColor) {
 
 // this is a bit of a hack; doesn't properly supports urls that start with '/'
 // but does handle relative urls containing ../
-Blockscad.makeAbsoluteUrl = function(url, baseurl) {
+Openscad.makeAbsoluteUrl = function(url, baseurl) {
   // console.log("in makeAbsoluteUrl: ",url + "    " + baseurl);
   if(!url.match(/^[a-z]+\:/i)) {
     var basecomps = baseurl.split("/");
@@ -786,12 +786,12 @@ Blockscad.makeAbsoluteUrl = function(url, baseurl) {
   return url;
 };
 
-Blockscad.isChrome = function() {
+Openscad.isChrome = function() {
   return (navigator.userAgent.search("Chrome") >= 0);
 };
 
 // this is called from within the web worker.  Run the parser, create the main() function, execute the main() function.
-Blockscad.parseCodeInWorker = function(code, fontkeys, fontdata) {
+Openscad.parseCodeInWorker = function(code, fontkeys, fontdata) {
   // this needs to call the parser, get the main string back.  Will it be a function?  I think it will be a string.  We'll see.
    // self.postMessage({cmd: 'log', txt: "code in paresCodeInWorker: " + code});
 
@@ -825,7 +825,7 @@ Blockscad.parseCodeInWorker = function(code, fontkeys, fontdata) {
 }
 // This is called from within the web worker. Execute the main() function of the supplied script
 // and post a message to the calling thread when finished
-Blockscad.runMainInWorker = function(csgcode) {
+Openscad.runMainInWorker = function(csgcode) {
    // var code = csgcode.substring(csgcode.indexOf("{")+1, csgcode.lastIndexOf("}"));
    var main = new Function(csgcode);
 
@@ -905,7 +905,7 @@ Blockscad.runMainInWorker = function(csgcode) {
   }
 };
 
-Blockscad.parseBlockscadScriptSync = function(script, debugging) {
+Openscad.parseBlockscadScriptSync = function(script, debugging) {
   var workerscript = "//SYNC\n";
   workerscript += "_includePath = "+JSON.stringify(_includePath)+";\n";
   workerscript += script;
@@ -952,18 +952,18 @@ Blockscad.parseBlockscadScriptSync = function(script, debugging) {
 };
 
 // callback: should be function(error, csg)
-Blockscad.parseBlockscadScriptASync = function(script, callback) {
+Openscad.parseBlockscadScriptASync = function(script, callback) {
   var baselibraries = [
       // "opentype/dist/opentype.min.js",
       // "blockscad/viewer_compressed.js",
       // "blockscad/underscore.js",
       // "blockscad/openscad-openjscad-translator.js"
-      "blockscad/csg.js",
-      "blockscad/formats.js",
+      "openscad/csg.js",
+      "openscad/formats.js",
       "opentype/dist/opentype.min.js",
-      "blockscad/viewer.js",
-      "blockscad/underscore.js",
-      "blockscad/openscad-openjscad-translator.js"
+      "openscad/viewer.js",
+      "openscad/underscore.js",
+      "openscad/openscad-openjscad-translator.js"
   ];
 
   // console.log("in parseBlockscadScriptASync");
@@ -988,30 +988,30 @@ Blockscad.parseBlockscadScriptASync = function(script, callback) {
   workerscript += "var _csg_baselibraries=" + JSON.stringify(baselibraries)+";\n";
   workerscript += "var _csg_libraries=" + JSON.stringify(libraries)+";\n";
   workerscript += "var _csg_blockscadurl=" + JSON.stringify(blockscadurl)+";\n";
-  workerscript += "var _csg_makeAbsoluteURL=" + Blockscad.makeAbsoluteUrl.toString()+";\n";
+  workerscript += "var _csg_makeAbsoluteURL=" + Openscad.makeAbsoluteUrl.toString()+";\n";
 //  workerscript += "if(typeof(libs) == 'function') _csg_libraries = _csg_libraries.concat(libs());\n";
-  workerscript += "_csg_baselibraries = _csg_baselibraries.map(function(l){return _csg_makeAbsoluteURL(l,_csg_blockscadurl);});\n";
+  workerscript += "_csg_baselibraries = _csg_baselibraries.map(function(l){return _csg_makeAbsoluteURL(l,_csg_openscadurl);});\n";
   workerscript += "_csg_libraries = _csg_libraries.map(function(l){return _csg_makeAbsoluteURL(l,_csg_baseurl);});\n";
   workerscript += "_csg_baselibraries.map(function(l){importScripts(l)});\n";
   workerscript += "_csg_libraries.map(function(l){importScripts(l)});\n";
   workerscript += "self.addEventListener('message', function(e) {if(e.data && e.data.cmd == 'render'){";
-  // workerscript += "  Blockscad.runMainInWorker();";
-  workerscript += "Blockscad.resolution = " + Blockscad.resolution + ';';
-  workerscript += "Blockscad.csg_filename = e.data.csg_filename;";
-  workerscript += "Blockscad.csg_commands = e.data.csg_commands;";
-  workerscript += "Blockscad.fonts = {};";
+  // workerscript += "  Openscad.runMainInWorker();";
+  workerscript += "Openscad.resolution = " + Openscad.resolution + ';';
+  workerscript += "Openscad.csg_filename = e.data.csg_filename;";
+  workerscript += "Openscad.csg_commands = e.data.csg_commands;";
+  workerscript += "Openscad.fonts = {};";
   workerscript += "var fontkeys = e.data.fontkeys;";
   workerscript += "var fontdata = e.data.fontdata;";
   // can I actually parse the font buffers here?
 
   workerscript += "for (var i = 0; i < fontkeys.length; i++) {";
-  workerscript += "  Blockscad.fonts[fontkeys[i]] = opentype.parse(fontdata[i]); }";
+  workerscript += "  Openscad.fonts[fontkeys[i]] = opentype.parse(fontdata[i]); }";
 
-  workerscript += "  Blockscad.parseCodeInWorker(e.data.data);";
+  workerscript += "  Openscad.parseCodeInWorker(e.data.data);";
   workerscript += "}},false);\n";
 
 
-  var blobURL = Blockscad.textToBlobUrl(workerscript);
+  var blobURL = Openscad.textToBlobUrl(workerscript);
   
   if(!window.Worker) throw new Error("Your browser doesn't support Web Workers. Please try the Chrome or Firefox browser instead.");
   var worker = new Worker(blobURL);
@@ -1045,7 +1045,7 @@ Blockscad.parseBlockscadScriptASync = function(script, callback) {
         callback(e.data.err, null);
       }
       else if (e.data.cmd == "parsed") {
-        $( '#render-ongoing').html(Blockscad.Msg.RENDER_IN_PROGRESS + '<img id=busy src="imgs/busy2.gif">');
+        $( '#render-ongoing').html(Openscad.Msg.RENDER_IN_PROGRESS + '<img id=busy src="imgs/busy2.gif">');
 
       }
       else if(e.data.cmd == "log")
@@ -1070,19 +1070,19 @@ Blockscad.parseBlockscadScriptASync = function(script, callback) {
     data: script,
     fontkeys: fontKeys,
     fontdata: fontData,
-    csg_filename: Blockscad.csg_filename,
-    csg_commands: Blockscad.csg_commands 
+    csg_filename: Openscad.csg_filename,
+    csg_commands: Openscad.csg_commands 
   }); // Start the worker.
   return worker;
 };
 
-Blockscad.getWindowURL = function() {
+Openscad.getWindowURL = function() {
   if(window.URL) return window.URL;
   else if(window.webkitURL) return window.webkitURL;
   else throw new Error("Your browser doesn't support window.URL");
 };
 
-Blockscad.textToBlobUrl = function(txt) {
+Openscad.textToBlobUrl = function(txt) {
   var windowURL=Blockscad.getWindowURL();
   var blob = new Blob([txt]);
   var blobURL = windowURL.createObjectURL(blob);
@@ -1090,20 +1090,20 @@ Blockscad.textToBlobUrl = function(txt) {
   return blobURL;
 };
 
-Blockscad.revokeBlobUrl = function(url) {
+Openscad.revokeBlobUrl = function(url) {
   if(window.URL) window.URL.revokeObjectURL(url);
   else if(window.webkitURL) window.webkitURL.revokeObjectURL(url);
   else throw new Error("Your browser doesn't support window.URL");
 };
 
-Blockscad.AlertUserOfUncaughtExceptions = function() {
+Openscad.AlertUserOfUncaughtExceptions = function() {
   window.onerror = function(message, url, line) {
     message = message.replace(/^Uncaught /i, "");
     alert(message+"\n\n("+url+" line "+line+")");
   };
 };
 
-Blockscad.Processor = function(containerdiv, onchange) {
+Openscad.Processor = function(containerdiv, onchange) {
   this.containerdiv = containerdiv;
   this.onchange = onchange;
   this.viewerdiv = null;
@@ -1128,7 +1128,7 @@ Blockscad.Processor = function(containerdiv, onchange) {
   this.createElements();
 };
 
-Blockscad.Processor.convertToSolid = function(obj) {
+Openscad.Processor.convertToSolid = function(obj) {
 
   // obj is an array with one object in it.  It has already been extruded and unioned.
   // this function really has nothing to do.
@@ -1139,7 +1139,7 @@ Blockscad.Processor.convertToSolid = function(obj) {
   return obj;
 };
 
-Blockscad.Processor.prototype = {
+Openscad.Processor.prototype = {
   createElements: function() {
     var that = this;   // for event handlers
 
@@ -1164,8 +1164,8 @@ Blockscad.Processor.prototype = {
 
     var picdiv = document.createElement("div");
     picdiv.setAttribute('id','picdiv');
-    picdiv.style.width = Blockscad.picSize[0] + 'px'; 
-    picdiv.style.height = Blockscad.picSize[1] + 'px'; 
+    picdiv.style.width = Openscad.picSize[0] + 'px'; 
+    picdiv.style.height = Openscad.picSize[1] + 'px'; 
     picdiv.style.top = '0px';
     picdiv.style.right = '10px';
     picdiv.style.position = 'absolute';
@@ -1175,8 +1175,8 @@ Blockscad.Processor.prototype = {
 
     var rpicdiv = document.createElement("div");
     rpicdiv.setAttribute('id','picdiv');
-    rpicdiv.style.width = Blockscad.rpicSize[0] + 'px'; 
-    rpicdiv.style.height = Blockscad.rpicSize[1] + 'px'; 
+    rpicdiv.style.width = Openscad.rpicSize[0] + 'px'; 
+    rpicdiv.style.height = Openscad.rpicSize[1] + 'px'; 
     rpicdiv.style.top = '0px';
     rpicdiv.style.right = '10px';
     rpicdiv.style.position = 'absolute';
@@ -1185,23 +1185,23 @@ Blockscad.Processor.prototype = {
     this.rpicdiv = rpicdiv;
 
     try {
-      this.picviewer = new Blockscad.Viewer(this.picdiv, picdiv.offsetWidth, picdiv.offsetHeight, this.initialViewerDistance);
+      this.picviewer = new Openscad.Viewer(this.picdiv, picdiv.offsetWidth, picdiv.offsetHeight, this.initialViewerDistance);
     } catch(e) {
       this.picdiv.innerHTML = "<b><br><br>Error: " + e.toString() + "</b><br><br>BlocksCAD currently requires Google Chrome or Firefox with WebGL enabled";
     }
     $("#picdiv").addClass('hidden');
 
     try {
-      this.rpicviewer = new Blockscad.Viewer(this.rpicdiv, rpicdiv.offsetWidth, rpicdiv.offsetHeight, this.initialViewerDistance);
+      this.rpicviewer = new Openscad.Viewer(this.rpicdiv, rpicdiv.offsetWidth, rpicdiv.offsetHeight, this.initialViewerDistance);
     } catch(e) {
       this.rpicdiv.innerHTML = "<b><br><br>Error: " + e.toString() + "</b><br><br>BlocksCAD currently requires Google Chrome or Firefox with WebGL enabled";
     }
     $("#rpicdiv").addClass('hidden');
 
     try {
-      this.viewer = new Blockscad.Viewer(this.viewerdiv, viewerdiv.offsetWidth, viewerdiv.offsetHeight, this.initialViewerDistance);
+      this.viewer = new Openscad.Viewer(this.viewerdiv, viewerdiv.offsetWidth, viewerdiv.offsetHeight, this.initialViewerDistance);
     } catch(e) {
-      this.viewerdiv.innerHTML = "<b><br><br>Error: " + e.toString() + "</b><br><br>BlocksCAD currently requires Google Chrome or Firefox with WebGL enabled";
+      this.viewerdiv.innerHTML = "<b><br><br>Error: " + e.toString() + "</b><br><br>OpenSCAD currently requires Google Chrome or Firefox with WebGL enabled";
     }
 
 
@@ -1298,7 +1298,7 @@ Blockscad.Processor.prototype = {
   
   updateDownloadLink: function() {
     var ext = this.selectedFormatInfo().extension;
-    this.generateOutputFileButton.innerHTML = Blockscad.Msg.GENERATE_STL + " "+ext.toUpperCase();
+    this.generateOutputFileButton.innerHTML = Openscad.Msg.GENERATE_STL + " "+ext.toUpperCase();
   },
   
   clearViewer: function() {
@@ -1323,7 +1323,7 @@ Blockscad.Processor.prototype = {
 
       // I might need to change the "in progress" message too.
 
-      $( '#render-ongoing').html(Blockscad.Msg.PARSE_IN_PROGRESS + '<img id=busy src="imgs/busy2.gif">');
+      $( '#render-ongoing').html(Openscad.Msg.PARSE_IN_PROGRESS + '<img id=busy src="imgs/busy2.gif">');
 
       this.processing=false;
       //this.statusspan.innerHTML = "Aborted.";
@@ -1367,7 +1367,7 @@ Blockscad.Processor.prototype = {
     this.setError("");
     this.clearViewer();
     this.processing = true;
-    $( '#renderButton' ).html(Blockscad.Msg.RENDER_BUTTON);
+    $( '#renderButton' ).html(Openscad.Msg.RENDER_BUTTON);
     $( '#renderButton' ).prop('disabled', false);
     this.enableItems();
     var that = this;
@@ -1380,20 +1380,20 @@ Blockscad.Processor.prototype = {
       try
       {
 //          console.log("trying async compute");
-          this.worker = Blockscad.parseBlockscadScriptASync(this.script, function(err, obj) {
+          this.worker = Openscad.parseBlockscadScriptASync(this.script, function(err, obj) {
 
              if (err && err == "finalMesh") {
                 // console.log("got back final mesh that can be downloaded");
-                $( '#render-ongoing').html(Blockscad.Msg.PARSE_IN_PROGRESS + '<img id=busy src="imgs/busy2.gif">');
+                $( '#render-ongoing').html(Openscad.Msg.PARSE_IN_PROGRESS + '<img id=busy src="imgs/busy2.gif">');
                 // I got back the final mesh here.  get the "ready for download" stuff ready.
                 that.processing = false;
 
                 that.setCurrentObject(obj, true);
                 // console.log(that);
-                var images = that.picviewer.takePic(Blockscad.picQuality,0,1);
+                var images = that.picviewer.takePic(Openscad.picQuality,0,1);
                 that.img = images[0];
                 that.thumbnail = images[1];
-                that.imgStrip = that.takeRotatingPic(1,Blockscad.numRotPics);
+                that.imgStrip = that.takeRotatingPic(1,Openscad.numRotPics);
                 that.processing = false;
                 that.worker = null;
               }
@@ -1406,10 +1406,10 @@ Blockscad.Processor.prototype = {
 
                 that.setCurrentObject(obj, false);
                 // console.log(that);
-                var images = that.picviewer.takePic(Blockscad.picQuality,0,1);
+                var images = that.picviewer.takePic(Openscad.picQuality,0,1);
                 that.img = images[0];
                 that.thumbnail = images[1];
-                that.imgStrip = that.takeRotatingPic(1,Blockscad.numRotPics);
+                that.imgStrip = that.takeRotatingPic(1,Openscad.numRotPics);
               }
 
               else 
@@ -1440,7 +1440,7 @@ Blockscad.Processor.prototype = {
     {
       try
       {
-        var obj = Blockscad.parseBlockscadScriptSync(this.script, this.debugging);
+        var obj = Openscad.parseOpenscadScriptSync(this.script, this.debugging);
         that.setCurrentObject(obj);
         that.processing = false;
       }
@@ -1472,7 +1472,7 @@ Blockscad.Processor.prototype = {
     {
       if(this.outputFileBlobUrl)
       {
-        Blockscad.revokeBlobUrl(this.outputFileBlobUrl);
+        Openscad.revokeBlobUrl(this.outputFileBlobUrl);
         this.outputFileBlobUrl = null;
       }
       this.enableItems();
@@ -1505,7 +1505,7 @@ Blockscad.Processor.prototype = {
     }
     else if(format == "amf") {
       blob = this.currentObject.toAMFString({
-        producer: "BlocksCAD "+Blockscad.version,
+        producer: "OpenSCAD "+Openscad.version,
         date: new Date()
       });
       blob = new Blob([blob],{ type: "text/plain; charset=utf-8"});
@@ -1588,7 +1588,7 @@ Blockscad.Processor.prototype = {
       saveAs(blob, filename + "." + ext);
     }
     else {
-      $('#message-text').html("<h4>" + Blockscad.Msg.SAVE_FAILED + ' ' + Blockscad.Msg.SAVE_FAILED_PROJECT_NAME + ".</h4>");
+      $('#message-text').html("<h4>" + Openscad.Msg.SAVE_FAILED + ' ' + Openscad.Msg.SAVE_FAILED_PROJECT_NAME + ".</h4>");
       $('#message-modal').modal();
     }
   },
@@ -1597,8 +1597,8 @@ Blockscad.Processor.prototype = {
     var frames = [];
     var images = [];
     var c = document.createElement('canvas');
-    c.width  = Blockscad.rpicSize[0] * numframes;
-    c.height = Blockscad.rpicSize[0];
+    c.width  = Openscad.rpicSize[0] * numframes;
+    c.height = Openscad.rpicSize[0];
     var ctx = c.getContext("2d");
     
     for (var i = 0; i < numframes; i += 1) {
@@ -1606,7 +1606,7 @@ Blockscad.Processor.prototype = {
       frames[i] = this.rpicviewer.takePic(quality,angle)[0];
       images[i] = new Image();
       images[i].src = frames[i];
-      ctx.drawImage(images[i],i * Blockscad.rpicSize[0],0);
+      ctx.drawImage(images[i],i * Openscad.rpicSize[0],0);
       // change angle?
     }
 
@@ -1623,7 +1623,7 @@ Blockscad.Processor.prototype = {
 // NOTE: web svg coordinates have flipped Y coordinates
 // (increasing positive as you move down)
 // so all Y coordinates are multiplied by -1
-Blockscad.pathToPoints = function(path,resolution) {
+Openscad.pathToPoints = function(path,resolution) {
 
   var points = [];
   var paths = [];

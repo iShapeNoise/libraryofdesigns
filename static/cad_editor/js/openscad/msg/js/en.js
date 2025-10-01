@@ -2,7 +2,7 @@
 
 'use strict';
 
-goog.provide('Blockscad.Msg.en');
+goog.provide('Openscad.Msg.en');
 
 
 Blockscad.Msg.ABORT_BUTTON = "Abort!";
